@@ -22,7 +22,7 @@
         "rootRequired": false,
         "ipkUrl": "https://github.com/whhiitee/youtube-aura-webos/releases/download/v1.0.0/youtube.leanback.v4_1.0.0_all_oled55b7v.ipk",
         "ipkHash": {
-          "sha256": "ce3fa78e8d906972c6d1cf216cc7d34d273734406f6354d7a42e6c4935ccaa54"
+          "sha256": "d1605bd8f77bdc4fbcf2ef984a93dc7c9d6d15cede35f6f036936c8fb50ec7dd"
         }
       }
     }
