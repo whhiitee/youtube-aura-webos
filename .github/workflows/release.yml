@@ -35,8 +35,10 @@ jobs:
       - name: Name the artifact for the OLED55B7V
         run: |
           for f in dist/*.ipk; do
-            mv "$f" "dist/${f%.ipk}_oled55b7v.ipk"
+            base="$(basename "${f%.ipk}")"
+            mv "$f" "dist/${base}_oled55b7v.ipk"
           done
+          ls -l dist/*.ipk
 
       - name: Checksum
         run: |
