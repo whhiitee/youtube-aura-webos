@@ -486,7 +486,6 @@
       'True once the player reports a quality',
       'free'
     ],
-    ensurePlaybackStarts: ['features/video-quality', 'webOS 25 first-play kickstart', 'medium'],
     notifyIfUpgraded: ['features/video-quality', 'Toast when the quality changed', 'free'],
     destroyVideoQuality: ['features/video-quality', 'Detaches player listeners', 'free'],
     isForceEnabled: [

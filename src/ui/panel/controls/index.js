@@ -8,7 +8,6 @@ export {
   createChoiceControl,
   createLogoControl,
   createVideoCodecControl,
-  createThemeControl,
   createThumbnailQualityControl,
   createSegmentControl,
   createShortcutControl,

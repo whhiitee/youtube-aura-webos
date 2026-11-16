@@ -24,8 +24,6 @@ import { installBufferLimit } from './hooks/buffer-limit.js';
 import { SELECTORS } from './core/selectors.js';
 import { handleLaunch, extractLaunchParams, hasLaunchTarget } from './core/launch.js';
 import { attemptActiveBypass, resetActiveBypass } from './features/auto-login/index.js';
-import { isWebOS25, simulatorMode, getWebOSVersion } from './core/webos.js';
-import { initBlockWebOSCast } from './features/block-webos-cast.ts';
 // Each module registers its page listeners as it is imported, so they run in
 // this order.
 import './features/return-dislike/index.js';
@@ -38,22 +36,19 @@ import './features/screensaver-fix/index.js';
 import './features/comments-fix.js';
 import './features/watch/index.js';
 import './features/lang-settings-fix.ts';
-// Installs itself once its setting is on; the legacy build has a stand-in.
-import './features/playback-speed/index.js';
 import { createLogger } from './core/log.js';
 
 const log = createLogger('Main');
 
 // The global hooks, installed once every module has loaded (the codec filter
-// runs inside the parse hook). The buffer limit is for webOS 3 and 4 only;
-// the webOS 22+ build aliases it away, so the import is undefined there.
+// runs inside the parse hook).
 installParseHook();
 installStringifyHook();
 installCodecHooks();
-if (typeof installBufferLimit === 'function' && getWebOSVersion() <= 4) {
-  installBufferLimit();
-  log.info('Initiating buffer limit');
-}
+// webOS 3 runs out of memory on a long video without the buffer cap, and the
+// OLED55B7V is a webOS 3 set (Chromium 38): the cap is always on.
+installBufferLimit();
+log.info('Initiating buffer limit');
 
 // The features that start once the hooks are in: the wordmark style applies
 // to the header, and Tracking Block's network hooks follow the adblock flags
@@ -85,8 +80,3 @@ document.addEventListener(
   },
   true
 );
-
-if (isWebOS25() && simulatorMode === false) {
-  log.info('Enabling webOS Google Cast Block');
-  initBlockWebOSCast();
-}

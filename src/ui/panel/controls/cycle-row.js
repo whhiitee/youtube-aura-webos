@@ -14,8 +14,7 @@ import {
   forcePreviewModes,
   logoStyles,
   thumbnailQualityModes,
-  videoCodecModes,
-  uiThemes
+  videoCodecModes
 } from '../../../core/config.js';
 import { REMOTE_KEYS } from '../../../core/remote.js';
 import { createElement } from '../../dom.js';
@@ -163,9 +162,6 @@ export const createLogoControl = () => createAlignedCycleControl('logoStyle', lo
 /** The Force Video Codec row. */
 export const createVideoCodecControl = () =>
   createAlignedCycleControl('forceVideoCodec', videoCodecModes);
-
-/** The UI Theme row. */
-export const createThemeControl = () => createAlignedCycleControl('uiTheme', uiThemes);
 
 /** The Thumbnail Strategy row, greyed out while Max Thumbnail Quality is off. */
 export function createThumbnailQualityControl() {

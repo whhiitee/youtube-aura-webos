@@ -24,8 +24,13 @@ npm-debug.log*
 Thumbs.db
 desktop.ini
 
-# Local build helper (build-local modern.cmd)
+# Local helpers from upstream 0.8.5's two-build setup (the modern build is gone)
 _ipk_stash/
+build-local modern*.cmd
+build-local-perfmon.cmd
 
 # npm run bundle:snapshot (tools/bundle-snapshot.mjs)
 .bundle-snapshot/
+
+# A baseline bundle built for the benchmarks (see docs/PERFORMANCE.md)
+tests/bench/baseline/

@@ -18,15 +18,6 @@ import { fc } from '../force-codec/state.js';
 import { log } from './log.js';
 
 let origParse = null;
-// A step for every object parsed past the size gate, before the InnerTube
-// check: the playback speed feature's Speed button (features/playback-speed,
-// in the webOS 22+ build only, and only once it is switched on).
-let parsedObjectStep = null;
-
-/** Sets the step run on every object parsed past the size gate (null: none). */
-export function setParsedObjectStep(fn) {
-  parsedObjectStep = fn;
-}
 
 /** Debug log for a large response no schema recognised (the fallback filters ran instead). */
 function logSchemaMiss(data, textLength) {
@@ -80,7 +71,6 @@ function parseAndFilter(text, reviver) {
 
   const data = origParse(text, reviver);
   if (!data || typeof data !== 'object') return data;
-  if (parsedObjectStep !== null) parsedObjectStep(data);
   if (
     data.responseContext === undefined &&
     data.playerResponse === undefined &&

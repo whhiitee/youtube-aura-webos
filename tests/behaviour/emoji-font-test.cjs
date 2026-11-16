@@ -42,9 +42,17 @@ const injected = (root) =>
 const FRAMES = 40;
 const TICKS = 40;
 
-/** A page with the fix on or off, a spy counting every mutation record, and a frame pump. */
+/**
+ * A page with the fix on or off, a spy counting every mutation record, and a frame pump.
+ *
+ * Notifications are off: the welcome toast appears 2 s after load, and on a
+ * loaded machine that lands inside the sampling window of the convergence case
+ * and shows up as a record the fix did not make.
+ */
 function boot(emojiOn) {
-  const page = createPage({ config: { enableLegacyEmojiFix: emojiOn } });
+  const page = createPage({
+    config: { enableLegacyEmojiFix: emojiOn, disableNotifications: true }
+  });
   const win = page.win;
   const counter = { records: 0 };
   const spy = new win.MutationObserver((m) => {
@@ -124,12 +132,12 @@ async function converges() {
     await tick();
     samples.push(counter.records);
   }
-  const half = FRAMES >> 1;
-  const tail = samples[FRAMES - 1] - samples[half];
+  const FRAMES_HALF = FRAMES >> 1;
+  const tail = samples[FRAMES - 1] - samples[FRAMES_HALF];
   t(
     'an untouched page generates no further records in the second half of the run',
     tail === 0,
-    `${tail} records over ${half} idle frames; injected spans: ${injected(win.document).length}`
+    `${tail} records over ${FRAMES - FRAMES_HALF} idle frames; injected spans: ${injected(win.document).length}`
   );
   t('the emoji were rendered', injected(win.document).length > 0);
 }

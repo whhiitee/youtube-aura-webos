@@ -1,34 +1,35 @@
-/* Toast notifications (ui/toast/index.js). The red-theme and OLED variants are
-   in styles/theme-red.css and styles/theme-oled.css. */
+/* Toast notifications (ui/toast/index.js). Aura's card: true black, a hairline
+   border, one accent edge. Only opacity and transform animate, both on the
+   compositor, so a toast never costs a frame of video. */
 
 .ytaf-toasts {
   position: fixed;
-  top: 1.85vh;
-  right: 1.85vh;
-  font-size: 1.48vh;
+  top: 1.6vh;
+  right: 1.6vh;
+  font-size: 1.7vh;
   z-index: 1200;
-  max-width: 37vh;
+  max-width: 38vh;
+  font-family: 'LG Display', Roboto, 'Noto Sans', Arial, sans-serif;
 }
 
 .ytaf-toast {
-  background: #002840;
-  border: 0.09vh solid rgba(0, 212, 255, 0.4);
-  color: white;
-  padding: 1.5vh 1.85vh;
-  margin-bottom: 1.1vh;
-  border-radius: 1.1vh;
-  box-shadow: 0 0.5vh 1.4vh rgba(0, 0, 0, 0.5);
+  background: #0a0a0c;
+  border: 0.09vh solid #1f1f24;
+  border-left: 0.32vh solid #d7e6ff;
+  color: #f1f1f3;
+  padding: 1.4vh 1.8vh;
+  margin-bottom: 0.9vh;
+  border-radius: 0.8vh;
   transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    opacity 140ms ease-out,
+    transform 140ms ease-out;
   opacity: 1;
   transform: translateX(0);
-  border-left: 0.37vh solid #00d4ff;
-  font-weight: 500;
-  line-height: 1.4;
+  font-weight: 400;
+  line-height: 1.35;
 }
 
 .ytaf-toast.ytaf-toast-hidden {
   opacity: 0;
-  transform: translateX(1.85vh);
+  transform: translateX(1.2vh);
 }

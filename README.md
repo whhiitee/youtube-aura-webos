@@ -1,183 +1,254 @@
-# youtube-webos
+# YouTube Aura
 
-An upgraded fork of webosbrew's youtube-webos with extended features and fixes.
+A YouTube client for one television: the **LG OLED55B7V-Z** (2017, webOS 3.x,
+Chromium 38). Ad-free, SponsorBlock, Return YouTube Dislike, DeArrow, and an
+interface built around true black and a remote.
 
-## Added Features
-- Full support for webOS 3, 4, 5, 6, 22, 23, 24, and 25 (2016 and newer LG TVs) (webOS 1 and 2 currently not supported)
-- Enhanced AdBlock Engine: New schema-based filtering system (cleaner Home, Search, and Shorts)
-- Filter out QR code + Shop button overlays during video playback
-- Enhanced Menu UI + Themes
-- Auto Login - bypasses account selection screen
-- Force Max Quality
-- Hide Endcards
-- Shortcuts - Programmable 0-9 key shortcuts during video playback
-- Guest Mode: Hides annoying "Sign in" prompts
+YouTube Aura is a fork of [webosbrew/youtube-webos](https://github.com/webosbrew/youtube-webos)
+by way of [NicholasBly/youtube-webos](https://github.com/NicholasBly/youtube-webos):
+the hook layer, the feature set and the test suite come from there. What Aura
+changes is the target — one 2017 panel instead of every webOS set from 2016 to
+2025 — and everything that follows from it: one build, one engine, one theme,
+and the work measured on that engine rather than assumed.
 
-- SponsorBlock: Highlight feature added
--- All segment types added (Hook, Tangents, muted segments)
--- Color selector for all segments
--- Segment UI list replicating desktop segment list
--- Jump to highlight segment with blue button on LG remote
--- Per-segment options including auto skip, manual skip, show in progress bar, and disabled
--- Skip Segments Once option
+> **Status: not verified on hardware.** Everything in this repository is
+> measured and tested in a simulated Chromium 38 environment (jsdom with a
+> Chromium 38 profile, and the bundle parsed as strict ES5). It has **not** been
+> run on an actual OLED55B7V. Read
+> [Limitations](#limitations-and-what-is-not-verified) before installing.
 
-- Toggle display on/off with red button on LG remote for OLED TVs + persistent keepalive
-- Return YouTube Dislike - added to description tab in video
-- [DeArrow](https://dearrow.ajay.app/): crowdsourced titles and thumbnails instead of clickbait (off by default, its own settings tab)
-- Playback Speed (experimental, webOS 23 and newer): 0.25x to 2x with the pitch kept, from YouTube's own Speed menu or a button mapping
-- Display Time in UI: Smart clock (time, or date and time in your TV's language) that hides during fullscreen and when description panel is open
-- YouTube app fixes - Full video description panel hack to restore visual elements and enable full navigation
-- Customizable YouTube UI fixes such as multiline titles and video shelf opacity for better visibility
-- Bug fixes, UI fixes
+---
 
-## Improvements
-- Rewritten codebase optimized for performance and efficiency to support LG TV hardware
+## Why this exists
 
-Review changes made since 0.3.8 [here](https://github.com/NicholasBly/youtube-webos/blob/main/CHANGELOG.md)
+The upstream project supports webOS 3 through 25 from one source, which means
+an alias table, two Babel dialects and a test suite that runs every feature
+twice. On a 2017 TV that costs nothing at runtime but a great deal in review:
+code that cannot run on this panel is still code you have to reason about.
 
-<img width="642" height="752" alt="webOS_TV_26_Simulator_1 5 0_x16zOsWFaw" src="https://github.com/user-attachments/assets/046b0361-0648-4750-ab97-0b64b553ec17" />
+The OLED55B7V is a specific machine. It has:
 
-<img width="642" height="631" alt="webOS_TV_25_Simulator_1 4 3_UaFvPZ67yL" src="https://github.com/user-attachments/assets/61963e1b-8211-439a-9f66-50b669940233" />
+| | |
+| --- | --- |
+| Panel | 55" 4K OLED, true black, 120 Hz panel at 60 Hz input |
+| SoC | M16P (LG's 2016/2017 generation), four weak cores |
+| RAM | about 1 GB shared with the system |
+| Engine | Chromium 38 — no `fetch`, no `AbortController`, no CSS custom properties, no `:focus-within`, no CSS Grid |
+| Browser heap | small enough that a long video's MSE buffers have to be trimmed |
 
-<img width="642" height="576" alt="webOS_TV_25_Simulator_1 4 3_uW1aZQeVle" src="https://github.com/user-attachments/assets/877a22b6-6814-457b-926c-cac50ed36077" />
+YouTube Aura is built for exactly that: ES5 output, one code path, a buffer cap
+that is always on, and an interface whose animations are handed to the GPU
+because the CPU is busy decoding.
 
-<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/84c8b6b3-4c82-4a63-9100-b236f2dd3225" />
+## What it does
 
-<!--![Configuration Screen](https://github.com/NicholasBly/youtube-webos/blob/main/screenshots/webOS_TV_24_Simulator_mKe8Gv7zXq.png?raw=true)-->
-![Segment Skipped](https://github.com/NicholasBly/youtube-webos/blob/main/screenshots/2_sm_new.png?raw=true)
+Everything the upstream fork did, minus what this TV cannot run:
 
-## Features
+- **Ad blocking** — response-side filtering of YouTube's InnerTube payloads,
+  plus `isInlinePlaybackNoAd` on outgoing player requests.
+- **SponsorBlock** — every category, per-category skip mode and colour, the
+  segment list beside the settings, a progress-bar overlay, and the blue key to
+  skip.
+- **Return YouTube Dislike** — the count in the description panel, with the
+  ratio bar.
+- **DeArrow** — crowdsourced titles and thumbnails in place of clickbait
+  (thumbnails on, title formatting off: the formatter needs `Intl` features this
+  engine lacks, and it was removed).
+- **Max Thumbnail Quality** — three strategies: original, fast, and a smooth SD
+  mode tuned for row-to-row scrolling on this SoC.
+- **Load Rows Ahead** — asks YouTube for the next rows before the last one, so
+  a fast scroll never reaches an empty shelf.
+- **Auto login / bypass nag screens**, guest-mode prompt hiding, endcard hiding,
+  Shorts and Live filtering, the emoji and fancy-text fix, the search-font and
+  multiline-title fixes.
+- **Force Video Codec** and **Force Max Quality**.
+- **Display Time in UI** — a clock that follows YouTube's own player UI.
+- **OLED Screen Off** — the red key puts the panel to true black and keeps the
+  TV awake.
+- **Programmable shortcuts** on the digits and the red, green and blue keys.
+- **Aura settings panel** on the green key: five tabs, arrow-key navigation, a
+  focus trap, and every option the features above need.
 
-- Advertisements blocking
-- [SponsorBlock](https://sponsor.ajay.app/) integration
-- [Autostart](#autostart)
+Removed because this TV cannot use them (see [CHANGELOG.md](CHANGELOG.md)):
+playback speed (needs WebCodecs, Chrome 94+), the webOS 25 cast block, the
+webOS 25 first-play kickstart, the optional second UI theme, and the DeArrow
+title formatter.
 
-**Note:** Configuration screen can be opened by pressing 🟩 GREEN button on the remote.
+## Install
 
-## Pre-requisites
+**Prerequisites:** the official YouTube app must be removed first — this app
+takes its place (`youtube.leanback.v4`).
 
-- Official YouTube app needs to be uninstalled before installation.
+### Homebrew Channel (recommended)
 
-## Installation
+Add this repository's `repo.json` as a source in the
+[webOS Homebrew Channel](https://github.com/webosbrew/webos-homebrew-channel),
+or install the `.ipk` from the latest release directly.
 
-- Use [webOS Homebrew Channel](https://github.com/webosbrew/webos-homebrew-channel) - app is available via repo link: https://raw.githubusercontent.com/NicholasBly/youtube-webos/main/repo.json
-- Use [Device Manager app](https://github.com/webosbrew/dev-manager-desktop) - see [Releases](https://github.com/NicholasBly/youtube-webos/releases) for a
-  prebuilt `.ipk` binary file. A webOS22+ .ipk is available for users on 2022+ TVs, supporting webOS22-25. These are lighter, more optimized builds for newer hardware, without translation layers needed for older TVs.
-- Use [webOS TV CLI tools](https://webostv.developer.lge.com/develop/tools/cli-installation) -
-  `ares-install youtube...ipk` (For more information on configuring the webOS CLI tools, see [below](#development-tv-setup))
-
-## Configuration
-
-Configuration screen can be opened by pressing 🟩 GREEN button on the remote.
-Black screen / OLED mode can be toggled by pressing 🟥 RED button on the remote.
-
-### Autostart
-
-In order to autostart an application the following command needs to be executed
-via SSH or Telnet:
-
-```sh
-luna-send-pub -n 1 'luna://com.webos.service.eim/addDevice' '{"appId":"youtube.leanback.v4","pigImage":"","mvpdIcon":""}'
-```
-
-This will make "YouTube AdFree" display as an eligible input application (next
-to HDMI/Live TV, etc...), and, if it was the last selected input, it will be
-automatically launched when turning on the TV.
-
-This will also greatly increase startup performance, since it will be runnning
-constantly in the background, at the cost of increased idle memory usage.
-(so far, relatively unnoticable in normal usage)
-
-In order to disable autostart run this:
+### webOS CLI
 
 ```sh
-luna-send-pub -n 1 'luna://com.webos.service.eim/deleteDevice' '{"appId":"youtube.leanback.v4"}'
+ares-install youtube.leanback.v4_1.0.0_all_oled55b7v.ipk
 ```
 
-## Building
+The release page carries a `SHA256SUMS.txt`; check it first.
 
-- Clone the repository
+### Autostart (optional)
+
+Registering the app as an input device makes it launch with the TV and start
+much faster, at the cost of holding it in memory in the background:
 
 ```sh
-git clone https://github.com/NicholasBly/youtube-webos.git
+luna-send-pub -n 1 'luna://com.webos.service.eim/addDevice' \
+  '{"appId":"youtube.leanback.v4","pigImage":"","mvcdIcon":""}'
 ```
 
-- Enter the folder and build the App, this will generate a `*.ipk` file.
+To undo it, use `deleteDevice` with the same app id.
+
+## Using it
+
+| Key | Does |
+| --- | --- |
+| 🟩 Green | Settings panel |
+| 🟥 Red | OLED Screen Off (true black; the TV stays awake) |
+| 🟦 Blue | SponsorBlock: skip the offered segment, or jump to the highlight |
+| 5 | Next chapter |
+| 0–9, red/green/blue | Programmable (Shortcuts tab) |
+
+The panel opens with the tab bar focused; arrows move between controls by where
+they sit on screen, Enter activates, Back closes. Left and Right step a value in
+a `‹ value ›` row.
+
+## What Aura changed, measured
+
+Baseline is upstream `0.8.5` built as its legacy bundle; "Aura" is this
+repository. Both measured in the same simulated Chromium 38 environment,
+medians of repeated runs. The full record, including what was profiled and what
+was rejected, and the honest caveats, is in
+[docs/PERFORMANCE.md](docs/PERFORMANCE.md).
+
+| | upstream 0.8.5 (legacy) | Aura | |
+| --- | --- | --- |
+| Bundle | 238.1 KiB | **221.6 KiB** | −6.9 % |
+| Install package (.ipk) | 231.3 KiB | **88.8 KiB** | flat artwork and one theme compress to almost nothing |
+| CSS in the bundle | 19.4 KiB, 193 selectors | **17.6 KiB, 166 selectors** | −9 % |
+| Opening the settings (first press) | 65.2 ms, 82 elements built in the handler | **11 ms, 0 elements in the handler** | the build runs while the TV is idle |
+| `JSON.parse` of a 150 KiB home response, default settings | 1.01× native | **1.02× native** | unchanged: the hook was already cheap |
+| `JSON.parse`, every filter on | 1.28× native | 1.35× native | unchanged within noise |
+| Start-up (module evaluation) | 3.66 ms | 3.32–3.79 ms | unchanged within noise |
+| Test suite | 1 383 checks, 3 upstream checks failing | **2 045 checks, 64 steps, all passing** | +662 checks |
+
+The one number worth quoting is the settings press. Removing the playback-speed
+step from the parse path was measured too, and it **did not move the parse
+time**: that is recorded, not glossed over.
+
+## The app
+
+| | |
+| --- | --- |
+| Package | `youtube.leanback.v4` — **replaces** the stock YouTube app |
+| Bundle | one, ES5, 224 KiB |
+| Settings | in `localStorage`, `ytaf-configuration` |
+| Network | `youtube.com`, `sponsor.ajay.app`, `returnyoutubedislikeapi.com`, `cdnjs.cloudflare.com` (emoji images) |
+| Root | not required |
+
+## Build it yourself
+
+Needs Node.js 22.22.3 or newer.
 
 ```sh
-cd youtube-webos
-
-# Install dependencies (need to do this only when updating local repository / package.json is changed)
-npm install
-
-npm run build && npm run package
+npm ci
+npm test            # formatting, lint, types, code map, the build, every test
+npm run build       # dist/webOSUserScripts/userScript.js
+npm run package     # dist/youtube.leanback.v4_1.0.0_all.ipk
+npm run bench       # the five benchmarks, in one go
 ```
 
-- Building needs Node.js 22.22.3 or newer (or Node.js 24+). `npm run build:modern` builds the webOS 22+ version.
-
-- Test builds: `npm run build -- --env build=2` (or `npm run build:modern -- --env build=2`) shows "YouTube Extended 0.8.5 b2" in the settings heading. Pushing to the `test` branch with a commit title like "0.8.5 build 2" makes GitHub build and post the test build by itself (docs/ARCHITECTURE.md, "Working on the project").
-
-- Run the test suite (formatting, lint, type checks, both builds and every test script against a simulated webOS browser) before a release:
-
-```sh
-npm test
-
-# Faster: only the webOS 22+ build and the tests that need no build
-npm run test:quick
-```
-
-- How the code is organised: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is the overview, and [docs/CODEMAP.md](docs/CODEMAP.md) maps every module and function (what it does, what calls it, which settings and YouTube elements it touches). After changing code, run `npm run codemap` to update the map. Updating dependencies safely: [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md).
-
-## Development TV setup
-
-These instructions use the [webOS CLI tools](https://github.com/webos-tools/cli).
-See <https://webostv.developer.lge.com/develop/tools/cli-introduction> for more information.
-
-### Configuring webOS CLI tools with Developer Mode App
-
-This is partially based on <https://webostv.developer.lge.com/develop/getting-started/developer-mode-app>.
-
-- Install Developer Mode app from Content Store
-- Enable Developer Mode
-- Enable key server and download TV's private key: `http://TV_IP:9991/webos_rsa`  
-  The key must be saved under `~/.ssh` (or `%USERPROFILE%\.ssh` on Windows)
-- Configure the device using `ares-setup-device` (`-a` may need to be replaced with `-m` if device named `webos` is already configured)
-  - `PASSPHRASE` is the 6-character passphrase printed on screen in developer mode app
-  - `privatekey` path is relative to `${HOME}/.ssh` (Windows: `%USERPROFILE%\.ssh`)
-
-```sh
-ares-setup-device -a webos -i "username=prisoner" -i "privatekey=webos_rsa" -i "passphrase=PASSPHRASE" -i "host=TV_IP" -i "port=9922"
-```
-
-### Configuring webOS CLI tools with Homebrew Channel / root
-
-- Enable SSH in Homebrew Channel app
-- Generate SSH key on developer machine (`ssh-keygen -t rsa`)
-- Copy the private key (`id_rsa`) to the `~/.ssh` directory (or `%USERPROFILE%\.ssh` on Windows) on the local computer
-- Append the public key (`id_rsa.pub`) to the `/home/root/.ssh/authorized_keys` file on the TV
-- Configure the device using `ares-setup-device` (`-a` may need to be replaced with `-m` if device named `webos` is already configured)
-  - `privatekey` path is relative to `${HOME}/.ssh` (Windows: `%USERPROFILE%\.ssh`)
-
-```sh
-ares-setup-device -a webos -i "username=root" -i "privatekey=id_rsa" -i "passphrase=SSH_KEY_PASSPHRASE" -i "host=TV_IP" -i "port=22"
-```
-
-## Installation
+Deploy and launch on a TV with the webOS CLI configured
+([instructions in docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)):
 
 ```sh
 npm run deploy
-```
-
-## Launching
-
-- The app will be available in the TV's app list. You can also launch it using the webOS CLI tools.
-
-```sh
 npm run launch
 ```
 
-To jump immediately into some specific video use:
+## Documentation
 
-```sh
-npm run launch -- -p '{"contentTarget":"v=F8PGWLvn1mQ"}'
-```
+| File | What it is |
+| --- | --- |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | How the app is put together: the scripts, the hooks, the start-up order, the settings, the rules for this engine |
+| [docs/CODEMAP.md](docs/CODEMAP.md) | Every module and function, what it calls and what calls it, which settings and selectors it touches (`npm run codemap`) |
+| [docs/THEME.md](docs/THEME.md) | The Aura design system: palette, type, focus, motion budget |
+| [docs/PERFORMANCE.md](docs/PERFORMANCE.md) | What was profiled, the numbers, what changed |
+| [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md) | The Chromium 38 contract and the API rules the code follows |
+| [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) | The npm packages and their security status |
+| [CHANGELOG.md](CHANGELOG.md) | Every change, with the Aura release notes at the top |
+
+## Limitations and what is not verified
+
+This is the honest list. Nothing below has been tested on an OLED55B7V.
+
+**Not verified on hardware.** No test here ran on a real TV. The suite runs the
+bundle on jsdom with a Chromium 38 profile (`tests/harness/chrome38-env.cjs`),
+which reproduces the missing APIs and the ES5 syntax constraints, but not the
+SoC's speed, the GPU's compositing, the memory limits or LG's media pipeline.
+Frame timings and memory figures on the TV will differ from the numbers above.
+
+**Depends on YouTube's markup.** Every class name and id the app reads is in
+`core/selectors.js`. YouTube changes its TV client without notice; a change
+breaks a feature until that table is updated. The app degrades rather than
+crashing (each feature checks before it acts), but a feature can silently stop
+working.
+
+**DeArrow title formatting is gone.** The formatter needs `Intl.Segmenter` and
+modern `Intl` casing that Chromium 38 lacks. Titles keep YouTube's own wording;
+only crowdsourced *thumbnails* and the raw crowdsourced title are used.
+
+**No playback speed.** The speed engine needs WebCodecs (Chrome 94+). Removed
+with its settings and shortcuts.
+
+**The emoji fix is Twemoji from a CDN.** Emoji images load from
+`cdnjs.cloudflare.com`; with no network, titles show the system glyphs instead.
+The images are cached by the TV's own HTTP cache.
+
+**SponsorBlock and DeArrow are third-party services.** Their availability,
+latency and privacy practices are outside this project. SponsorBlock queries go
+to `sponsor.ajay.app`, DeArrow's to `sponsor.ajay.app` and Return YouTube
+Dislike's to `returnyoutubedislikeapi.com`; the video id is hashed before it is
+sent where the API allows it.
+
+**Account features depend on YouTube.** History, subscriptions and sign-in are
+YouTube's own; the app only helps the account selector along.
+
+**The Aura theme covers the app's own UI and YouTube's surfaces.** It restyles
+the panel, the toasts, the clock and the black backgrounds behind YouTube's
+content; it does not repaint YouTube's own controls, which keep YouTube's
+design.
+
+**One resolution, one engine.** The layout is sized in `vh`/`vw` and was
+designed against a 1920×1080 panel. Another resolution is untested.
+
+## Safety
+
+- The app does not touch the TV's firmware, system services or other apps.
+- It does not install itself: installation is an explicit step you take.
+- It does not modify your data. Settings live in `localStorage` under
+  `ytaf-configuration`, inside the app's own sandbox.
+- It does not require root, though the Homebrew Channel path is easier with it.
+
+## Licence and provenance
+
+GPL-3.0-only, as the upstream projects are. The full text is in
+[LICENSE](LICENSE). Authors and origins:
+
+- [webosbrew/youtube-webos](https://github.com/webosbrew/youtube-webos) — the
+  original app, its hook design and most of the feature code.
+- [NicholasBly/youtube-webos](https://github.com/NicholasBly/youtube-webos) — the
+  fork this one starts from: the modular rewrite, the AdBlock engine, the
+  SponsorBlock segment list, DeArrow support, the test suite, the code map.
+- SponsorBlock by Ajay Ramachandran (GPL-3.0). Return YouTube Dislike by Dmitry
+  Selivanov (GPL-3.0). DeArrow by Ajay Ramachandran (GPL-3.0).
+- Twemoji by Twitter/X and contributors (CC-BY 4.0), via `@twemoji/api`.
+
+Changes made for Aura are described in [CHANGELOG.md](CHANGELOG.md). Files
+carried over keep their original comments and headers.

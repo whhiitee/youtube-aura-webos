@@ -1,6 +1,5 @@
 // Keeps YouTube's controls bar, the player shadows and the clock out of sight
-// for a moment: a pause (ui/shortcuts/playback.js) and the webOS 25 kick
-// (features/video-quality/kickstart.js) both raise the bar.
+// for a moment after a pause (ui/shortcuts/playback.js), which raises the bar.
 //
 // The bar, the named shadows and the clock go through a class on <body> whose
 // rules end in a class (global.css, watch.css): a toggle restyles only the

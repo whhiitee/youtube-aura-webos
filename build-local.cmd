@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo Building YouTube WebOS locally...
+echo Building YouTube Aura locally (LG OLED55B7V / webOS 3)...
 echo.
 
 :: Check if node_modules exists. If not, run npm install (faster than ci)
@@ -17,16 +17,16 @@ if not exist "node_modules\" (
     echo [1/4] Dependencies already installed. Skipping...
 )
 
-echo [2/4] Building project...
-call npm run build
+echo [2/4] Testing and building...
+call npm test
 if !errorlevel! neq 0 (
-    echo ERROR: npm run build failed
+    echo ERROR: npm test failed
     echo Press any key to close...
     pause >nul
     exit /b 1
 )
 
-echo [3/4] Creating .ipk package...
+echo [3/4] Creating the .ipk package...
 call npm run package
 if !errorlevel! neq 0 (
     echo ERROR: npm run package failed
@@ -35,7 +35,8 @@ if !errorlevel! neq 0 (
     exit /b 1
 )
 
-echo [4/4] Copying userScript.js to clipboard...
+echo [4/4] Copying userScript.js to the clipboard...
+echo        (for pasting into the TV's web inspector while debugging)
 
 SET "SOURCE_FILE=dist\webOSUserScripts\userScript.js"
 
@@ -44,8 +45,9 @@ IF EXIST "%SOURCE_FILE%" (
     echo Success! userScript.js contents copied to clipboard.
 ) ELSE (
     echo ERROR: Could not find userScript.js at %SOURCE_FILE%
-    echo Please edit the batch file to point to the correct build location.
 )
 
 echo.
+for %%f in (dist\*.ipk) do echo Package: %%f
 echo Build complete!
+pause

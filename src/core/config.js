@@ -13,7 +13,6 @@ export {
   sbModesHighlight,
   forcePreviewModes,
   videoCodecModes,
-  uiThemes,
   dearrowTitleFormats,
   dearrowThumbnailFallbacks,
   clockModes

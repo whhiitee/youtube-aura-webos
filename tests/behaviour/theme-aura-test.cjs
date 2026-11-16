@@ -1,12 +1,16 @@
 /**
- * Theme and OLED against the built legacy bundle: the red theme and OLED-care
- * mode mark the document (ui/styles/html-classes.js), the panel's logo follows
- * the marks, the shelf opacity is written as a rule, the UI tweaks set their
- * <html> classes through the panel, and the oled_toggle shortcut puts up and
- * takes down the black overlay (no toast for it, the deactivation has one),
- * which the menu key ends, with its keep-alive presses underneath.
+ * The Aura look and Pure Black UI against the built bundle: the document
+ * carries ytaf-aura always and ytaf-oled from the setting
+ * (ui/styles/html-classes.js), the shelf opacity is written as a rule, the UI
+ * tweaks set their <html> classes through the panel, and the oled_toggle
+ * shortcut puts up and takes down the black overlay (no toast for it, the
+ * deactivation has one), which the menu key ends, with its keep-alive presses
+ * underneath.
  *
- * Run: node tests/behaviour/theme-oled-test.cjs [bundle]
+ * One theme is the point: the test also holds that no second theme class can
+ * appear, so a fork that brings one back is caught here.
+ *
+ * Run: node tests/behaviour/theme-aura-test.cjs [bundle]
  */
 const { createPage } = require('../harness/page.cjs');
 const { createReport } = require('../harness/report.cjs');
@@ -34,85 +38,80 @@ function boot(cfg, more) {
     press: (code, target) => press(win, code, target || d.body),
     toasts: () => toasts(win),
     panel: () => d.querySelector('.ytaf-ui-container'),
-    // The logos the stylesheets leave on screen, by variant (blue, red, dark).
-    shownLogos: () =>
-      Array.from(d.querySelectorAll('.ytaf-ui-container .ytaf-logo'))
-        .filter((img) => win.getComputedStyle(img).display !== 'none')
-        .map((img) => (/\bytaf-logo-(\w+)/.exec(img.className) || [])[1])
-        .join(','),
     html: () => d.documentElement.classList,
     pump: page.pump
   };
 }
 
 (async () => {
-  // ---- the red theme ----------------------------------------------------------
+  // ---- the Aura look ---------------------------------------------------------
   {
-    const { d, press, toasts, panel, shownLogos, html, pump, win } = boot({
-      uiTheme: 'classic-red'
-    });
-    t('red theme: the document carries the theme class', html().contains('ytaf-theme-red'));
-    t('not OLED: the document has no OLED class', !html().contains('ytaf-oled'));
-    t('not OLED: no shelf opacity rule is written', !d.getElementById('ytaf-oled-opacity'));
-    press(KEYS.RED); // the default red-key shortcut: the OLED overlay
-    await wait(150);
-    press(KEYS.RED); // and away again, which shows a toast
-    await wait(50);
+    const { d, panel, html, pump, win } = boot({});
+    t('the document carries the Aura class', html().contains('ytaf-aura'));
     t(
-      'red theme: the toasts are in the ytaf-toasts container',
-      toasts().some((m) => m === 'OLED Mode Deactivated'),
-      toasts().join(' | ')
+      'and only one theme class: no other theme can come back',
+      Array.from(html()).filter((c) => /^ytaf-theme-/.test(c)).length === 0,
+      Array.from(html()).join(' ')
+    );
+    // Pure Black UI is on for a fresh install: this is an OLED-first build.
+    t('Pure Black UI is on by default', html().contains('ytaf-oled'));
+    t(
+      'on by default, the shelf backdrop is transparent (opacity 100)',
+      html().contains('ytaf-oled-transparent-shelf')
     );
     await showPanel(win, pump);
     t(
-      'red theme: the panel has its three drawn logos',
-      !!panel() && panel().querySelectorAll('.ytaf-logo').length === 3
+      'the panel has one mark and no per-theme logos',
+      !!panel() &&
+        panel().querySelectorAll('.ytaf-logo').length === 1 &&
+        !panel().querySelector('.ytaf-logo-red')
     );
-    t('red theme: only the red logo is shown', shownLogos() === 'red', shownLogos());
-    // The logo click flips the theme (the UI Theme row is the key path).
-    panel().querySelector('.ytaf-logo-red').click();
-    t('logo click: the theme class is gone', !html().contains('ytaf-theme-red'));
-    t('blue theme: only the blue logo is shown', shownLogos() === 'blue', shownLogos());
-    panel().querySelector('.ytaf-logo-blue').click();
-    t('logo click again: the theme class is back', html().contains('ytaf-theme-red'));
-    t('red theme again: only the red logo is shown', shownLogos() === 'red', shownLogos());
+    t(
+      'the heading carries the version separately',
+      !!panel().querySelector('.ytaf-version') &&
+        /^\d+\.\d+\.\d+/.test(panel().querySelector('.ytaf-version').textContent),
+      panel().querySelector('.ytaf-version') && panel().querySelector('.ytaf-version').textContent
+    );
+    t('the stylesheet reaches the page', d.querySelectorAll('style').length > 0);
   }
 
-  // ---- OLED-care mode -------------------------------------------------------------
+  // ---- Pure Black UI ---------------------------------------------------------
   {
-    const { d, html, shownLogos, pump, win, press } = boot({
+    const {
+      d,
+      html,
+      pump,
+      win,
+      press: pressKey
+    } = boot({
       enableOledCareMode: true,
-      videoShelfOpacity: 70,
-      uiTheme: 'classic-red'
+      videoShelfOpacity: 70
     });
-    t('OLED: the document is marked for the stylesheets', html().contains('ytaf-oled'));
+    t('Pure Black UI: the document is marked for the stylesheets', html().contains('ytaf-oled'));
     const opacityRule = d.getElementById('ytaf-oled-opacity');
     t(
-      'OLED: the shelf opacity is written as a rule, and above 50 % the transparent class is on',
+      'the shelf opacity is written as a rule, and above 50 % the transparent class is on',
       !!opacityRule &&
-        opacityRule.textContent.indexOf('.Jx9xPc { background-color: rgba(0, 0, 0, 0.7)') !== -1 &&
+        opacityRule.textContent.indexOf('.Jx9xPc { background-color: rgba(0, 0, 0, 0.70)') !== -1 &&
         html().contains('ytaf-oled-transparent-shelf'),
       opacityRule && opacityRule.textContent
     );
-    t('OLED: the clock is on the page', !!d.querySelector('.ytaf-watch'));
-    // The OLED checkbox on the Main page turns the mode off and on again.
+    t('the clock is on the page', !!d.querySelector('.ytaf-watch'));
+    // The Pure Black checkbox on the Main page turns the mode off and on again.
     await showPanel(win, pump);
-    const oledBox = panelCheckbox(win, 'OLED-Care Mode (True Black UI)');
-    t('setup: the OLED checkbox is on the Main page and checked', !!oledBox && oledBox.checked);
+    const oledBox = panelCheckbox(win, 'Pure Black UI (OLED)');
     t(
-      'OLED with the red theme: only the dark logo is shown',
-      shownLogos() === 'dark',
-      shownLogos()
+      'setup: the Pure Black checkbox is on the Main page and checked',
+      !!oledBox && oledBox.checked
     );
     oledBox.click();
     t(
-      'OLED off: the OLED classes are gone',
+      'off: the OLED classes are gone',
       !html().contains('ytaf-oled') && !html().contains('ytaf-oled-transparent-shelf')
     );
-    t('OLED off: the red theme logo is back', shownLogos() === 'red', shownLogos());
     oledBox.click();
     t(
-      'OLED on again: both classes are back',
+      'on again: both classes are back',
       html().contains('ytaf-oled') && html().contains('ytaf-oled-transparent-shelf')
     );
 
@@ -122,13 +121,13 @@ function boot(cfg, more) {
     t('setup: the opacity row is on the UI tweaks page', !!row);
     row.focus();
     const ruleText = () => d.getElementById('ytaf-oled-opacity').textContent;
-    press(KEYS.LEFT, row);
-    press(KEYS.LEFT, row);
-    t('two quick steps leave the rule as it was', ruleText().indexOf('0.7)') !== -1, ruleText());
+    pressKey(KEYS.LEFT, row);
+    pressKey(KEYS.LEFT, row);
+    t('two quick steps leave the rule as it was', ruleText().indexOf('0.70)') !== -1, ruleText());
     await wait(250);
     t(
       'after the debounce the rule carries the new value',
-      ruleText().indexOf('0.6)') !== -1,
+      ruleText().indexOf('0.60)') !== -1,
       ruleText()
     );
   }

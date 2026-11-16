@@ -8,7 +8,6 @@ import {
   notifyIfUpgraded,
   interceptAndUpgradeQuality
 } from './quality.js';
-import { ensurePlaybackStarts } from './kickstart.js';
 import { log } from './log.js';
 import { PLAYER_STATE } from '../../core/player-state.js';
 
@@ -49,7 +48,6 @@ export function handleStateChange(state) {
     }
 
     if (qualitySetForVideo.has(videoId)) {
-      if (actualState === PLAYER_STATE.PLAYING) ensurePlaybackStarts();
       return;
     }
 
@@ -73,8 +71,6 @@ export function handleStateChange(state) {
         // Ended, paused and cued need no quality work.
         break;
     }
-
-    ensurePlaybackStarts();
   } catch (e) {
     log.warn('Error in state change handler:', e);
   }

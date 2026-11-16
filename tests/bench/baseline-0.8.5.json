@@ -1,0 +1,50 @@
+{
+  "_comment": [
+    "The 0.8.5 baseline this repository is measured against. The bundle itself is",
+    "not committed (238 KiB of generated code); it is the 'legacy' build of",
+    "https://github.com/NicholasBly/youtube-webos at 0.8.5, rebuilt with",
+    "`npm run build` from a clean `npm ci`. To re-measure, build that tree and",
+    "pass its dist/webOSUserScripts/userScript.js as the first argument to every",
+    "script in tests/bench/:  node tests/bench/hook-bench.cjs <path> legacy"
+  ],
+  "source": "NicholasBly/youtube-webos @ 0.8.5 (ff1c93e), npm run build",
+  "measured": "2026-11-16",
+  "machine": "Node 26.13.0, Windows, jsdom 30.1.2 with the Chromium 38 profile",
+  "bundle": {
+    "userScriptBytes": 243801,
+    "launcherBytes": 8267,
+    "cssBytes": 19407,
+    "cssSelectors": 193,
+    "cssAttributeSelectors": 22,
+    "ipkBytes": 236868
+  },
+  "boot": {
+    "moduleEvaluationMsMedian": 3.66,
+    "elementsAtLoad": 3,
+    "styleElements": 2
+  },
+  "panel": {
+    "coldHandlerMs": 65.16,
+    "coldElementsInHandler": 82,
+    "elementsTotal": 334
+  },
+  "hooks": {
+    "parseBrowse150kMs": 0.368,
+    "parseBrowse150kNativeMs": 0.364,
+    "parsePlayer10kMs": 0.038,
+    "parseSmallMs": 0.0001,
+    "stringifyPlayerBodyMs": 0.0081,
+    "parseOverheadDefaultsMs": 0.0041,
+    "parseOverheadAllFiltersMs": 0.1494
+  },
+  "emoji": {
+    "plainPerFrameMs": 0.12,
+    "withEmojiPerFrameMs": 0.93,
+    "spansRendered": 144
+  },
+  "tests": {
+    "checks": 1383,
+    "failing": 3,
+    "failingNote": "prettier, eslint and the code map were already out of date in the 0.8.5 tree at ff1c93e; every functional test passed"
+  }
+}

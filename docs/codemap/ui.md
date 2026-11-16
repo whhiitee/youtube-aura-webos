@@ -17,32 +17,32 @@ Modules: [ui/dom.js](#mod-dom-js), [ui/hide-controls.js](#mod-hide-controls-js),
 
 Builds an element: `props` sets attributes and properties, with `class`, `text`, `style` (an object) and `events` (type to listener) handled specially; strings among `children` become text nodes.
 
-- **Called by:** [features/sponsorblock/popup.js › SponsorBlockUI.createPopup](features-sponsorblock.md#fn-popup-js-sponsorblockui-createpopup), [features/sponsorblock/popup.js › SponsorBlockUI.renderRows](features-sponsorblock.md#fn-popup-js-sponsorblockui-renderrows), [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker), [ui/panel/controls/cycle-row.js › createControlRow](ui-panel.md#fn-controls-cycle-row-js-createcontrolrow), [ui/panel/controls/cycle-row.js › createControlRow.arrow](ui-panel.md#fn-controls-cycle-row-js-createcontrolrow-arrow), [ui/panel/controls/section.js › createSection](ui-panel.md#fn-controls-section-js-createsection), [ui/panel/pages.js › buildDeArrowPage](ui-panel.md#fn-pages-js-builddearrowpage), [ui/panel/pages.js › buildMainPage](ui-panel.md#fn-pages-js-buildmainpage), [ui/panel/pages.js › buildShortcutsPage](ui-panel.md#fn-pages-js-buildshortcutspage), [ui/panel/pages.js › buildSponsorPage](ui-panel.md#fn-pages-js-buildsponsorpage), [ui/panel/pages.js › buildUITweaksPage](ui-panel.md#fn-pages-js-builduitweakspage), [ui/panel/pages.js › footNote](ui-panel.md#fn-pages-js-footnote), [ui/panel/pages.js › helpLine](ui-panel.md#fn-pages-js-helpline), [ui/panel/panel.js › createHeading](ui-panel.md#fn-panel-js-createheading), [ui/panel/panel.js › createHeading.logo](ui-panel.md#fn-panel-js-createheading-logo), [ui/panel/panel.js › createOptionsPanel](ui-panel.md#fn-panel-js-createoptionspanel), [ui/panel/panel.js › createTabMenu](ui-panel.md#fn-panel-js-createtabmenu), [ui/shortcuts/oled.js › toggleOledOverlay](ui-shortcuts.md#fn-oled-js-toggleoledoverlay), [ui/toast/index.js › Toast.constructor](ui-toast.md#fn-index-js-toast-constructor), [ui/toast/index.js › ensureContainer](ui-toast.md#fn-index-js-ensurecontainer)
+- **Called by:** [features/sponsorblock/popup.js › SponsorBlockUI.createPopup](features-sponsorblock.md#fn-popup-js-sponsorblockui-createpopup), [features/sponsorblock/popup.js › SponsorBlockUI.renderRows](features-sponsorblock.md#fn-popup-js-sponsorblockui-renderrows), [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker), [ui/panel/controls/cycle-row.js › createControlRow](ui-panel.md#fn-controls-cycle-row-js-createcontrolrow), [ui/panel/controls/cycle-row.js › createControlRow.arrow](ui-panel.md#fn-controls-cycle-row-js-createcontrolrow-arrow), [ui/panel/controls/section.js › createSection](ui-panel.md#fn-controls-section-js-createsection), [ui/panel/pages.js › buildDeArrowPage](ui-panel.md#fn-pages-js-builddearrowpage), [ui/panel/pages.js › buildMainPage](ui-panel.md#fn-pages-js-buildmainpage), [ui/panel/pages.js › buildShortcutsPage](ui-panel.md#fn-pages-js-buildshortcutspage), [ui/panel/pages.js › buildSponsorPage](ui-panel.md#fn-pages-js-buildsponsorpage), [ui/panel/pages.js › buildUITweaksPage](ui-panel.md#fn-pages-js-builduitweakspage), [ui/panel/pages.js › footNote](ui-panel.md#fn-pages-js-footnote), [ui/panel/pages.js › helpLine](ui-panel.md#fn-pages-js-helpline), [ui/panel/panel.js › createHeading](ui-panel.md#fn-panel-js-createheading), [ui/panel/panel.js › createOptionsPanel](ui-panel.md#fn-panel-js-createoptionspanel), [ui/panel/panel.js › createTabMenu](ui-panel.md#fn-panel-js-createtabmenu), [ui/shortcuts/oled.js › toggleOledOverlay](ui-shortcuts.md#fn-oled-js-toggleoledoverlay), [ui/toast/index.js › Toast.constructor](ui-toast.md#fn-index-js-toast-constructor), [ui/toast/index.js › ensureContainer](ui-toast.md#fn-index-js-ensurecontainer)
 
 <a id="mod-hide-controls-js"></a>
 
 ## ui/hide-controls.js
 
-> Keeps YouTube's controls bar, the player shadows and the clock out of sight for a moment: a pause (ui/shortcuts/playback.js) and the webOS 25 kick (features/video-quality/kickstart.js) both raise the bar.
+> Keeps YouTube's controls bar, the player shadows and the clock out of sight for a moment after a pause (ui/shortcuts/playback.js), which raises the bar.
 >
 > The bar, the named shadows and the clock go through a class on &lt;body> whose rules end in a class (global.css, watch.css): a toggle restyles only the elements with those classes, and an element YouTube builds during the window is covered too. The shadow drawn as a bare [idomkey='shadow'] goes through an inline style instead: a rule ending in that attribute made each toggle restyle every element carrying an idomkey, most of the app. Any element with that idomkey, as 0.8.4 matched, not only a div.
 
-52 lines · imported by [features/video-quality/kickstart.js](features-video-quality.md#mod-kickstart-js), [ui/shortcuts/playback.js](ui-shortcuts.md#mod-playback-js)
+51 lines · imported by [ui/shortcuts/playback.js](ui-shortcuts.md#mod-playback-js)
 
 <a id="fn-hide-controls-js-showcontrols"></a>
-**`showControls()`** · function, exported · L20–31
+**`showControls()`** · function, exported · L19–30
 
 Lifts the hiding now; a no-op when nothing is hidden.
 
 - **Called by:** [hideControlsFor](#fn-hide-controls-js-hidecontrolsfor)
 
 <a id="fn-hide-controls-js-hidecontrolsfor"></a>
-**`hideControlsFor(ms)`** · function, exported · L34–52
+**`hideControlsFor(ms)`** · function, exported · L33–51
 
 Hides them for `ms` (a second call extends the window); returns showControls.
 
 - **Calls:** [showControls](#fn-hide-controls-js-showcontrols)
-- **Called by:** [features/video-quality/kickstart.js › dismissRaisedControls](features-video-quality.md#fn-kickstart-js-dismissraisedcontrols), [ui/shortcuts/playback.js › hideControlsAfterPause](ui-shortcuts.md#fn-playback-js-hidecontrolsafterpause)
+- **Called by:** [ui/shortcuts/playback.js › hideControlsAfterPause](ui-shortcuts.md#fn-playback-js-hidecontrolsafterpause)
 - **Browser:** `querySelectorAll`, `setTimeout`
 
 <a id="mod-index-js"></a>

@@ -7,7 +7,7 @@
  */
 const { createReport } = require('../harness/report.cjs');
 const { loadSources } = require('../harness/sandbox.cjs');
-const { wait } = require('../harness/fixtures.cjs');
+const { wait, waitFor } = require('../harness/fixtures.cjs');
 const { CORE, blankDom } = require('../harness/stubs.cjs');
 
 const report = createReport();
@@ -172,7 +172,10 @@ const t = report.check;
     let calls = 0;
     const found = sandbox.pollUntil(() => ++calls === 3, 5, { maxAttempts: 10 });
     t('pollUntil: active while it polls', found.active === true, String(found.active));
-    await wait(150);
+    // Poll for the outcome rather than waiting a fixed time: on a loaded
+    // machine a 5 ms timer can take far longer than 5 ms, and a fixed wait
+    // then reports a failure the code did not have.
+    await waitFor(() => calls >= 3, 5000);
     t('pollUntil: stops at the first true', calls === 3, String(calls));
     t('pollUntil: not active once found', found.active === false, String(found.active));
 
@@ -182,7 +185,9 @@ const t = report.check;
       maxAttempts: 4,
       onGiveUp: () => gaveUp++
     });
-    await wait(150);
+    await waitFor(() => gaveUp === 1, 5000);
+    // No further calls after the give-up: one extra attempt would show here.
+    await wait(60);
     t(
       'pollUntil: gives up after maxAttempts, once',
       calls === 4 && gaveUp === 1,
@@ -192,7 +197,7 @@ const t = report.check;
 
     calls = 0;
     const outside = sandbox.pollUntil(() => (++calls, false), 5, { maxAttempts: 20 });
-    await wait(30);
+    await waitFor(() => calls >= 2, 5000);
     outside.cancel();
     const atCancel = calls;
     await wait(60);
@@ -212,7 +217,8 @@ const t = report.check;
       5,
       { maxAttempts: 5, onGiveUp: () => gaveUp++ }
     );
-    await wait(150);
+    await waitFor(() => calls >= 1, 5000);
+    await wait(60);
     t(
       'pollUntil: cancel() from inside the callback stops it',
       calls === 1 && gaveUp === 0,

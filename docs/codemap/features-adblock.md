@@ -357,24 +357,17 @@ Drops blocked entries from each list, and from each section's own tabs or items.
 
 > The JSON.parse hook: classifies each InnerTube response and runs the filters, the thumbnail rewrite and the text fixes over it before the app sees it.
 
-182 lines · imports [core/page-state.js](core.md#mod-page-state-js), [core/log.js](core.md#mod-log-js), [features/thumbnail-quality/index.js](features-thumbnail-quality.md#mod-index-js), [features/dearrow/index.js](features-dearrow.md#mod-index-js), [features/rows-ahead.js](features.md#mod-rows-ahead-js), [features/adblock/constants.js](#mod-constants-js), [core/innertube.js](core.md#mod-innertube-js), [features/adblock/search.js](#mod-search-js), [features/adblock/text-fixes.js](#mod-text-fixes-js), [features/adblock/emoji-wrap.js](#mod-emoji-wrap-js), [features/adblock/response-filters.js](#mod-response-filters-js), [features/adblock/fallback.js](#mod-fallback-js), [features/adblock/flags.js](#mod-flags-js), [features/force-codec/hooks.js](features-force-codec.md#mod-hooks-js), [features/force-codec/state.js](features-force-codec.md#mod-state-js), [features/adblock/log.js](#mod-log-js) · imported by [features/playback-speed/index.js](features-playback-speed.md#mod-index-js)
-
-<a id="fn-parse-hook-js-setparsedobjectstep"></a>
-**`setParsedObjectStep(fn)`** · function, exported · L27–29
-
-Sets the step run on every object parsed past the size gate (null: none).
-
-- **Called by:** [features/playback-speed/index.js › install](features-playback-speed.md#fn-index-js-install)
+172 lines · imports [core/page-state.js](core.md#mod-page-state-js), [core/log.js](core.md#mod-log-js), [features/thumbnail-quality/index.js](features-thumbnail-quality.md#mod-index-js), [features/dearrow/index.js](features-dearrow.md#mod-index-js), [features/rows-ahead.js](features.md#mod-rows-ahead-js), [features/adblock/constants.js](#mod-constants-js), [core/innertube.js](core.md#mod-innertube-js), [features/adblock/search.js](#mod-search-js), [features/adblock/text-fixes.js](#mod-text-fixes-js), [features/adblock/emoji-wrap.js](#mod-emoji-wrap-js), [features/adblock/response-filters.js](#mod-response-filters-js), [features/adblock/fallback.js](#mod-fallback-js), [features/adblock/flags.js](#mod-flags-js), [features/force-codec/hooks.js](features-force-codec.md#mod-hooks-js), [features/force-codec/state.js](features-force-codec.md#mod-state-js), [features/adblock/log.js](#mod-log-js)
 
 <a id="fn-parse-hook-js-logschemamiss"></a>
-**`logSchemaMiss(data, textLength)`** · function · L32–36
+**`logSchemaMiss(data, textLength)`** · function · L23–27
 
 Debug log for a large response no schema recognised (the fallback filters ran instead).
 
 - **Called by:** [filterResponse](#fn-parse-hook-js-filterresponse)
 
 <a id="fn-parse-hook-js-wrapemojiinframeworkupdates"></a>
-**`wrapEmojiInFrameworkUpdates(data, flags)`** · function · L42–46
+**`wrapEmojiInFrameworkUpdates(data, flags)`** · function · L33–37
 
 The legacy emoji rewrite over frameworkUpdates, the one part of a response the content filters never reach.
 
@@ -382,14 +375,14 @@ The legacy emoji rewrite over frameworkUpdates, the one part of a response the c
 - **Called by:** [filterResponse](#fn-parse-hook-js-filterresponse)
 
 <a id="fn-parse-hook-js-hookedparse"></a>
-**`hookedParse(text, reviver)`** · function · L58–67
+**`hookedParse(text, reviver)`** · function · L49–58
 
 The JSON.parse replacement. Texts under 500 characters (YouTube's many small blobs) go straight to the native parse; the rest through parseAndFilter.
 
 - **Calls:** [parseAndFilter](#fn-parse-hook-js-parseandfilter)
 
 <a id="fn-parse-hook-js-parseandfilter"></a>
-**`parseAndFilter(text, reviver)`** · function · L73–99
+**`parseAndFilter(text, reviver)`** · function · L64–89
 
 Parses a large text (with tracking parameters blanked first when Tracking Block is on) and, when it is an InnerTube response, runs the filters on it in place.
 
@@ -397,7 +390,7 @@ Parses a large text (with tracking parameters blanked first when Tracking Block 
 - **Called by:** [hookedParse](#fn-parse-hook-js-hookedparse)
 
 <a id="fn-parse-hook-js-filtersafely"></a>
-**`filterSafely(data, textLength, flags)`** · function · L105–111
+**`filterSafely(data, textLength, flags)`** · function · L95–101
 
 filterResponse, with an error logged instead of thrown: a filter bug must never break YouTube's parse.
 
@@ -405,7 +398,7 @@ filterResponse, with an error logged instead of thrown: a filter bug must never 
 - **Called by:** [parseAndFilter](#fn-parse-hook-js-parseandfilter)
 
 <a id="fn-parse-hook-js-filterresponse"></a>
-**`filterResponse(data, textLength, flags)`** · function · L118–160
+**`filterResponse(data, textLength, flags)`** · function · L108–150
 
 Everything done to a parsed response, in order: the codec filter, Load Rows Ahead, the content filters (by schema, the fallback search, or the guide's nav entries), then the thumbnail upgrade, DeArrow and the emoji wrap.
 
@@ -413,7 +406,7 @@ Everything done to a parsed response, in order: the codec filter, Load Rows Ahea
 - **Called by:** [filterSafely](#fn-parse-hook-js-filtersafely)
 
 <a id="fn-parse-hook-js-installparsehook"></a>
-**`installParseHook()`** · function, exported · L170–182
+**`installParseHook()`** · function, exported · L160–172
 
 Installs the hook, once, for the life of the page.
 

@@ -1,18 +1,17 @@
 /* Controls built by panel/controls: the cycle rows' label and value side, the
    colour picker and the greyed-out state. Row metrics (size, padding, margins)
-   are in pages.css; the red-theme variants in styles/theme-red.css. */
+   are in pages.css; the panel's chrome in styles/theme-aura.css. */
 
 .ytaf-cycle-label {
-  color: #b8e6f5;
+  color: #f1f1f3;
 }
 
 /* A cycle row among checkbox rows: the label is indented by one checkbox,
-   1.85vh wide plus its 1.1vh margin, plus the 0.75vh side padding a checkbox
-   row has and a cycle row does not (pages.css), and takes the row's text
-   colour like the checkbox labels around it instead of the shortcut tint. */
+   2.1vh wide plus its 1.2vh margin, plus the 0.9vh side padding a checkbox
+   row has and a cycle row does not (pages.css). */
 .ytaf-ui-container .ytaf-cycle-row.ytaf-aligned .ytaf-cycle-label {
   color: inherit;
-  padding-left: 3.7vh;
+  padding-left: 4.2vh;
 }
 
 .ytaf-cycle-value {
@@ -21,48 +20,63 @@
   color: #ffffff;
 }
 
+/* The chevrons: one glyph each rather than a drawn triangle, so a row costs no
+   extra element and no border trick. They are quieter than the value, which is
+   what the eye should land on. */
 .ytaf-cycle-value .ytaf-arrow {
-  color: #00d4ff;
-  font-weight: bold;
-  font-size: 2.22vh;
+  color: #5c5c66;
+  font-weight: 400;
+  font-size: 2.4vh;
+  line-height: 1;
   user-select: none;
+  padding: 0 0.2vh;
+}
+
+/* A focused row's chevrons pick up the accent: the only moving part of the
+   focus state is the fill. */
+.ytaf-cycle-row:focus .ytaf-cycle-value .ytaf-arrow {
+  color: #8ab4f8;
 }
 
 .ytaf-cycle-value .ytaf-value {
-  margin: 0 1.1vh;
-  min-width: 14vh;
+  margin: 0 1vh;
+  min-width: 15vh;
   text-align: center;
   font-weight: 500;
+  color: #ffffff;
 }
 
 /* A row whose setting does nothing right now (controls/checkbox.js setUnavailable). */
 .ytaf-ui-container .ytaf-unavailable {
-  opacity: 0.5;
+  opacity: 0.42;
 }
 
 .ytaf-color-picker {
   display: flex;
-  margin-left: 1.1vh;
+  align-items: center;
+  margin-left: 1vh;
 }
 
 .ytaf-color-reset {
-  background: rgba(0, 100, 150, 0.5);
-  color: #ffffff;
-  border: 0.09vh solid rgba(0, 150, 200, 0.5);
-  border-radius: 0.4vh;
-  padding: 0.2vh 0.75vh;
-  margin-right: 0.75vh;
+  background: #191c22;
+  color: #8a8a96;
+  border: 0.09vh solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.5vh;
+  padding: 0.25vh 0.8vh;
+  margin-right: 0.8vh;
   cursor: pointer;
-  font-size: 1.2vh;
+  font-size: 1.4vh;
+  font-family: inherit;
   flex-shrink: 0;
 }
 
 .ytaf-ui-container input[type='color'] {
   appearance: none;
-  width: 3.7vh;
-  height: 2.22vh;
-  border: 0.09vh solid rgba(0, 150, 200, 0.5);
-  border-radius: 0.4vh;
+  width: 3.4vh;
+  height: 2.2vh;
+  border: 0.09vh solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.5vh;
   background-color: transparent;
   cursor: pointer;
+  padding: 0;
 }

@@ -1,71 +1,89 @@
-/* The options panel: container, heading and logo, pages and their scrollbar,
-   checkboxes and the focus highlight, the tab menu. The rows' metrics and the
-   page layout are in pages.css, the cycle rows' value side in
-   controls/controls.css; the red-theme and OLED variants in
-   styles/theme-red.css and styles/theme-oled.css. */
+/* The options panel's shell, heading and tab bar, and the checkbox with its
+   focus highlight. YouTube Aura has one look; the row metrics are in
+   pages.css, the cycle rows' value side in controls/controls.css, the toasts in
+   toast/toast.css, and the classes the theme puts on YouTube's own page in
+   styles/theme-aura.css.
+
+   Palette: true black behind everything, one cool-white accent
+   (#8ab4f8) for focus and a thin hairline (#1f1f24) for separators. Chromium 38
+   has no custom properties, so the values repeat. */
 
 .ytaf-ui-container {
   position: fixed;
-  top: 5vh;
+  top: 6vh;
   left: 30%;
   transform: translateX(-50%);
   /* A width of its own: sized to its content the panel changed width, and
      recentred, with every tab. */
-  width: 41.6vw;
-  max-height: 95vh;
-  color: #ffffff;
-  /* The TV has none of the first three and draws Roboto; the webOS TV
-     Simulator on Windows draws Segoe UI, as the README screenshots show. */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 4.44vh;
+  width: 44vw;
+  max-height: 90vh;
+  color: #f1f1f3;
+  /* The TV has 'LG Display'; the rest cover the simulator and any TV whose
+     font stack differs. */
+  font-family: 'LG Display', Roboto, 'Noto Sans', Arial, sans-serif;
+  font-size: 2.2vh;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: #001a2e;
-  background-image:
-    linear-gradient(rgba(0, 212, 255, 0.15) 0.09vh, transparent 0.09vh),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.15) 0.09vh, transparent 0.09vh);
-  background-size: 3.7vh 3.7vh;
-  background-position: -0.09vh -0.09vh;
-  border: 0.09vh solid rgba(0, 212, 255, 0.4);
-  border-radius: 1.5vh;
+  background-color: #000;
+  border: 0.09vh solid #1f1f24;
+  border-radius: 1.4vh;
+  /* One composited entrance, on the first open. Opacity and transform only:
+     the compositor runs it while the CPU stays free for the video. */
+  animation: ytaf-aura-in 140ms ease-out;
 }
 
+@keyframes ytaf-aura-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0.8vh);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* The heading: the Aura mark, the product name, the version. */
 .ytaf-ui-container h1 {
   margin: 0;
-  padding: 1.5vh 3vh 1.1vh;
-  text-align: center;
-  font-size: 3.89vh;
-  font-weight: 600;
-  border-bottom: 0.09vh solid rgba(0, 212, 255, 0.3);
-  color: #00d4ff;
+  padding: 1.6vh 3vh 1.4vh;
+  text-align: left;
+  font-size: 2.9vh;
+  font-weight: 400;
+  letter-spacing: 0.24vh;
+  text-transform: uppercase;
+  border-bottom: 0.09vh solid #1f1f24;
+  color: #f1f1f3;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-shrink: 0;
 }
 
-/* The logo in the heading: the blue one here, the red and dark ones under
-   their theme classes (theme-red.css, theme-oled.css). */
 .ytaf-ui-container .ytaf-logo {
-  width: 5.55vh;
-  height: 5.55vh;
+  width: 4.4vh;
+  height: 4.4vh;
   object-fit: contain;
-  margin-left: 1.1vh;
+  margin-right: 1.6vh;
+  flex-shrink: 0;
 }
 
-.ytaf-ui-container .ytaf-logo-red,
-.ytaf-ui-container .ytaf-logo-dark {
-  display: none;
+/* The version, quiet, at the right end of the heading. */
+.ytaf-ui-container .ytaf-version {
+  margin-left: auto;
+  color: #6f8fc4;
+  font-size: 1.6vh;
+  letter-spacing: 0.12vh;
+  text-transform: none;
 }
 
-/* A page scrolls rather than clips if a future row ever overflows 95vh. The
+/* A page scrolls rather than clips if a future row ever overflows 90vh. The
    0.4vh at the top (taken from the tab menu's margin, so nothing moves) keeps
    the focus ring of a first row that is not in a section inside the scrolling
    box: SponsorBlock's and DeArrow's switches. */
 .ytaf-ui-container > div.ytaf-settings-page {
-  padding: 0.4vh 3vh 2.2vh;
+  padding: 0.4vh 2.6vh 2.2vh;
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
@@ -73,35 +91,37 @@
 }
 
 .ytaf-ui-container > div::-webkit-scrollbar {
-  width: 0.75vh;
+  width: 0.6vh;
 }
 
 .ytaf-ui-container > div::-webkit-scrollbar-track {
-  background: rgba(0, 212, 255, 0.05);
+  background: transparent;
 }
 
 .ytaf-ui-container > div::-webkit-scrollbar-thumb {
-  background: #0099cc;
+  background: #2a2a31;
   border-radius: 0.4vh;
 }
 
+/* --- checkboxes ----------------------------------------------------------- */
+
 .ytaf-ui-container input[type='checkbox'] {
-  width: 1.85vh;
-  height: 1.85vh;
+  width: 2.1vh;
+  height: 2.1vh;
   margin: 0;
-  margin-right: 1.1vh;
+  margin-right: 1.2vh;
   appearance: none;
-  background: rgba(0, 50, 80, 0.8);
-  border: 0.19vh solid rgba(0, 150, 200, 0.5);
-  border-radius: 0.4vh;
+  background: #141418;
+  border: 0.19vh solid #3a3a44;
+  border-radius: 0.45vh;
   position: relative;
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .ytaf-ui-container input[type='checkbox']:checked {
-  background: #00d4ff;
-  border-color: #00d4ff;
+  background: #8ab4f8;
+  border-color: #8ab4f8;
 }
 
 .ytaf-ui-container input[type='checkbox']:checked::after {
@@ -110,33 +130,35 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: white;
-  font-size: 1.3vh;
+  color: #000;
+  font-size: 1.6vh;
   font-weight: bold;
 }
 
 .ytaf-ui-container input[type='checkbox']:focus {
-  outline: 0.19vh solid #00d4ff;
-  outline-offset: 0.19vh;
+  outline: 0.22vh solid #8ab4f8;
+  outline-offset: 0.22vh;
 }
 
 /* The focused row: a cycle row by :focus, a checkbox row by the class that
    stands in for :focus-within, which Chrome 38 to 59 lack (panel/keyboard.js
-   sets it). */
+   sets it). A flat fill and a left bar rather than a ring: the bar is one
+   strip and the fill one colour, so a focus move repaints one row. */
 .ytaf-ui-container .ytaf-cycle-row:focus,
 .ytaf-ui-container label.ytaf-focused {
-  background: rgba(0, 212, 255, 0.2);
-  box-shadow: 0 0 0 0.19vh #00d4ff;
+  background: rgba(138, 180, 248, 0.16);
+  box-shadow: inset 0.4vh 0 0 0 #8ab4f8;
   outline: none;
 }
 
-/* Tab Menu */
+/* --- the tab bar ---------------------------------------------------------- */
+
 .ytaf-tab-menu {
   display: flex;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 0.19vh solid rgba(0, 212, 255, 0.3);
-  padding: 0.5vh 1vh;
+  background: #000;
+  border-bottom: 0.09vh solid #1f1f24;
+  padding: 0.6vh 1vh;
   flex-shrink: 0;
   margin-bottom: 0.6vh;
 }
@@ -148,26 +170,28 @@
   margin: 0 0.4vh;
   background: transparent;
   border: none;
-  color: #5599aa;
-  font-size: 2.1vh;
-  font-weight: 600;
+  border-radius: 0.6vh;
+  color: #8a8a96;
+  font-size: 1.9vh;
+  font-weight: 500;
+  letter-spacing: 0.06vh;
   white-space: nowrap;
   padding: 1vh 1.2vh;
-  border-radius: 0.75vh;
   cursor: pointer;
   outline: none;
   /* No transition: each tab move would repaint both buttons for a dozen
-     frames, over the panel's gradient grid, on the slowest TVs. */
+     frames on the slowest TVs. */
   font-family: inherit;
 }
 
 .ytaf-tab-btn.ytaf-active {
-  color: #00d4ff;
-  background: rgba(0, 212, 255, 0.15);
+  color: #f1f1f3;
+  background: #141418;
 }
 
+/* Focus inverts the button: on a black panel the brightest small surface is
+   the one the remote is on. */
 .ytaf-tab-btn:focus {
-  background: rgba(0, 212, 255, 0.3);
-  box-shadow: 0 0 0 0.19vh #00d4ff;
-  color: #ffffff;
+  color: #000;
+  background: #8ab4f8;
 }

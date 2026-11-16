@@ -59,9 +59,6 @@ const ACTION_LABELS = [
   'Save / Watch Later',
   'Toggle OLED Black Overlay',
   'Manual Skip / Jump to Highlight',
-  'Playback Speed +',
-  'Playback Speed -',
-  'Playback Speed 1x',
   'Open/Close Settings'
 ];
 
@@ -291,7 +288,7 @@ function boot() {
     t('with the panel closed the trap is off', d.activeElement === outside);
   }
 
-  // ---- the pointer on the tab bar, and the logo ------------------------------
+  // ---- the pointer on the tab bar -------------------------------------------
   {
     const { win, d, tabs, panel } = open();
     const tabMenu = panel.querySelector('.ytaf-tab-menu');
@@ -306,12 +303,14 @@ function boot() {
     box.focus();
     tabMenu.dispatchEvent(new win.MouseEvent('mouseleave'));
     t('leaving the tab bar with focus on a page control changes nothing', d.activeElement === box);
+    // The mark is decoration: a stray Magic Remote click on it does nothing,
+    // and in particular does not take the focus out of the panel.
     tabs[4].click();
     panel.querySelector('#ytaf-page-ui-tweaks input').focus();
     panel.querySelector('.ytaf-logo').click();
     t(
-      'a logo click (the theme toggle) hands focus back to the open tab',
-      d.activeElement === tabs[4],
+      'the heading mark is not a control: focus stays where it was',
+      d.activeElement === panel.querySelector('#ytaf-page-ui-tweaks input'),
       d.activeElement && d.activeElement.className
     );
   }
@@ -473,20 +472,35 @@ function boot() {
     );
   }
 
-  // ---- the shelf opacity row without OLED-Care Mode ---------------------------------
+  // ---- the shelf opacity row without Pure Black UI ---------------------------------
   {
-    const { win } = open();
+    const { win } = open({ config: { enableOledCareMode: false } });
     const opacity = cycleRow(win, 'Video shelf opacity', '#ytaf-page-ui-tweaks');
-    const oled = panelCheckbox(win, 'OLED-Care Mode (True Black UI)');
+    const oled = panelCheckbox(win, 'Pure Black UI (OLED)');
     t('setup: both rows are on the panel', !!opacity && !!oled && oled.checked === false);
     t(
-      'with OLED-Care Mode off the shelf opacity row is greyed out and out of the focus order',
+      'with Pure Black UI off the shelf opacity row is greyed out and out of the focus order',
       opacity.classList.contains('ytaf-unavailable') && opacity.tabIndex === -1
     );
     oled.click();
     t(
-      'OLED-Care Mode on restores it',
+      'Pure Black UI on restores it',
       !opacity.classList.contains('ytaf-unavailable') && opacity.tabIndex === 0
+    );
+  }
+
+  // ---- Pure Black UI is the default ---------------------------------------------
+  {
+    const { d } = open();
+    t(
+      'a fresh install runs Pure Black UI (the OLED default)',
+      d.documentElement.classList.contains('ytaf-oled'),
+      d.documentElement.className
+    );
+    t(
+      'the Aura look is marked on <html> whatever the settings',
+      d.documentElement.classList.contains('ytaf-aura'),
+      d.documentElement.className
     );
   }
 
@@ -540,26 +554,28 @@ function boot() {
     );
   }
 
-  // ---- the red theme with OLED-care mode, and Enter on a cycle row ------------------
+  // ---- the heading, and Enter on a cycle row ----------------------------------------
   {
-    const { win, d, tabs } = open({ config: { uiTheme: 'classic-red', enableOledCareMode: true } });
+    const { win, d, tabs, panel } = open();
     const html = d.documentElement.classList;
+    t('the Aura mark sits in the heading', !!panel.querySelector('.ytaf-logo'));
     t(
-      'the red theme and OLED-care mode mark <html> together',
-      html.contains('ytaf-theme-red') && html.contains('ytaf-oled')
+      'the heading names YouTube Aura and its version',
+      /YouTube Aura/.test(panel.querySelector('h1').textContent),
+      panel.querySelector('h1').textContent
     );
-    tabs[4].click();
-    const theme = cycleRow(win, 'UI Theme', '#ytaf-page-ui-tweaks');
-    const value = () => theme.querySelector('.ytaf-value').textContent;
-    t('setup: the theme row reads Classic Red', value() === 'Classic Red', value());
-    theme.focus();
-    press(win, KEYS.ENTER, theme);
     t(
-      'Enter on a cycle row steps its value like Right',
-      value() === 'Blue' && !html.contains('ytaf-theme-red'),
-      value()
+      'the panel carries one theme class only (Aura)',
+      html.contains('ytaf-aura') && !html.contains('ytaf-theme-red')
     );
-    t('while the OLED class stays', html.contains('ytaf-oled'));
+    tabs[0].click();
+    const logo = cycleRow(win, 'YouTube Logo', '#ytaf-page-main');
+    t('setup: the Main page has the YouTube Logo row', !!logo);
+    const value = () => logo.querySelector('.ytaf-value').textContent;
+    t('setup: it reads Default', value() === 'Default', value());
+    logo.focus();
+    press(win, KEYS.ENTER, logo);
+    t('Enter on a cycle row steps its value like Right', value() === 'Premium', value());
   }
 
   // ---- the Main page's rows and layout rules ----
@@ -596,8 +612,8 @@ function boot() {
     const container = /\.ytaf-ui-container\{([^}]*)\}/.exec(css.replace(/\s+/g, ''));
     const decls = container ? container[1].split(';') : [];
     t(
-      'the panel has a set width (41.6vw), the same on every tab',
-      decls.indexOf('width:41.6vw') !== -1,
+      'the panel has a set width (44vw), the same on every tab',
+      decls.indexOf('width:44vw') !== -1,
       container ? container[1] : 'no .ytaf-ui-container rule'
     );
   }

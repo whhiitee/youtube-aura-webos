@@ -501,7 +501,9 @@ const controlsHidden = (d) => d.body.classList.contains('ytaf-hide-controls');
       }
     });
     run();
-    await waitFor(() => lookups.n >= 101, 6000);
+    // A loaded machine can stretch a 4 ms timer far past 4 ms; the count is
+    // what matters, not the wall time.
+    await waitFor(() => lookups.n >= 101, 30000);
     const settled = lookups.n;
     await wait(300);
     t(

@@ -61,8 +61,26 @@ const { sandbox, get } = loadSources(['text.js', 'config-options.js', 'config.js
 });
 const options = get('configOptions');
 
-const lost = Object.keys(stored084).filter((k) => !options.has(k));
-t('every setting 0.8.4 stored still exists', lost.length === 0, lost.join(', '));
+// Settings this build retired on purpose: Aura has one look, so there is no
+// theme to choose. A retired key is dropped from storage on the next write,
+// which is what core/config.js does with any key this build does not declare.
+const RETIRED = ['uiTheme'];
+
+const lost = Object.keys(stored084).filter((k) => !options.has(k) && RETIRED.indexOf(k) === -1);
+t(
+  'every setting 0.8.4 stored still exists, but the retired ones',
+  lost.length === 0,
+  lost.join(', ')
+);
+t(
+  'the retired settings are exactly the ones this build means to drop',
+  Object.keys(stored084)
+    .filter((k) => !options.has(k))
+    .join(',') === RETIRED.join(','),
+  Object.keys(stored084)
+    .filter((k) => !options.has(k))
+    .join(', ')
+);
 
 /** What a 0.8.4 value reads as in this build: itself, or its option's upgrade of it. */
 const expected = (k) => {
@@ -80,8 +98,7 @@ t(
 
 t(
   "the user's non-default choices survive (a sample)",
-  sandbox.configRead('uiTheme') === 'classic-red' &&
-    sandbox.configRead('thumbnailQualityMode') === 'eager' &&
+  sandbox.configRead('thumbnailQualityMode') === 'eager' &&
     sandbox.configRead('shortcut_key_3') === 'toggle_subs' &&
     sandbox.configRead('shortcut_key_red') === 'none' &&
     sandbox.configRead('sbMode_sponsor') === 'manual_skip' &&
@@ -112,7 +129,6 @@ const choices = {
   forceVideoCodec: get('videoCodecModes'),
   logoStyle: get('logoStyles'),
   forcePreviews: get('forcePreviewModes'),
-  uiTheme: get('uiThemes'),
   showWatch: get('clockModes')
 };
 for (const k of Object.keys(stored084)) {
@@ -121,7 +137,7 @@ for (const k of Object.keys(stored084)) {
   else if (k.startsWith('sbMode_')) choices[k] = get('sbModes');
 }
 const unknown = Object.entries(choices)
-  .filter(([k, table]) => !(expected(k) in table))
+  .filter(([k, table]) => options.has(k) && !(expected(k) in table))
   .map(([k]) => `${k}=${expected(k)}`);
 t('every stored choice is one this build offers', unknown.length === 0, unknown.join(', '));
 
@@ -129,11 +145,18 @@ t('every stored choice is one this build offers', unknown.length === 0, unknown.
 sandbox.configWrite('enableRowsAhead', false);
 for (const fn of listeners.pagehide || []) fn();
 const written = JSON.parse(store.get('ytaf-configuration'));
-const dropped = Object.keys(stored084).filter((k) => written[k] !== expected(k));
+const dropped = Object.keys(stored084).filter(
+  (k) => RETIRED.indexOf(k) === -1 && written[k] !== expected(k)
+);
 t(
   'the next write keeps every 0.8.4 value and adds the new one',
   dropped.length === 0 && written.enableRowsAhead === false,
   dropped.join(', ')
+);
+t(
+  'and the write drops the retired setting from storage',
+  !('uiTheme' in written),
+  JSON.stringify(written.uiTheme)
 );
 
 report.finish();

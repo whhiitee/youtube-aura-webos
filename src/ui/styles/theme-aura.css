@@ -1,0 +1,97 @@
+/* ===========================================================================
+   YouTube Aura - the theme's contract with YouTube's own page.
+
+   The app's own UI is styled by the file that builds it: ui/panel/panel.css,
+   ui/panel/pages.css, ui/panel/controls/controls.css, ui/toast/toast.css,
+   features/watch/watch.css, features/sponsorblock/popup.css. This sheet is
+   what the app changes on YouTube's page, and it is switched by classes on
+   <html> (ui/styles/html-classes.js), so a setting change is one class toggle:
+
+     html.ytaf-aura                  the Aura look (always on)
+     html.ytaf-oled                  Pure Black UI (on by default)
+     html.ytaf-oled-transparent-shelf  shelf opacity above 50 %
+
+   Rules:
+     - Every selector ends in a class or an id, so a style recalc restyles the
+       elements the rule names and nothing else.
+     - No gradients that repaint on focus, no filters, no backdrop blur, no
+       animated shadows. On an OLED panel the black is the design, and the
+       GPU belongs to the video decoder.
+     - Chromium 38 has no custom properties, so the palette is written as
+       literals: ink #000000, accent #8ab4f8, focus #dbe7ff, hairline #1f1f24.
+   =========================================================================== */
+
+/* --- Pure Black UI: YouTube's surfaces ------------------------------------- */
+
+/* The backgrounds YouTube draws around its content become true black: the
+   app's root, the guide and its mask, the shelves' backdrops, the panels
+   beside the video. */
+html.ytaf-oled #container,
+html.ytaf-oled .ytLrGuideResponseMask,
+html.ytaf-oled .geClSe,
+html.ytaf-oled .hsdF6b,
+html.ytaf-oled .ytLrAnimatedOverlayContainer,
+html.ytaf-oled .ZghAqf,
+html.ytaf-oled .RAE3Re .AmQJbe,
+html.ytaf-oled .tVp1L,
+html.ytaf-oled .app-quality-root .DnwJH,
+html.ytaf-oled .qRdzpd.stQChb .TYE3Ed,
+html.ytaf-oled .k82tDb {
+  background-color: #000 !important;
+}
+
+/* The guide's fade to the page's grey would be a grey band on black. */
+html.ytaf-oled .ytLrGuideResponseGradient {
+  display: none;
+}
+
+html.ytaf-oled .iha0pc {
+  color: #000 !important;
+}
+
+/* The shelf backdrop (.Jx9xPc) is written by styles/html-classes.js with the
+   configured opacity: Chromium 38 has no custom properties. */
+html.ytaf-oled .p0DeOc {
+  background-color: #000 !important;
+  background-image: none !important;
+}
+
+html.ytaf-oled ytlr-surface-page {
+  background-image: none !important;
+  background-color: #000 !important;
+}
+
+/* Above half opacity the shelves keep a see-through backdrop, so the black
+   behind them is the page's black and not a second layer of paint. */
+html.ytaf-oled.ytaf-oled-transparent-shelf .app-quality-root .UGcxnc .dxLAmd,
+html.ytaf-oled.ytaf-oled-transparent-shelf .app-quality-root .UGcxnc .Dc2Zic .JkDfAc {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+/* --- focus: the one thing that must read from a sofa ---------------------- */
+
+/* YouTube draws a ring around the focused tile. Aura makes it the accent and
+   a little wider, so the eye finds it on a bright thumbnail as well as a dark
+   one. No glow, no pulse: the ring is static. */
+html.ytaf-aura ytlr-player-focus-ring {
+  border: 0.375rem solid #dbe7ff !important;
+}
+
+/* --- video cards ---------------------------------------------------------- */
+
+/* One corner radius for every thumbnail, so a shelf reads as one surface
+   instead of a row of differently clipped pictures. Only the image is
+   touched: no box, no layout, no transform, nothing that could move a tile. */
+html.ytaf-aura ytlr-thumbnail-details img,
+html.ytaf-aura ytlr-thumbnail-details yt-img-shadow,
+html.ytaf-aura .ytLrTileHeaderRendererShorts img {
+  border-radius: 0.75rem;
+}
+
+/* --- noise ---------------------------------------------------------------- */
+
+/* The vertical gradient along the guide's edge: on black it is invisible
+   work, and it fights the pure black the page now has. */
+html.ytaf-aura .ytLrGuideResponseGradient {
+  display: none !important;
+}

@@ -1,15 +1,12 @@
 /**
- * The built bundle as a file: it parses at the syntax level its targets have,
- * and it stays within its size budget.
+ * The built bundle as a file: it parses as ES5, it stays within its size
+ * budget, and the stylesheets it carries use nothing Chromium 38 lacks.
  *
- * The legacy flavour (webOS 3 to 6, Chromium 38) must be plain ES5, which is
- * what the Babel configuration promises and what nothing else verifies; the
- * modern flavour (Chrome 87) is parsed as ES2022 so a broken build is caught
- * before the smoke tests load it. The size is printed after every build and
- * fails the check above the budget, so growth is seen when it happens and not
- * on the TV.
+ * YouTube Aura has one build. Its engine is the LG OLED55B7V's: webOS 3.x,
+ * Chromium 38, plain ES5. What the Babel configuration promises is what
+ * nothing else verifies, so this script is the gate on both.
  *
- * Run: node tests/smoke/bundle-check.cjs [bundle] [legacy|modern]
+ * Run: node tests/smoke/bundle-check.cjs [bundle]
  */
 const fs = require('fs');
 const path = require('path');
@@ -18,26 +15,17 @@ const { createReport } = require('../harness/report.cjs');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const bundlePath = process.argv[2] || path.join(ROOT, 'dist/webOSUserScripts/userScript.js');
-const flavour = process.argv[3] || 'legacy';
 
-// ecmaVersion: what the flavour's engine parses, as acorn is told to accept it.
-// budget: the size in bytes the built file must stay under.
+// ecmaVersion: what the engine parses, as acorn is told to accept it.
+// budget: the size in bytes the built file must stay under. 240 KiB was the
+// 0.8.5 legacy budget; Aura removed the webOS 22+ modules (the speed engine,
+// the cast block, the kick) and the second theme's three logo PNGs, and the
+// build sits below 230 KiB.
 // iifeLimit: how many function expressions called on the spot may sit inside
 // another function (see the check below).
-// The webOS 22+ budget went from 175 to 255 KiB with 0.8.5 b2: the playback
-// speed engine (~45 KiB, src/vendor/playback-speed) and DeArrow's title
-// formatter (~33 KiB, src/vendor/dearrow) are in that build only.
-const FLAVOURS = {
-  legacy: { ecmaVersion: 5, budget: 240 * 1024, iifeLimit: 40 },
-  modern: { ecmaVersion: 2022, budget: 255 * 1024, iifeLimit: 20 }
-};
+const SPEC = { ecmaVersion: 5, budget: 240 * 1024, iifeLimit: 40 };
 
 const report = createReport();
-const spec = FLAVOURS[flavour];
-if (!spec) {
-  report.fail('known flavour', `unknown flavour ${flavour}`);
-  report.finish();
-}
 
 const source = fs.readFileSync(bundlePath, 'utf8');
 const bytes = Buffer.byteLength(source);
@@ -47,13 +35,13 @@ let parses = false;
 let detail = '';
 let ast = null;
 try {
-  ast = acorn.parse(source, { ecmaVersion: spec.ecmaVersion, sourceType: 'script' });
+  ast = acorn.parse(source, { ecmaVersion: SPEC.ecmaVersion, sourceType: 'script' });
   parses = true;
 } catch (e) {
   const near = e.pos == null ? '' : ` near "${source.slice(Math.max(0, e.pos - 60), e.pos + 60)}"`;
   detail = e.message + near;
 }
-report.check(`${flavour} bundle parses as ES${spec.ecmaVersion}`, parses, detail);
+report.check(`the bundle parses as ES${SPEC.ecmaVersion} (Chromium 38)`, parses, detail);
 
 /**
  * Function expressions called on the spot inside another function: each is a
@@ -88,116 +76,84 @@ if (ast) {
   // the count starts inside them, so the limit allows for the runtime's.
   const n = innerIifes(ast);
   report.check(
-    `${flavour}: at most ${spec.iifeLimit} function expressions called on the spot inside functions`,
-    n <= spec.iifeLimit,
+    `at most ${SPEC.iifeLimit} function expressions called on the spot inside functions`,
+    n <= SPEC.iifeLimit,
     `${n} found`
   );
 }
 
-// ES2022 is what acorn needs for the modern bundle's private fields (Chrome
-// 74), but three of its forms are newer than Chrome 87: the RegExp d flag
-// (Chrome 90), `#x in obj` (91) and a class static block (94).
-function beyondChrome87(root) {
-  const found = [];
-  const visit = (node) => {
-    if (node.type === 'Literal' && node.regex && node.regex.flags.indexOf('d') !== -1) {
-      found.push('a RegExp with the d flag');
-    }
-    if (node.type === 'StaticBlock') found.push('a class static block');
-    if (node.type === 'BinaryExpression' && node.left.type === 'PrivateIdentifier') {
-      found.push('#x in obj');
-    }
-    for (const key in node) {
-      const value = node[key];
-      if (Array.isArray(value)) {
-        for (const child of value) {
-          if (child && typeof child.type === 'string') visit(child);
-        }
-      } else if (value && typeof value.type === 'string') {
-        visit(value);
-      }
-    }
-  };
-  visit(root);
-  return found;
-}
-if (ast && flavour === 'modern') {
-  const found = beyondChrome87(ast);
-  report.check('modern: no syntax newer than Chrome 87', found.length === 0, found.join(', '));
-}
-
-// The stylesheets ride in the bundle as strings; the legacy one must not use
-// what Chromium 38 lacks: custom properties, :focus-within, 4- and 8-digit hex
+// The stylesheets ride in the bundle as strings; they must not use what
+// Chromium 38 lacks: custom properties, :focus-within, 4- and 8-digit hex
 // colours, :is(), :where(), ::placeholder, a list inside :not(), and
 // user-select, appearance or filter without the -webkit- form beside it. A
 // flex gap is ignored there, so each one needs its no-flex-gap margins.
-if (flavour === 'legacy') {
-  const issues = [];
-  const count = (re) => (source.match(re) || []).length;
-  if (/var\(--/.test(source)) issues.push('var(--');
-  if (/:focus-within/.test(source)) issues.push(':focus-within');
-  if (/#[0-9a-f]{8}(?![0-9a-f])/i.test(source)) issues.push('#rrggbbaa');
-  if (/#[0-9a-f]{4}\b/i.test(source)) issues.push('#rgba');
-  if (/:is\(|:where\(/.test(source)) issues.push(':is() or :where()');
-  if (/::placeholder/.test(source)) issues.push('::placeholder');
-  if (/:not\([^)]*,/.test(source)) issues.push('a list inside :not()');
-  if (count(/(^|[^-\w])gap:/g) > count(/no-flex-gap[^{]*\{[^}]*margin/g)) {
-    issues.push('a flex gap without no-flex-gap margins');
-  }
-  for (const prop of ['user-select', 'appearance', 'filter']) {
-    const plain = (source.match(new RegExp('(^|[^-\\w])' + prop + ':', 'g')) || []).length;
-    const webkit = (source.match(new RegExp('-webkit-' + prop + ':', 'g')) || []).length;
-    if (plain > webkit) issues.push(`${prop} without -webkit-`);
-  }
-  report.check('legacy CSS uses nothing Chromium 38 lacks', issues.length === 0, issues.join(', '));
-  // core/styles.js joins every stylesheet into one <style>, where an @import
-  // that is not first is ignored: anything the bundle needs from outside
-  // goes in as a <link>.
-  report.check('the bundled CSS carries no @import', !/@import/.test(source));
-  // Chromium 38 has Symbol: Babel's typeof helper would only add a call to
-  // every typeof on the hot paths. Babel's own class-key helpers keep a few.
-  const helper = /function ([\w$]+)\([\w$]+\)\{return \1="function"==typeof Symbol/.exec(source);
-  const helperCalls = helper
-    ? (source.match(new RegExp('(^|[^\\w$])' + helper[1].replace(/\$/g, '\\$') + '\\(', 'g')) || [])
-        .length
-    : 0;
-  report.check(
-    "legacy: typeof is the engine's own, not Babel's helper (Chromium 38 knows 'symbol')",
-    helperCalls <= 8,
-    `${helperCalls} uses of the helper`
-  );
+const issues = [];
+const count = (re) => (source.match(re) || []).length;
+if (/var\(--/.test(source)) issues.push('var(--');
+if (/:focus-within/.test(source)) issues.push(':focus-within');
+if (/#[0-9a-f]{8}(?![0-9a-f])/i.test(source)) issues.push('#rrggbbaa');
+if (/#[0-9a-f]{4}\b/i.test(source)) issues.push('#rgba');
+if (/:is\(|:where\(/.test(source)) issues.push(':is() or :where()');
+if (/::placeholder/.test(source)) issues.push('::placeholder');
+if (/:not\([^)]*,/.test(source)) issues.push('a list inside :not()');
+if (count(/(^|[^-\w])gap:/g) > count(/no-flex-gap[^{]*\{[^}]*margin/g)) {
+  issues.push('a flex gap without no-flex-gap margins');
+}
+for (const prop of ['user-select', 'appearance', 'filter']) {
+  const plain = (source.match(new RegExp('(^|[^-\\w])' + prop + ':', 'g')) || []).length;
+  const webkit = (source.match(new RegExp('-webkit-' + prop + ':', 'g')) || []).length;
+  if (plain > webkit) issues.push(`${prop} without -webkit-`);
+}
+// A transform and an animation that only moves opacity or a 2D transform are
+// composited; anything else here is the TV's CPU painting frames instead of
+// decoding video.
+if (/filter:\s*(?:blur|drop-shadow)/.test(source)) issues.push('a GPU filter');
+report.check('the CSS uses nothing Chromium 38 lacks', issues.length === 0, issues.join(', '));
+
+// core/styles.js joins every stylesheet into one <style>, where an @import
+// that is not first is ignored: anything the bundle needs from outside
+// goes in as a <link>.
+report.check('the bundled CSS carries no @import', !/@import/.test(source));
+
+// Chromium 38 has Symbol: Babel's typeof helper would only add a call to
+// every typeof on the hot paths. Babel's own class-key helpers keep a few.
+const helper = /function ([\w$]+)\([\w$]+\)\{return \1="function"==typeof Symbol/.exec(source);
+const helperCalls = helper
+  ? (source.match(new RegExp('(?:^|[^\\w$])' + helper[1].replace(/\$/g, '\\$') + '\\(', 'g')) || [])
+      .length
+  : 0;
+report.check(
+  "typeof is the engine's own, not Babel's helper (Chromium 38 knows 'symbol')",
+  helperCalls <= 8,
+  `${helperCalls} uses of the helper`
+);
+
+// What the build leaves out, each by a string only that code puts in the
+// bundle. A marker must be absent, so a removed module that creeps back in is
+// caught here rather than on the TV.
+const REMOVED = [
+  ['the playback speed engine', 'PlaybackSpeed'],
+  ['the webOS 25 cast block', 'wake_cast_core'],
+  ['the webOS 25 first-video kick', 'playback enforcer'],
+  ['the second UI theme (Classic Red)', 'classic-red'],
+  ['the per-theme logo PNGs', 'ytaf-logo-red']
+];
+for (const [what, marker] of REMOVED) {
+  report.check(`left out: ${what}`, source.indexOf(marker) === -1, marker);
 }
 
-// The modules each build aliases away (webpack.config.js), each by a string
-// only that module puts in the bundle. A marker must be absent from the build
-// that drops the module and present in the other one, so a marker that stops
-// matching fails here instead of passing for nothing.
-const ALIASED_AWAY = {
-  // webOS 25 runs the webOS 22+ bundle: its fixes stay out of the legacy one.
-  legacy: [
-    ['the webOS 25 cast block', 'wake_cast_core'],
-    ['the webOS 25 first-video kick', 'playback enforcer']
-  ],
-  // What Chrome 87 has built in, and the webOS 3 and 4 code.
-  modern: [
-    ['the fetch polyfill', 'Network request failed'],
-    ['polyfills.js', 'DOMSettableTokenList'],
-    ['the buffer limit', '__ytafTrimming'],
-    ['the legacy emoji fix', 'Noto+Sans+Arabic'],
-    ['its stylesheet', 'twemoji-hidden-text'],
-    ['its rewrite in the adblock text pass', 'u2049']
-  ]
-};
-const otherFlavour = flavour === 'legacy' ? 'modern' : 'legacy';
-for (const [what, marker] of ALIASED_AWAY[flavour]) {
-  report.check(`${flavour}: aliased away: ${what}`, source.indexOf(marker) === -1, marker);
-}
-for (const [what, marker] of ALIASED_AWAY[otherFlavour]) {
-  report.check(
-    `${flavour}: kept, as the ${otherFlavour} build drops it: ${what}`,
-    source.indexOf(marker) !== -1,
-    marker
-  );
+// The features that must be in the bundle, by a string only they put there.
+const KEPT = [
+  ['Ad Blocking', 'isInlinePlaybackNoAd'],
+  ['SponsorBlock', 'sponsor.ajay.app'],
+  ['Return YouTube Dislike', 'returnyoutubedislikeapi'],
+  ['DeArrow', 'dearrow'],
+  ['the OLED buffer limit', '__ytafTrimming'],
+  ['the legacy emoji fix', 'twemoji-injected'],
+  ['the fetch polyfill', 'Network request failed']
+];
+for (const [what, marker] of KEPT) {
+  report.check(`kept: ${what}`, source.indexOf(marker) !== -1, marker);
 }
 
 // The panel heading's version (src/core/version.js), as webpack wrote it: the
@@ -205,14 +161,14 @@ for (const [what, marker] of ALIASED_AWAY[otherFlavour]) {
 const { version } = require(path.join(ROOT, 'package.json'));
 const label = version + (process.env.YTAF_BUILD ? ` b${process.env.YTAF_BUILD.trim()}` : '');
 report.check(
-  `the bundle names its version in the panel heading ("YouTube Extended ${label}")`,
-  source.indexOf(`YouTube Extended ${label}`) !== -1
+  `the bundle names its version in the panel heading ("YouTube Aura" + ${label})`,
+  source.indexOf('YouTube Aura') !== -1 && source.indexOf(label) !== -1
 );
 
-report.note(`${flavour} bundle: ${bytes} bytes (${kb(bytes)}), budget ${kb(spec.budget)}`);
+report.note(`bundle: ${bytes} bytes (${kb(bytes)}), budget ${kb(SPEC.budget)}`);
 report.check(
-  `${flavour} bundle is within its ${kb(spec.budget)} budget`,
-  bytes <= spec.budget,
-  `${bytes} bytes is ${kb(bytes - spec.budget)} over`
+  `the bundle is within its ${kb(SPEC.budget)} budget`,
+  bytes <= SPEC.budget,
+  `${bytes} bytes is ${kb(bytes - SPEC.budget)} over`
 );
 report.finish();

@@ -1,7 +1,8 @@
-// The platform: which webOS version this is (from the user agent, cached),
-// whether it is the simulator, and the engine features the modules branch on.
-// Read by the features that differ between webOS 3 and 4, webOS 5 and 6, and
-// webOS 22 onward.
+// The platform: which webOS version this is (from the user agent, cached) and
+// whether it is the simulator. The build targets the LG OLED55B7V (webOS 3.x,
+// Chromium 38); the version is still read so the webOS 3/4 code (the buffer
+// limit, the emoji fix) only runs where it is needed, and so the code paths
+// stay readable to anyone running the bundle elsewhere.
 import { createLogger } from './log.js';
 
 const log = createLogger('WebOS');
@@ -65,12 +66,13 @@ export function getWebOSVersion() {
     log.info(`Detected Chrome version: ${chromeVersion} (simulator mode)`);
     simulatorMode = true;
 
-    if (chromeVersion >= 120) {
-      cachedWebOSVersion = 25;
-    } else if (chromeVersion >= 87) {
-      // webOS 22 to 24 (Chrome 87, 94, 108): every check here asks for <= 4,
-      // <= 6 or >= 25, which 22 answers right for all three.
+    if (chromeVersion >= 87) {
+      // webOS 22 to 24 (Chrome 87, 94, 108): every check here asks for <= 4 or
+      // <= 6, which 22 answers right for both.
       cachedWebOSVersion = 22;
+    } else if (chromeVersion <= 38) {
+      // The target device's engine: Chromium 38 is webOS 3, and the simulator.
+      cachedWebOSVersion = 3;
     } else if (chromeVersion <= 53) {
       // webOS 4
       cachedWebOSVersion = 4;
@@ -84,12 +86,7 @@ export function getWebOSVersion() {
   return (cachedWebOSVersion = 6);
 }
 
-/** Whether the TV runs webOS 25 or later. */
-export function isWebOS25() {
-  return getWebOSVersion() >= 25;
-}
-
-/** Whether the TV runs webOS 6 or older (the legacy build's platforms). */
+/** Whether the TV runs webOS 6 or older (this build's platforms). */
 export function isLegacyWebOS() {
   return getWebOSVersion() <= 6;
 }

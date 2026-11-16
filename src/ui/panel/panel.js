@@ -1,12 +1,9 @@
 // The options panel: the container and its tab menu, showing and hiding it
 // and keeping focus inside it.
 import './panel.css';
-import { configRead, configWrite, uiThemes } from '../../core/config.js';
-import { isWatchPage } from '../../core/page-state.js';
+import { isWatchPage, isShortsPage } from '../../core/page-state.js';
 import popup from '../../features/sponsorblock/popup.js';
-import logoBlueUrl from '../icons/logo-blue.png';
-import logoRedUrl from '../icons/logo-red.png';
-import logoDarkUrl from '../icons/logo-dark.png';
+import auraMarkUrl from '../icons/aura-mark.png';
 import { createElement } from '../dom.js';
 import {
   buildMainPage,
@@ -102,53 +99,89 @@ function createTabMenu(pages, onPick, activeIndex) {
   return { element, buttons };
 }
 
-// Built on the first open: the container element plus the hooks
-// showOptionsPanel() drives after a build.
+// Built on the first open, or ahead of time by the idle prewarm below: the
+// container element plus the hooks showOptionsPanel() drives after a build.
 let panel = null;
 let optionsPanelVisible = false;
 let panelInitBlock = false;
+// The prewarm ran or was cancelled: it runs once per session.
+let prewarmDone = false;
+
+// How long after load the prewarm waits. The TV is still busy with YouTube's
+// own first paint before then, and the settings are not needed that early.
+const PREWARM_DELAY_MS = 3500;
 
 /** Whether the options panel is currently shown. */
 export function isOptionsPanelVisible() {
   return optionsPanelVisible;
 }
 
-// The heading with the logo. A logo click (a Magic Remote pointer affordance;
-// the logo is not in the focus order) flips the theme and hands focus back
-// through `afterToggle`; the UI Theme row on the UI Tweaks page is the key
-// path. There is one drawn logo per look (blue, red, dark): the <html> theme
-// classes pick the one shown (panel.css, theme-red.css, theme-oled.css). A CSS
-// filter on the blue image came out orange for red and too bright for OLED.
-function createHeading(afterToggle) {
-  /** Switches to the next UI theme (a click on the logo). */
-  const toggleTheme = () => {
-    // The next theme in the list, as the UI Theme row steps.
-    const themes = Object.keys(uiThemes);
-    configWrite('uiTheme', themes[(themes.indexOf(configRead('uiTheme')) + 1) % themes.length]);
-    afterToggle();
+/** Builds the panel (the Main page included) and puts it in the page, hidden. */
+function buildPanel() {
+  log.debug('building the panel (lazy)');
+  panel = createOptionsPanel();
+  document.body.appendChild(panel.element);
+  return panel;
+}
+
+/**
+ * Builds the panel while the TV is idle, so the first press of the menu key
+ * shows it instead of building it.
+ *
+ * The build was measured at up to 170 ms of one frozen keydown on webOS 3
+ * (tests/bench/panel-bench.cjs), all of it element creation and the style and
+ * layout work behind it. Moving it here costs the same work in a frame nobody
+ * is waiting on, and the remote's first press is then one display:block.
+ *
+ * Only the panel shell and the Main page are built: the four pages after it
+ * keep building one per frame once the panel is on screen, and building them
+ * here would hold ~200 more elements in memory for a tab the user may never
+ * open. Nothing is built while a video is playing: decode owns the CPU there.
+ */
+function schedulePrewarm() {
+  if (prewarmDone) return;
+  prewarmDone = true;
+
+  /** Builds the panel now if it is still worth doing. */
+  const warm = () => {
+    if (panel || optionsPanelVisible || isWatchPage() || isShortsPage()) return;
+    buildPanel();
   };
-  /**
-   * One of the heading's logos (one per theme; CSS shows the current one); a click switches the
-   * theme.
-   */
-  const logo = (src, variant) =>
-    createElement('img', {
-      src,
-      alt: 'Logo',
-      class: `ytaf-logo ytaf-logo-${variant}`,
-      title: 'Click to switch theme',
-      events: { click: toggleTheme }
-    });
+  const timer = setTimeout(() => {
+    // requestIdleCallback, where the engine has it (Chromium 51+): the build
+    // yields to whatever the page is doing. webOS 3 has none.
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(warm, { timeout: 2000 });
+    } else {
+      warm();
+    }
+  }, PREWARM_DELAY_MS);
+  // Leaving before it fires: nothing to warm.
+  window.addEventListener('pagehide', () => clearTimeout(timer));
+}
+
+if (typeof document !== 'undefined') {
+  schedulePrewarm();
+}
+
+// The heading: the Aura mark, the wordmark and the version. Static apart from
+// the version text, and built once (the first open).
+function createHeading() {
   return createElement(
     'h1',
     {},
-    // "YouTube Extended 0.8.5", or "... 0.8.5 b2" on a test build (core/version.js).
-    // A + rather than a template: the legacy build's ES5 turns a template into
-    // a concat() call, which the minifier does not fold into one string.
-    createElement('span', { text: 'YouTube Extended ' + VERSION_LABEL }),
-    logo(logoBlueUrl, 'blue'),
-    logo(logoRedUrl, 'red'),
-    logo(logoDarkUrl, 'dark')
+    createElement('img', {
+      src: auraMarkUrl,
+      alt: '',
+      class: 'ytaf-logo',
+      // No focus, no pointer: the mark is decoration, not a control.
+      draggable: false
+    }),
+    createElement('span', { text: 'YouTube Aura' }),
+    // "1.0.0", or "1.0.0 b2" on a test build (core/version.js). A + rather
+    // than a template: the legacy build's ES5 turns a template into a
+    // concat() call, which the minifier does not fold into one string.
+    createElement('span', { class: 'ytaf-version', text: VERSION_LABEL })
   );
 }
 
@@ -206,10 +239,7 @@ function createOptionsPanel() {
     close: () => showOptionsPanel(false)
   });
 
-  const elHeading = createHeading(() => {
-    const activeTab = tabBtns[activePage];
-    if (activeTab) activeTab.focus();
-  });
+  const elHeading = createHeading();
   elContainer.appendChild(elHeading);
   elContainer.appendChild(tabMenu.element);
 
@@ -237,8 +267,8 @@ function createOptionsPanel() {
 }
 
 /**
- * Opens (building it the first time) or closes the options panel, with its keyboard handler, focus
- * trap and popup. Toggles are ignored for 500 ms after the first build.
+ * Opens (building it the first time, if the idle prewarm has not) or closes the options panel, with
+ * its keyboard handler, focus trap and popup.
  */
 export function showOptionsPanel(visible) {
   if (panelInitBlock) {
@@ -247,17 +277,15 @@ export function showOptionsPanel(visible) {
   }
   if (visible && !optionsPanelVisible) {
     if (!panel) {
-      log.debug('building the panel (lazy)');
-      // The first open is the slow one: the Main page is built synchronously,
-      // a freeze of up to 170 ms on webOS 3. A menu key held or repeated
-      // through that freeze is delivered right after it and would toggle the
-      // panel straight back shut, so toggles are ignored for half a second.
+      // The prewarm was skipped or has not run yet. The build is the slow path
+      // (see schedulePrewarm): a menu key held or repeated through it is
+      // delivered right after and would toggle the panel straight back shut, so
+      // toggles are ignored for half a second.
       panelInitBlock = true;
       setTimeout(() => {
         panelInitBlock = false;
       }, 500);
-      panel = createOptionsPanel();
-      document.body.appendChild(panel.element);
+      buildPanel();
     }
 
     log.debug('shown');

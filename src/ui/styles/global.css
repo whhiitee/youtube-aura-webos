@@ -1,12 +1,12 @@
 /* The static stylesheet behind the UI tweaks on YouTube's own UI. Each section
-   is switched by a class on <html> (styles/html-classes.js).
+   is switched by a class on <html> (styles/html-classes.js). The look of the
+   app's own panel, toasts and the pure-black surfaces is in theme-aura.css.
    body.ytaf-hide-controls is the exception: ui/hide-controls.js puts it on
    <body> for a moment (a pause, the webOS 25 kick), short enough that YouTube
-   rewriting body.className (styles/html-classes.js) costs at most the rest of
-   that moment; the clock's own rule for it is in watch.css. YouTube class
-   names are literal here, as in yt-fixes.css; CSS is the one place the
-   selector table does not reach (GLc3cc is the controls bar, .AmQJbe is
-   SELECTORS.OVERLAY_PANEL). */
+   rewriting body.className costs at most the rest of that moment; the clock's
+   own rule for it is in watch.css. YouTube class names are literal here, as in
+   yt-fixes.css; CSS is the one place the selector table does not reach (GLc3cc
+   is the controls bar, .AmQJbe is SELECTORS.OVERLAY_PANEL). */
 
 /* Each selector here ends in a class: the bare [idomkey='shadow'] is hidden
    inline by ui/hide-controls.js. */
@@ -14,46 +14,6 @@ body.ytaf-hide-controls .GLc3cc,
 body.ytaf-hide-controls .ytLrWatchDefaultShadow,
 body.ytaf-hide-controls .ytLrWatchDefault2025Shadow {
   opacity: 0 !important;
-}
-
-/* OLED-care mode (html.ytaf-oled): black behind YouTube's surfaces. The rules
-   that only apply above 50 % shelf opacity sit under
-   html.ytaf-oled-transparent-shelf. */
-html.ytaf-oled #container,
-html.ytaf-oled .ytLrGuideResponseMask,
-html.ytaf-oled .geClSe,
-html.ytaf-oled .hsdF6b,
-html.ytaf-oled .ytLrAnimatedOverlayContainer,
-html.ytaf-oled .ZghAqf,
-html.ytaf-oled .RAE3Re .AmQJbe,
-html.ytaf-oled .tVp1L,
-html.ytaf-oled .app-quality-root .DnwJH,
-html.ytaf-oled .qRdzpd.stQChb .TYE3Ed,
-html.ytaf-oled .k82tDb {
-  background-color: #000 !important;
-}
-html.ytaf-oled .ytLrGuideResponseGradient {
-  display: none;
-}
-html.ytaf-oled .iha0pc {
-  color: #000 !important;
-}
-/* The shelf backdrop (.Jx9xPc) is written by styles/html-classes.js with the
-   configured opacity: Chromium 38 has no custom properties. */
-html.ytaf-oled .p0DeOc {
-  background-color: #000 !important;
-  background-image: none !important;
-}
-html.ytaf-oled ytlr-player-focus-ring {
-  border: 0.375rem solid rgb(200, 200, 200) !important;
-}
-html.ytaf-oled ytlr-surface-page {
-  background-image: none !important;
-  background-color: #000 !important;
-}
-html.ytaf-oled.ytaf-oled-transparent-shelf .app-quality-root .UGcxnc .dxLAmd,
-html.ytaf-oled.ytaf-oled-transparent-shelf .app-quality-root .UGcxnc .Dc2Zic .JkDfAc {
-  background-color: rgba(0, 0, 0, 0) !important;
 }
 
 /* Fix Multiline Titles */
@@ -84,9 +44,6 @@ html.ytaf-remove-borders .app-quality-root .V7jTHe,
 html.ytaf-remove-borders .app-quality-root .g6XRz,
 html.ytaf-remove-borders .app-quality-root .UGcxnc .sjENQb {
   background-color: transparent !important;
-}
-html.ytaf-remove-borders .ltewod.BZ345e {
-  background-color: #f1f1f1 !important;
 }
 /* The metadata pills keep their dim backdrop in yt-fixes.css; this is the
    gradient variant that goes with Remove Black Borders. */

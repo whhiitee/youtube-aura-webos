@@ -9,7 +9,6 @@ import {
   clockModes
 } from '../../core/config.js';
 import { titleFormattingSupported } from '../../features/dearrow/index.js';
-import { playbackSpeedSupported } from '../../features/playback-speed/index.js';
 import { isGuestMode } from '../../core/guest-mode.js';
 import { getWebOSVersion } from '../../core/webos.js';
 import { createElement } from '../dom.js';
@@ -25,8 +24,7 @@ import {
   createSegmentControl,
   createShortcutControl,
   createPreviewControl,
-  createOpacityControl,
-  createThemeControl
+  createOpacityControl
 } from './controls/index.js';
 import './pages.css';
 
@@ -201,8 +199,7 @@ export function buildShortcutsPage() {
 
 // --- Page 5: UI Tweaks ---
 /**
- * The UI Tweaks page: shelf opacity, previews, titles, rows ahead, Liquid Glass, the theme, the
- * emoji fix on webOS 3/4, and playback speed where the TV can (webOS 23 and newer).
+ * The UI Tweaks page: shelf opacity, previews, titles, rows ahead, Liquid Glass and the theme.
  */
 export function buildUITweaksPage() {
   const pageUITweaks = createElement('div', {
@@ -223,8 +220,7 @@ export function buildUITweaksPage() {
     helpLine(
       'Loads the next rows of the home screen and search early, so fast scrolling never reaches empty rows'
     ),
-    createConfigCheckbox('removeBlackBorders'),
-    createThemeControl()
+    createConfigCheckbox('removeBlackBorders')
   ];
 
   if (getWebOSVersion() <= 4) {
@@ -232,18 +228,6 @@ export function buildUITweaksPage() {
   }
 
   pageUITweaks.appendChild(createSection('Player UI Tweaks', playerUITweaks));
-
-  // Playback speed needs WebCodecs (webOS 23 and newer); elsewhere no row.
-  if (playbackSpeedSupported) {
-    pageUITweaks.appendChild(
-      createSection('Experimental', [
-        createConfigCheckbox('enablePlaybackSpeed'),
-        helpLine(
-          'Pick a speed in the player Settings > Speed menu, or map Playback Speed +/- on the Shortcuts page. Restart the app after turning it on.'
-        )
-      ])
-    );
-  }
 
   return pageUITweaks;
 }

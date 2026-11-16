@@ -83,9 +83,11 @@ if (state.enabled) loadCache();
 window.__ytafThumbStats = thumbStats;
 document.addEventListener('visibilitychange', handleVisibilityChange);
 window.addEventListener('pagehide', flushCache);
-// Unconditional and passive: one property read per key press. Registering it
-// only while enabled would need matching teardown for no measurable gain.
-document.addEventListener('keydown', onNavKey, { capture: true, passive: true });
+// Unconditional and passive in intent: one property read per key press.
+// Registering it only while enabled would need matching teardown for no
+// measurable gain. The capture flag is passed as a bare `true`: Chromium 38
+// reads an options object as `useCapture` and would ignore the rest.
+document.addEventListener('keydown', onNavKey, true);
 
 configAddChangeListener('thumbnailQualityMode', (evt) => {
   const previousUseful = state.usefulRank;

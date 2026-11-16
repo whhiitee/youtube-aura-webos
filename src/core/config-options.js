@@ -35,14 +35,8 @@ export const segmentTypes = {
   hook: { color: '#395699', opacity: '0.7', name: 'hook/greetings', label: 'Hook/Greetings' }
 };
 
-/** The looks of the options panel and the toasts (ui/styles/html-classes.js). */
-export const uiThemes = {
-  'blue-force-field': 'Blue',
-  'classic-red': 'Classic Red'
-};
-
-// The header wordmark: YouTube's own (left as YouTube draws it), the Premium
-// one, or none; how each is applied is in features/logo-style.js.
+/** The header wordmark: YouTube's own (left as YouTube draws it), the Premium
+   one, or none; how each is applied is in features/logo-style.js. */
 export const logoStyles = {
   default: 'Default',
   premium: 'Premium',
@@ -121,9 +115,6 @@ export const shortcutActions = {
   save_to_playlist: 'Save / Watch Later',
   oled_toggle: 'Toggle OLED Black Overlay',
   sb_manual_skip: 'Manual Skip / Jump to Highlight',
-  speed_up: 'Playback Speed +',
-  speed_down: 'Playback Speed -',
-  speed_reset: 'Playback Speed 1x',
   config_menu: 'Open/Close Settings'
 };
 
@@ -165,7 +156,6 @@ export const videoCodecModes = {
 };
 
 export const configOptions = new Map([
-  ['uiTheme', { default: 'blue-force-field', desc: 'UI Theme' }],
   ['enableAdBlock', { default: true, desc: 'Ad Blocking' }],
   ['enableTrackingBlock', { default: false, desc: 'Reduce Telemetry & Tracking' }],
   ['enableReturnYouTubeDislike', { default: true, desc: 'Return YouTube Dislike' }],
@@ -191,7 +181,6 @@ export const configOptions = new Map([
     'dearrowShowBadge',
     { default: true, desc: 'Show the DeArrow logo on crowdsourced titles/thumbnails' }
   ],
-  ['enablePlaybackSpeed', { default: false, desc: 'Playback Speed (experimental)' }],
   ['upgradeThumbnails', { default: false, desc: 'Max Thumbnail Quality' }],
   ['thumbnailQualityMode', { default: 'safe', desc: 'Thumbnail Strategy' }],
   ['removeGlobalShorts', { default: false, desc: 'Remove Shorts (Global)' }],
@@ -233,7 +222,7 @@ export const configOptions = new Map([
       }
     }
   ],
-  ['enableOledCareMode', { default: false, desc: 'OLED-Care Mode (True Black UI)' }],
+  ['enableOledCareMode', { default: true, desc: 'Pure Black UI (OLED)' }],
   ['videoShelfOpacity', { default: 100, desc: 'Video shelf opacity' }],
   ['fixMultilineTitles', { default: true, desc: 'Fix Multiline Titles' }],
   ['fixSearchFont', { default: true, desc: 'Fix Search Results Font' }],

@@ -15,10 +15,7 @@ import { log } from './log.js';
 // The counts of the player API path (state.js), read on the TV from the web inspector.
 window.__ytafQualityStats = qualityStats;
 
-/**
- * Leaves the player: timers, listeners and the per-video state go (the webOS 25 kick stays done for
- * the session).
- */
+/** Leaves the player: timers, listeners and the per-video state go. */
 function destroyVideoQuality() {
   log.debug('Destroying');
 
@@ -36,10 +33,6 @@ function destroyVideoQuality() {
 
   qualitySetForVideo.clear();
   vq.videoBeingProcessed = null;
-  vq.kickstartInProgress = false;
-  vq.kickstartRun++;
-  // hasKickstarted stays set: the webOS 25 kick is for the first playback of
-  // the session only (kickstart.js).
 }
 
 /** Attaches to the TV player once it is there; true when attached (pollUntil's answer). */

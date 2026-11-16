@@ -1,17 +1,19 @@
 name: Build & Release
 
+# A tag such as v1.0.0 builds the one legacy bundle, runs the suite, packages
+# the .ipk and publishes it. The release body is taken from the tag's message.
+
 on:
   push:
-    branches:
-      - '!*'
     tags:
-      - 'v*.*'
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -19,23 +21,45 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
           cache: npm
 
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
-      - run: npm run manifest
+      - run: npm ci --ignore-scripts
 
-      - name: Create release
-        uses: ncipollo/release-action@v1
+      - name: Test
+        run: npm test
+
+      - name: Package
+        run: npm run package
+
+      - name: Name the artifact for the OLED55B7V
+        run: |
+          for f in dist/*.ipk; do
+            mv "$f" "dist/${f%.ipk}_oled55b7v.ipk"
+          done
+
+      - name: Checksum
+        run: |
+          cd dist
+          sha256sum *.ipk > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publish the release
+        uses: softprops/action-gh-release@v2
         with:
-          name: 'Release ${{ github.ref }}'
-          prerelease: true
+          name: 'YouTube Aura ${{ github.ref_name }}'
           draft: false
-          allowUpdates: true
-          omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
-          omitDraftDuringUpdate: true
-          omitPrereleaseDuringUpdate: true
-          artifacts: '*.ipk,*.manifest.json'
+          prerelease: false
+          files: |
+            dist/*.ipk
+            dist/SHA256SUMS.txt
+          body: |
+            YouTube Aura — the LG OLED55B7V build (webOS 3.x, Chromium 38).
+
+            Install with the webOS Homebrew Channel, or with the webOS CLI:
+            `ares-install youtube.leanback.v4_*_oled55b7v.ipk`
+
+            The official YouTube app has to be removed first: this app takes
+            its place (`youtube.leanback.v4`).
+
+            The SHA-256 of the package is in SHA256SUMS.txt.

@@ -91,7 +91,7 @@ function load(stored) {
         sb.configRead('videoShelfOpacity') === 100,
       [sb.configRead('enableAdBlock'), sb.configRead('thumbnailQualityMode')].join(',')
     );
-    t('configGetDefault reads the table', sb.configGetDefault('uiTheme') === 'blue-force-field');
+    t('configGetDefault reads the table', sb.configGetDefault('logoStyle') === 'default');
     // Top-level const bindings of a vm script are not globals: read them in the context.
     const options = get('configOptions');
     t(
@@ -133,7 +133,7 @@ function load(stored) {
   }
   {
     const { sb, store } = load({ enableAdBlock: false, unknownLeftover: 1 });
-    sb.configWrite('enableOledCareMode', true);
+    sb.configWrite('enableOledCareMode', false);
     await wait(40);
     const saved = JSON.parse(store.get('ytaf-configuration'));
     t(
@@ -156,24 +156,24 @@ function load(stored) {
       throw new Error('listener boom');
     });
     const other = [];
-    sb.configAddChangeListener('uiTheme', (evt) => other.push(evt.detail.newValue));
+    sb.configAddChangeListener('logoStyle', (evt) => other.push(evt.detail.newValue));
 
-    sb.configWrite('enableOledCareMode', true);
+    sb.configWrite('enableOledCareMode', false);
     t(
       'configWrite updates the in-memory value at once',
-      sb.configRead('enableOledCareMode') === true
+      sb.configRead('enableOledCareMode') === false
     );
     t(
       'listeners get key, newValue and oldValue',
       seen.length === 1 &&
         seen[0].key === 'enableOledCareMode' &&
-        seen[0].newValue === true &&
-        seen[0].oldValue === false,
+        seen[0].newValue === false &&
+        seen[0].oldValue === true,
       JSON.stringify(seen)
     );
     t(
       'a listener that throws does not stop the write or the others',
-      sb.configRead('enableOledCareMode') === true &&
+      sb.configRead('enableOledCareMode') === false &&
         warnings.some((w) => /listener failed/.test(w)),
       warnings.join(' | ')
     );
@@ -183,37 +183,37 @@ function load(stored) {
     const persisted = JSON.parse(store.get('ytaf-configuration') || '{}');
     t(
       'the write is persisted after the debounce, with the whole config',
-      persisted.enableOledCareMode === true && persisted.enableAdBlock === true,
+      persisted.enableOledCareMode === false && persisted.enableAdBlock === true,
       store.get('ytaf-configuration') && store.get('ytaf-configuration').slice(0, 80)
     );
 
-    sb.configWrite('enableOledCareMode', true);
+    sb.configWrite('enableOledCareMode', false);
     t('writing the same value again does nothing', seen.length === 1);
 
     // Ending on a value other than the stored one: the burst's write is seen.
     const before = writes.n;
-    sb.configWrite('uiTheme', 'classic-red');
-    sb.configWrite('uiTheme', 'blue-force-field');
-    sb.configWrite('uiTheme', 'classic-red');
+    sb.configWrite('logoStyle', 'premium');
+    sb.configWrite('logoStyle', 'default');
+    sb.configWrite('logoStyle', 'premium');
     t(
       'three quick writes fire three events',
-      other.join(',') === 'classic-red,blue-force-field,classic-red',
+      other.join(',') === 'premium,default,premium',
       other.join(',')
     );
     await wait(40);
     t(
       'three quick writes are persisted once, as the last state',
       writes.n === before + 1 &&
-        JSON.parse(store.get('ytaf-configuration')).uiTheme === 'classic-red',
+        JSON.parse(store.get('ytaf-configuration')).logoStyle === 'premium',
       `${writes.n - before} write(s)`
     );
 
     // Leaving the page with a write still due: it is made at once.
-    sb.configWrite('uiTheme', 'blue-force-field');
+    sb.configWrite('logoStyle', 'default');
     fire('pagehide');
     t(
       'pagehide writes a pending change at once',
-      JSON.parse(store.get('ytaf-configuration')).uiTheme === 'blue-force-field' &&
+      JSON.parse(store.get('ytaf-configuration')).logoStyle === 'default' &&
         writes.n === before + 2,
       `${writes.n - before} write(s)`
     );

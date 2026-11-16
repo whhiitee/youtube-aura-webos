@@ -489,7 +489,9 @@ function boot(cfg, bodyClass, timers) {
 
   // ---- the clock's look follows the theme classes --------------------------------
   {
-    const { win } = boot({}, 'WEB_PAGE_TYPE_BROWSE');
+    // Pure Black UI off to start: the plain backdrop is the one before the
+    // class goes on.
+    const { win } = boot({ enableOledCareMode: false }, 'WEB_PAGE_TYPE_BROWSE');
     const d = win.document;
     // The stylesheet goes in once the bundle has run.
     await wait(50);
@@ -505,7 +507,7 @@ function boot(cfg, bodyClass, timers) {
     const glass = win.getComputedStyle(clock);
     t(
       'default, OLED and Liquid Glass each have their own backdrop',
-      plain === 'rgba(15, 15, 15, 0.3)' && oled === 'rgb(0, 0, 0)',
+      plain === 'rgba(10, 10, 12, 0.72)' && oled === 'rgb(0, 0, 0)',
       plain + ' / ' + oled
     );
     t(

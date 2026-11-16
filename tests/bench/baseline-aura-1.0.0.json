@@ -1,0 +1,50 @@
+{
+  "_comment": [
+    "The Aura 1.0.0 measurements, for comparison against baseline-0.8.5.json.",
+    "Re-measure with `npm run build && npm run bench`. Values in milliseconds are",
+    "medians on this machine and drift by a few percent between runs; the ratios",
+    "and the byte counts are the stable part."
+  ],
+  "source": "this repository at v1.0.0, npm run build",
+  "measured": "2026-11-16",
+  "machine": "Node 26.13.0, Windows, jsdom 30.1.2 with the Chromium 38 profile",
+  "bundle": {
+    "userScriptBytes": 226931,
+    "launcherBytes": 8267,
+    "cssBytes": 17644,
+    "cssSelectors": 166,
+    "cssAttributeSelectors": 16,
+    "ipkBytes": 90942
+  },
+  "boot": {
+    "moduleEvaluationMsMedian": 3.87,
+    "elementsAtLoad": 3,
+    "styleElements": 2
+  },
+  "panel": {
+    "prewarmedHandlerMs": 11.0,
+    "prewarmedElementsInHandler": 0,
+    "coldHandlerMs": 65.2,
+    "coldElementsInHandler": 82,
+    "elementsTotal": 327
+  },
+  "hooks": {
+    "parseBrowse150kMs": 0.486,
+    "parseBrowse150kNativeMs": 0.364,
+    "parsePlayer10kMs": 0.038,
+    "parseSmallMs": 0.0001,
+    "stringifyPlayerBodyMs": 0.0081,
+    "parseOverheadDefaultsMs": 0.0096,
+    "parseOverheadAllFiltersMs": 0.1223
+  },
+  "emoji": {
+    "plainPerFrameMs": 0.14,
+    "withEmojiPerFrameMs": 0.91,
+    "spansRendered": 144
+  },
+  "tests": {
+    "steps": 64,
+    "checks": 2045,
+    "failing": 0
+  }
+}

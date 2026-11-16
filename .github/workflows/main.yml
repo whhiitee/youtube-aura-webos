@@ -1,10 +1,15 @@
 name: Build & Test
 
+# YouTube Aura has one build: the webOS 3 / Chromium 38 bundle for the
+# LG OLED55B7V. Every push is compiled, tested and packaged, so the artifact
+# from any green run is installable.
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,31 +21,44 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
           cache: npm
 
       # No install scripts: only the webOS CLI has any (an optional native SSH
       # binding), and the build and tests do not need it.
       - run: npm ci --ignore-scripts
 
-      # Formatting, lint, types, both builds and every test script
+      # Formatting, lint, types, the code map, the build and every test script,
+      # the ES5 and CSS compatibility checks included.
       - run: npm test
 
-      # Legacy (webOS 3-6) package
-      - run: npm run build
-      - run: npm run package
+      - name: Package the .ipk
+        run: npm run package
 
-      # webOS 22+ package, renamed the same way "build-local modern.cmd" does
-      - run: npm run build:modern
-      - name: Package webOS 22+ build
+      - name: Name the artifact
         run: |
-          mkdir -p modern
-          npx ares-package -n dist -o modern
-          for f in modern/*.ipk; do mv "$f" "dist/$(basename "${f%.ipk}")_webOS22+.ipk"; done
+          for f in dist/*.ipk; do
+            mv "$f" "dist/${f%.ipk}_oled55b7v.ipk"
+          done
 
-      - name: Upload artifact
+      - name: Upload the .ipk
         uses: actions/upload-artifact@v4
         with:
-          name: youtube_adfree_ipk
-          path: |
-            ${{github.workspace}}/dist/youtube.leanback.v4_*_all*.ipk
+          name: youtube-aura-ipk
+          path: dist/*.ipk
+          if-no-files-found: error
+
+      - name: Upload the performance report
+        run: |
+          mkdir -p bench-out
+          node tests/bench/hook-bench.cjs > bench-out/hook.txt
+          node tests/bench/panel-bench.cjs > bench-out/panel.txt
+          node tests/bench/boot-bench.cjs > bench-out/boot.txt
+          node tests/bench/emoji-bench.cjs > bench-out/emoji.txt
+          node tests/bench/parse-breakdown.cjs > bench-out/parse.txt
+          cat bench-out/*.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmarks
+          path: bench-out/*.txt

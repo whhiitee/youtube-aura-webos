@@ -21,7 +21,7 @@
   },
   {
    "path": "core/config-options.js",
-   "lines": 283,
+   "lines": 272,
    "header": "Every setting the app knows about, with its default and the label the options panel shows, plus the value tables the cycle controls choose from. An option's `upgrade(stored)` turns a value an older build stored into this build's (core/config.js applies it when the settings load).",
    "imports": [
     {
@@ -38,7 +38,6 @@
    ],
    "exports": [
     "segmentTypes",
-    "uiThemes",
     "logoStyles",
     "thumbnailQualityModes",
     "dearrowTitleFormats",
@@ -61,7 +60,7 @@
   },
   {
    "path": "core/config.js",
-   "lines": 168,
+   "lines": 167,
    "header": "Persisted settings: one localStorage entry, read into memory once, written back debounced, with change listeners per key. The option tables themselves live in config-options.js and are re-exported here so callers import one module.",
    "imports": [
     {
@@ -93,8 +92,6 @@
     "features/emoji-font/observer.js",
     "features/force-codec/index.js",
     "features/logo-style.js",
-    "features/playback-speed/controller.js",
-    "features/playback-speed/index.js",
     "features/return-dislike/bootstrap.js",
     "features/sponsorblock/blue-key.js",
     "features/sponsorblock/bootstrap.js",
@@ -112,7 +109,6 @@
     "ui/panel/controls/color-picker.js",
     "ui/panel/controls/cycle-row.js",
     "ui/panel/pages.js",
-    "ui/panel/panel.js",
     "ui/shortcuts/bindings.js",
     "ui/styles/html-classes.js",
     "ui/toast/index.js"
@@ -126,7 +122,6 @@
     "sbModesHighlight",
     "forcePreviewModes",
     "videoCodecModes",
-    "uiThemes",
     "dearrowTitleFormats",
     "dearrowThumbnailFallbacks",
     "clockModes",
@@ -359,13 +354,11 @@
     "features/adblock/log.js",
     "features/adblock/parse-hook.js",
     "features/auto-login/log.js",
-    "features/block-webos-cast.ts",
     "features/comments-fix.js",
     "features/dearrow/log.js",
     "features/emoji-font/log.js",
     "features/force-codec/log.js",
     "features/lang-settings-fix.ts",
-    "features/playback-speed/log.js",
     "features/return-dislike/index.js",
     "features/screensaver-fix/log.js",
     "features/sponsorblock/index.js",
@@ -480,11 +473,8 @@
    "header": "The YouTube player API's playback states, as getPlayerState() reports them and as the `yt-player-state-change` event (features/video-quality) carries them.",
    "imports": [],
    "importedBy": [
-    "features/playback-speed/controller.js",
-    "features/playback-speed/index.js",
     "features/screensaver-fix/shorts-keep-alive.js",
     "features/sponsorblock/video-events.js",
-    "features/video-quality/kickstart.js",
     "features/video-quality/player-state.js",
     "features/video-quality/quality.js",
     "features/watch/index.js"
@@ -512,7 +502,6 @@
     "features/return-dislike/navigation.js",
     "features/return-dislike/panel-dom.js",
     "features/screensaver-fix/shorts-keep-alive.js",
-    "features/video-quality/kickstart.js",
     "ui/panel/controls/cycle-row.js",
     "ui/panel/keyboard.js",
     "ui/shortcuts/bindings.js",
@@ -556,7 +545,6 @@
     "features/comments-fix.js",
     "features/dearrow/sweep.js",
     "features/emoji-font/text-nodes.js",
-    "features/playback-speed/index.js",
     "features/return-dislike/constants.js",
     "features/return-dislike/injection.js",
     "features/screensaver-fix/index.js",
@@ -566,7 +554,6 @@
     "features/sponsorblock/overlay.js",
     "features/thumbnail-quality/rendered.js",
     "features/video-quality/index.js",
-    "features/video-quality/kickstart.js",
     "features/watch/index.js",
     "ui/shortcuts/actions.js",
     "ui/shortcuts/helpers.js",
@@ -581,25 +568,6 @@
    ],
    "atLoad": {},
    "functions": []
-  },
-  {
-   "path": "core/speed-cap.js",
-   "lines": 14,
-   "header": "Whether the playback speed feature holds the video at 1080p: above 1.25x a TV cannot decode 2160p fast enough, so it caps the quality, and Force Max Quality (features/video-quality) waits meanwhile. Kept here rather than in either feature: the speed feature is in the webOS 22+ build only.",
-   "imports": [],
-   "importedBy": [
-    "features/playback-speed/controller.js",
-    "features/video-quality/state.js"
-   ],
-   "exports": [
-    "isQualityCappedBySpeed",
-    "setQualityCappedBySpeed"
-   ],
-   "atLoad": {},
-   "functions": [
-    "core/speed-cap.js#isQualityCappedBySpeed",
-    "core/speed-cap.js#setQualityCappedBySpeed"
-   ]
   },
   {
    "path": "core/styles.js",
@@ -656,8 +624,8 @@
   },
   {
    "path": "core/webos.js",
-   "lines": 95,
-   "header": "The platform: which webOS version this is (from the user agent, cached), whether it is the simulator, and the engine features the modules branch on. Read by the features that differ between webOS 3 and 4, webOS 5 and 6, and webOS 22 onward.",
+   "lines": 92,
+   "header": "The platform: which webOS version this is (from the user agent, cached) and whether it is the simulator. The build targets the LG OLED55B7V (webOS 3.x, Chromium 38); the version is still read so the webOS 3/4 code (the buffer limit, the emoji fix) only runs where it is needed, and so the code paths stay readable to anyone running the bundle elsewhere.",
    "imports": [
     {
      "from": "core/log.js",
@@ -673,15 +641,12 @@
     "features/return-dislike/constants.js",
     "features/return-dislike/navigation.js",
     "features/sponsorblock/index.js",
-    "features/video-quality/state.js",
-    "ui/panel/pages.js",
-    "userScript.js"
+    "ui/panel/pages.js"
    ],
    "exports": [
     "HAS_ABORT_CONTROLLER",
     "simulatorMode",
     "getWebOSVersion",
-    "isWebOS25",
     "isLegacyWebOS"
    ],
    "atLoad": {
@@ -691,7 +656,6 @@
    },
    "functions": [
     "core/webos.js#getWebOSVersion",
-    "core/webos.js#isWebOS25",
     "core/webos.js#isLegacyWebOS"
    ]
   },
@@ -720,7 +684,7 @@
   },
   {
    "path": "dev/perf-mon.js",
-   "lines": 4741,
+   "lines": 4740,
    "header": "perf-mon.js — YTAF Engine Diagnostics ===================================================================== Dev-only instrumentation for the webOS YouTube mod.\n\nWHAT IT DOES 1. Hooks every runtime boundary this mod actually crosses (JSON.parse, JSON.stringify, fetch, XHR, MutationObserver, IntersectionObserver, timers, rAF, DOM queries, layout reads, event listeners) and charges the cost back to the module + function responsible. 2. Carries a registry of every function in the codebase and its role, so the cluster reports \"this is firing / this is silent / this should not be running here\" instead of anonymous numbers. 3. Runs a feature-expectation sweep on every page transition: for each enabled option it knows what should happen on this page, and verifies it against live DOM and runtime evidence. 4. Renders an automotive instrument cluster sized for a TV across a room. 5. Emits machine-readable bottleneck reports for an AI agent to review.\n\nLOAD ORDER MATTERS. Import this first in userScript.js (after the polyfills). It installs \"inner\" probes immediately, so it sits underneath adblock's JSON.parse hook and can time the native parse; then it arms \"outer\" probes in a deferred task once the bundle has finished evaluating, so it also sits above every mod hook and can time the total. Mod overhead = outer - inner.\n\nREMOTE   Press 0 three times within 1.5s to toggle the cluster. LEFT/RIGHT tab. UP/DOWN scroll. OK emits a report. BACK closes. (YELLOW is NOT used: YouTube's own leanback UI claims it, and screensaver-fix.js synthesises a YELLOW press every 30s on Shorts.) CONSOLE  __PERF.help(), __PERF.toggle()",
    "imports": [],
    "importedBy": [
@@ -1275,7 +1239,7 @@
   },
   {
    "path": "features/adblock/parse-hook.js",
-   "lines": 182,
+   "lines": 172,
    "header": "The JSON.parse hook: classifies each InnerTube response and runs the filters, the thumbnail rewrite and the text fixes over it before the app sees it.",
    "imports": [
     {
@@ -1379,16 +1343,12 @@
      ]
     }
    ],
-   "importedBy": [
-    "features/playback-speed/index.js"
-   ],
+   "importedBy": [],
    "exports": [
-    "setParsedObjectStep",
     "installParseHook"
    ],
    "atLoad": {},
    "functions": [
-    "features/adblock/parse-hook.js#setParsedObjectStep",
     "features/adblock/parse-hook.js#logSchemaMiss",
     "features/adblock/parse-hook.js#wrapEmojiInFrameworkUpdates",
     "features/adblock/parse-hook.js#hookedParse",
@@ -1881,48 +1841,6 @@
     "features/auto-login/whos-watching.js#attemptActiveBypass",
     "features/auto-login/whos-watching.js#resetActiveBypass",
     "features/auto-login/whos-watching.js#setupActiveBypassListener"
-   ]
-  },
-  {
-   "path": "features/block-webos-cast-absent.js",
-   "lines": 5,
-   "header": "The legacy build's block-webos-cast.ts (webpack.config.js): webOS 25 runs the webOS 22+ build, so the legacy one never has a cast wake-up to block.",
-   "imports": [],
-   "importedBy": [],
-   "exports": [
-    "initBlockWebOSCast"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/block-webos-cast-absent.js#initBlockWebOSCast"
-   ]
-  },
-  {
-   "path": "features/block-webos-cast.ts",
-   "lines": 45,
-   "header": "Fixes webosbrew/youtube-webos/issues/343\n\nWraps window.fetch itself rather than listening on the FetchRegistry: a registry listener takes every request of the app through the hooked path (a URL object and an event per call), while this is one string check.",
-   "imports": [
-    {
-     "from": "core/log.js",
-     "names": [
-      "createLogger"
-     ]
-    }
-   ],
-   "importedBy": [
-    "userScript.js"
-   ],
-   "exports": [
-    "initBlockWebOSCast"
-   ],
-   "atLoad": {
-    "calls": [
-     "core/log.js#createLogger"
-    ]
-   },
-   "functions": [
-    "features/block-webos-cast.ts#isCastWakeUp",
-    "features/block-webos-cast.ts#initBlockWebOSCast"
    ]
   },
   {
@@ -3003,254 +2921,6 @@
    "functions": [
     "features/logo-style.js#applyLogoStyle",
     "features/logo-style.js#initLogoStyle"
-   ]
-  },
-  {
-   "path": "features/playback-speed/controller.js",
-   "lines": 239,
-   "header": "The playback speed: what it is, changing it, and the audio engine that plays the sound at it. A change reloads the video (loadVideoById at the current position): the engine decides a MediaSource's speed once, when YouTube creates its buffers (vendor/playback-speed/mse-hook.js). Rapid changes within RELOAD_DELAY_MS are one reload.",
-   "imports": [
-    {
-     "from": "vendor/playback-speed/audio-engine.js",
-     "names": [
-      "AudioEngine"
-     ]
-    },
-    {
-     "from": "vendor/playback-speed/mse-hook.js",
-     "names": [
-      "isSupportedSpeed",
-      "SUPPORTED_SPEEDS"
-     ]
-    },
-    {
-     "from": "core/config.js",
-     "names": [
-      "configRead"
-     ]
-    },
-    {
-     "from": "core/speed-cap.js",
-     "names": [
-      "setQualityCappedBySpeed"
-     ]
-    },
-    {
-     "from": "core/player-state.js",
-     "names": [
-      "PLAYER_STATE"
-     ]
-    },
-    {
-     "from": "features/playback-speed/log.js",
-     "names": [
-      "log"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/playback-speed/index.js"
-   ],
-   "exports": [
-    "CAP_ABOVE",
-    "createSpeedController"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/playback-speed/controller.js#restorePosition",
-    "features/playback-speed/controller.js#createAudioSinks",
-    "features/playback-speed/controller.js#createAudioSinks.release",
-    "features/playback-speed/controller.js#createAudioSinks.create",
-    "features/playback-speed/controller.js#createAudioSinks.create.listener",
-    "features/playback-speed/controller.js#createAudioSinks.current",
-    "features/playback-speed/controller.js#createSpeedController",
-    "features/playback-speed/controller.js#createSpeedController.getSpeed",
-    "features/playback-speed/controller.js#createSpeedController.setCurrent",
-    "features/playback-speed/controller.js#createSpeedController.position",
-    "features/playback-speed/controller.js#createSpeedController.applyReload",
-    "features/playback-speed/controller.js#createSpeedController.scheduleReload",
-    "features/playback-speed/controller.js#createSpeedController.setSpeed",
-    "features/playback-speed/controller.js#createSpeedController.step",
-    "features/playback-speed/controller.js#createSpeedController.reset",
-    "features/playback-speed/controller.js#createSpeedController.stop",
-    "features/playback-speed/controller.js#createSpeedController.onError",
-    "features/playback-speed/controller.js#createSpeedController.lastReloadAt"
-   ]
-  },
-  {
-   "path": "features/playback-speed/index.js",
-   "lines": 118,
-   "header": "Playback speed (experimental, off by default; webOS 23 and newer, the webOS 22+ build only). webOS's media pipeline ignores video.playbackRate, so the engine (src/vendor/playback-speed) keeps the decoder at 1x and rescales the video's own timeline instead, and plays the sound through WebCodecs and Web Audio, time-stretched with the pitch kept. 0.25x to 2x.\n\nPicked in YouTube's own Settings > Speed menu (native-menu.js) or with the Playback Speed +, - and 1x shortcuts. Nothing is installed until the setting is on; turned off, the speed goes back to 1x at once and everything installed stands aside. The legacy build has playback-speed-absent.js in its place.",
-   "imports": [
-    {
-     "from": "core/config.js",
-     "names": [
-      "configRead",
-      "configAddChangeListener"
-     ]
-    },
-    {
-     "from": "core/selectors.js",
-     "names": [
-      "SELECTORS"
-     ]
-    },
-    {
-     "from": "core/player-state.js",
-     "names": [
-      "PLAYER_STATE"
-     ]
-    },
-    {
-     "from": "ui/toast/index.js",
-     "names": [
-      "showNotification"
-     ]
-    },
-    {
-     "from": "vendor/playback-speed/mse-hook.js",
-     "names": [
-      "installMseHook"
-     ]
-    },
-    {
-     "from": "features/adblock/parse-hook.js",
-     "names": [
-      "setParsedObjectStep"
-     ]
-    },
-    {
-     "from": "features/playback-speed/controller.js",
-     "names": [
-      "createSpeedController",
-      "CAP_ABOVE"
-     ]
-    },
-    {
-     "from": "features/playback-speed/native-menu.js",
-     "names": [
-      "enableSpeedButton",
-      "enableNativeSpeedMenu",
-      "hookRateAssignments",
-      "bindPlayerRate"
-     ]
-    },
-    {
-     "from": "features/playback-speed/log.js",
-     "names": [
-      "log"
-     ]
-    }
-   ],
-   "importedBy": [
-    "ui/panel/pages.js",
-    "ui/shortcuts/actions.js",
-    "userScript.js"
-   ],
-   "exports": [
-    "playbackSpeedSupported",
-    "stepSpeed",
-    "resetSpeed"
-   ],
-   "atLoad": {
-    "calls": [
-     "core/config.js#configAddChangeListener",
-     "features/playback-speed/index.js#install",
-     "features/playback-speed/index.js#isOn"
-    ],
-    "settings": {
-     "listen": [
-      "enablePlaybackSpeed"
-     ]
-    }
-   },
-   "functions": [
-    "features/playback-speed/index.js#isOn",
-    "features/playback-speed/index.js#getPlayer",
-    "features/playback-speed/index.js#install",
-    "features/playback-speed/index.js#stepSpeed",
-    "features/playback-speed/index.js#resetSpeed"
-   ]
-  },
-  {
-   "path": "features/playback-speed/log.js",
-   "lines": 4,
-   "header": "The logger of the feature's modules: their messages carry [PlaybackSpeed] (core/log.js).",
-   "imports": [
-    {
-     "from": "core/log.js",
-     "names": [
-      "createLogger"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/playback-speed/controller.js",
-    "features/playback-speed/index.js"
-   ],
-   "exports": [
-    "log"
-   ],
-   "atLoad": {
-    "calls": [
-     "core/log.js#createLogger"
-    ]
-   },
-   "functions": []
-  },
-  {
-   "path": "features/playback-speed/native-menu.js",
-   "lines": 152,
-   "header": "YouTube's own speed controls on the TV app, which it turns off for webOS: the Speed button of the player's controls (switched on in the response that carries it) and the speed options of its Settings menu (a flag YouTube reads off its config objects). A speed picked there reaches the controller through the player's setPlaybackRate, which is wrapped wherever YouTube creates it. Everything here follows `isOn()`: with the feature off, YouTube sees what it would have seen.",
-   "imports": [
-    {
-     "from": "vendor/playback-speed/mse-hook.js",
-     "names": [
-      "isSupportedSpeed"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/playback-speed/index.js"
-   ],
-   "exports": [
-    "enableSpeedButton",
-    "enableNativeSpeedMenu",
-    "hookRateAssignments",
-    "bindPlayerRate"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/playback-speed/native-menu.js#enableSpeedButton",
-    "features/playback-speed/native-menu.js#enableNativeSpeedMenu",
-    "features/playback-speed/native-menu.js#wrapRate",
-    "features/playback-speed/native-menu.js#wrapRate.wrapped",
-    "features/playback-speed/native-menu.js#hookRateAssignments",
-    "features/playback-speed/native-menu.js#bindPlayerRate"
-   ]
-  },
-  {
-   "path": "features/playback-speed-absent.js",
-   "lines": 15,
-   "header": "What the legacy build (webOS 3 to 6) has in place of features/playback-speed (webpack.config.js): the speed engine needs WebCodecs, which none of those TVs have, so the shortcuts only say so and the panel shows no row.",
-   "imports": [
-    {
-     "from": "ui/toast/index.js",
-     "names": [
-      "showNotification"
-     ]
-    }
-   ],
-   "importedBy": [],
-   "exports": [
-    "playbackSpeedSupported",
-    "stepSpeed",
-    "resetSpeed"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/playback-speed-absent.js#stepSpeed",
-    "features/playback-speed-absent.js#resetSpeed"
    ]
   },
   {
@@ -5019,7 +4689,7 @@
   },
   {
    "path": "features/thumbnail-quality/index.js",
-   "lines": 103,
+   "lines": 105,
    "header": "Max Thumbnail Quality - rewrites thumbnail URLs in the parsed InnerTube response, inside the JSON.parse hook adblock already owns, so the app is only ever handed the high-quality URL and never fetches the 320x180 crop.\n\nJSON carries no failure signal the way a CSS background fallback does, and maxresdefault does not exist for every video - YouTube answers a miss with a small grey placeholder rather than a 404 (see PLACEHOLDER_MAX_BYTES). Hence the modes in state.js and the verification queue in probes.js. This file wires the switches, the cache's lifetime and the arrow-key pause.",
    "imports": [
     {
@@ -5579,7 +5249,7 @@
   },
   {
    "path": "features/video-quality/index.js",
-   "lines": 170,
+   "lines": 163,
    "header": "Force High Resolution Video: on the watch page it attaches to the TV player, forces the highest quality (quality.js) and publishes the player's state changes for the other features (player-state.js). This file follows the page and the setting.",
    "imports": [
     {
@@ -5671,78 +5341,6 @@
    ]
   },
   {
-   "path": "features/video-quality/kickstart-absent.js",
-   "lines": 5,
-   "header": "The legacy build's kickstart.js (webpack.config.js): the first-video kick is for webOS 25, which runs the webOS 22+ build.",
-   "imports": [],
-   "importedBy": [],
-   "exports": [
-    "ensurePlaybackStarts"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/video-quality/kickstart-absent.js#ensurePlaybackStarts"
-   ]
-  },
-  {
-   "path": "features/video-quality/kickstart.js",
-   "lines": 80,
-   "header": "webOS 25 first-video fix: after the quality switch the player can sit in UNSTARTED, so the first playback is kicked until it reports PLAYING, and the controls bar that the kick raises is dismissed again.",
-   "imports": [
-    {
-     "from": "core/remote.js",
-     "names": [
-      "sendKey",
-      "REMOTE_KEYS"
-     ]
-    },
-    {
-     "from": "features/video-quality/state.js",
-     "names": [
-      "IS_WEBOS_25",
-      "KICKSTART_MAX_ATTEMPTS",
-      "KICKSTART_INTERVAL_MS",
-      "vq"
-     ]
-    },
-    {
-     "from": "core/selectors.js",
-     "names": [
-      "SELECTORS"
-     ]
-    },
-    {
-     "from": "ui/hide-controls.js",
-     "names": [
-      "hideControlsFor"
-     ]
-    },
-    {
-     "from": "features/video-quality/log.js",
-     "names": [
-      "log"
-     ]
-    },
-    {
-     "from": "core/player-state.js",
-     "names": [
-      "PLAYER_STATE"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/video-quality/player-state.js"
-   ],
-   "exports": [
-    "ensurePlaybackStarts"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/video-quality/kickstart.js#dismissRaisedControls",
-    "features/video-quality/kickstart.js#ensurePlaybackStarts"
-   ]
-  },
-  {
    "path": "features/video-quality/log.js",
    "lines": 4,
    "header": "The logger of the feature's modules: their messages carry [VideoQuality] (core/log.js).",
@@ -5756,7 +5354,6 @@
    ],
    "importedBy": [
     "features/video-quality/index.js",
-    "features/video-quality/kickstart.js",
     "features/video-quality/player-state.js",
     "features/video-quality/quality.js"
    ],
@@ -5772,7 +5369,7 @@
   },
   {
    "path": "features/video-quality/player-state.js",
-   "lines": 81,
+   "lines": 77,
    "header": "Player state transitions: publishes `yt-player-state-change` for the other features and drives quality forcing from it.",
    "imports": [
     {
@@ -5790,12 +5387,6 @@
       "setQualityOnPlayer",
       "notifyIfUpgraded",
       "interceptAndUpgradeQuality"
-     ]
-    },
-    {
-     "from": "features/video-quality/kickstart.js",
-     "names": [
-      "ensurePlaybackStarts"
      ]
     },
     {
@@ -5894,46 +5485,25 @@
   },
   {
    "path": "features/video-quality/state.js",
-   "lines": 69,
+   "lines": 54,
    "header": "Everything the video-quality modules share: the constants, the player handle and the per-session flags. Scalars live on `vq` so every module reads and writes the same value; the Set is exported directly.",
-   "imports": [
-    {
-     "from": "core/webos.js",
-     "names": [
-      "isWebOS25"
-     ]
-    },
-    {
-     "from": "core/speed-cap.js",
-     "names": [
-      "isQualityCappedBySpeed"
-     ]
-    }
-   ],
+   "imports": [],
    "importedBy": [
     "features/video-quality/index.js",
-    "features/video-quality/kickstart.js",
     "features/video-quality/player-state.js",
     "features/video-quality/quality.js"
    ],
    "exports": [
     "KNOWN_QUALITIES",
-    "IS_WEBOS_25",
     "QUALITY_KEY",
     "ONE_YEAR_MS",
     "RENEW_BEFORE_MS",
-    "KICKSTART_INTERVAL_MS",
-    "KICKSTART_MAX_ATTEMPTS",
     "vq",
     "qualitySetForVideo",
     "qualityStats",
     "isForceEnabled"
    ],
-   "atLoad": {
-    "calls": [
-     "core/webos.js#isWebOS25"
-    ]
-   },
+   "atLoad": {},
    "functions": [
     "features/video-quality/state.js#isForceEnabled"
    ]
@@ -6369,11 +5939,10 @@
   },
   {
    "path": "ui/hide-controls.js",
-   "lines": 52,
-   "header": "Keeps YouTube's controls bar, the player shadows and the clock out of sight for a moment: a pause (ui/shortcuts/playback.js) and the webOS 25 kick (features/video-quality/kickstart.js) both raise the bar.\n\nThe bar, the named shadows and the clock go through a class on <body> whose rules end in a class (global.css, watch.css): a toggle restyles only the elements with those classes, and an element YouTube builds during the window is covered too. The shadow drawn as a bare [idomkey='shadow'] goes through an inline style instead: a rule ending in that attribute made each toggle restyle every element carrying an idomkey, most of the app. Any element with that idomkey, as 0.8.4 matched, not only a div.",
+   "lines": 51,
+   "header": "Keeps YouTube's controls bar, the player shadows and the clock out of sight for a moment after a pause (ui/shortcuts/playback.js), which raises the bar.\n\nThe bar, the named shadows and the clock go through a class on <body> whose rules end in a class (global.css, watch.css): a toggle restyles only the elements with those classes, and an element YouTube builds during the window is covered too. The shadow drawn as a bare [idomkey='shadow'] goes through an inline style instead: a rule ending in that attribute made each toggle restyle every element carrying an idomkey, most of the app. Any element with that idomkey, as 0.8.4 matched, not only a div.",
    "imports": [],
    "importedBy": [
-    "features/video-quality/kickstart.js",
     "ui/shortcuts/playback.js"
    ],
    "exports": [
@@ -6502,7 +6071,7 @@
   },
   {
    "path": "ui/panel/controls/cycle-row.js",
-   "lines": 238,
+   "lines": 234,
    "header": "The left/right cycle rows, each bound to a config key, and the rows built from them for particular settings. Every control registers its config listeners once and never removes them: the panel is built once and lives for the session.",
    "imports": [
     {
@@ -6519,8 +6088,7 @@
       "forcePreviewModes",
       "logoStyles",
       "thumbnailQualityModes",
-      "videoCodecModes",
-      "uiThemes"
+      "videoCodecModes"
      ]
     },
     {
@@ -6553,7 +6121,6 @@
     "createChoiceControl",
     "createLogoControl",
     "createVideoCodecControl",
-    "createThemeControl",
     "createThumbnailQualityControl",
     "createSegmentControl",
     "createShortcutControl",
@@ -6575,7 +6142,6 @@
     "ui/panel/controls/cycle-row.js#createChoiceControl",
     "ui/panel/controls/cycle-row.js#createLogoControl",
     "ui/panel/controls/cycle-row.js#createVideoCodecControl",
-    "ui/panel/controls/cycle-row.js#createThemeControl",
     "ui/panel/controls/cycle-row.js#createThumbnailQualityControl",
     "ui/panel/controls/cycle-row.js#createThumbnailQualityControl.sync",
     "ui/panel/controls/cycle-row.js#createSegmentControl",
@@ -6588,7 +6154,7 @@
   },
   {
    "path": "ui/panel/controls/index.js",
-   "lines": 17,
+   "lines": 16,
    "header": "The building blocks of the options panel: checkboxes, sections, the left/right cycle rows and the colour picker, each bound to a config key.",
    "imports": [
     {
@@ -6606,7 +6172,6 @@
     "createChoiceControl",
     "createLogoControl",
     "createVideoCodecControl",
-    "createThemeControl",
     "createThumbnailQualityControl",
     "createSegmentControl",
     "createShortcutControl",
@@ -6703,7 +6268,7 @@
   },
   {
    "path": "ui/panel/pages.js",
-   "lines": 249,
+   "lines": 233,
    "header": "The five pages of the options panel. Each builder returns its page element; the panel appends it and decides when it is built (Main up front, the rest one per frame once the panel is on screen).",
    "imports": [
     {
@@ -6720,12 +6285,6 @@
      "from": "features/dearrow/index.js",
      "names": [
       "titleFormattingSupported"
-     ]
-    },
-    {
-     "from": "features/playback-speed/index.js",
-     "names": [
-      "playbackSpeedSupported"
      ]
     },
     {
@@ -6765,8 +6324,7 @@
       "createSegmentControl",
       "createShortcutControl",
       "createPreviewControl",
-      "createOpacityControl",
-      "createThemeControl"
+      "createOpacityControl"
      ]
     },
     {
@@ -6799,7 +6357,7 @@
   },
   {
    "path": "ui/panel/panel.js",
-   "lines": 296,
+   "lines": 324,
    "header": "The options panel: the container and its tab menu, showing and hiding it and keeping focus inside it.",
    "imports": [
     {
@@ -6807,17 +6365,10 @@
      "names": []
     },
     {
-     "from": "core/config.js",
-     "names": [
-      "configRead",
-      "configWrite",
-      "uiThemes"
-     ]
-    },
-    {
      "from": "core/page-state.js",
      "names": [
-      "isWatchPage"
+      "isWatchPage",
+      "isShortsPage"
      ]
     },
     {
@@ -6827,21 +6378,9 @@
      ]
     },
     {
-     "from": "ui/icons/logo-blue.png",
+     "from": "ui/icons/aura-mark.png",
      "names": [
-      "default as logoBlueUrl"
-     ]
-    },
-    {
-     "from": "ui/icons/logo-red.png",
-     "names": [
-      "default as logoRedUrl"
-     ]
-    },
-    {
-     "from": "ui/icons/logo-dark.png",
-     "names": [
-      "default as logoDarkUrl"
+      "default as auraMarkUrl"
      ]
     },
     {
@@ -6902,7 +6441,8 @@
    ],
    "atLoad": {
     "calls": [
-     "core/log.js#createLogger"
+     "core/log.js#createLogger",
+     "ui/panel/panel.js#schedulePrewarm"
     ]
    },
    "functions": [
@@ -6912,9 +6452,10 @@
     "ui/panel/panel.js#createDeferredBuilder.startDeferred.step",
     "ui/panel/panel.js#createTabMenu",
     "ui/panel/panel.js#isOptionsPanelVisible",
+    "ui/panel/panel.js#buildPanel",
+    "ui/panel/panel.js#schedulePrewarm",
+    "ui/panel/panel.js#schedulePrewarm.warm",
     "ui/panel/panel.js#createHeading",
-    "ui/panel/panel.js#createHeading.toggleTheme",
-    "ui/panel/panel.js#createHeading.logo",
     "ui/panel/panel.js#createOptionsPanel",
     "ui/panel/panel.js#createOptionsPanel.syncPopup",
     "ui/panel/panel.js#createOptionsPanel.setActivePage",
@@ -6925,7 +6466,7 @@
   },
   {
    "path": "ui/shortcuts/actions.js",
-   "lines": 81,
+   "lines": 76,
    "header": "What each shortcut does. A `global` action runs anywhere, with nothing passed; the others run on a watch or Shorts page with a <video>, which `run` receives. `burst` marks the seeks, which batch rapid presses instead of being debounced.",
    "imports": [
     {
@@ -6994,13 +6535,6 @@
      "names": [
       "getSponsorBlock"
      ]
-    },
-    {
-     "from": "features/playback-speed/index.js",
-     "names": [
-      "stepSpeed",
-      "resetSpeed"
-     ]
     }
    ],
    "importedBy": [
@@ -7013,8 +6547,7 @@
     "calls": [
      "ui/shortcuts/seek.js#skipChapter",
      "ui/shortcuts/seek.js#performBurstSeek",
-     "ui/shortcuts/playback.js#playPause",
-     "features/playback-speed/index.js#stepSpeed"
+     "ui/shortcuts/playback.js#playPause"
     ]
    },
    "functions": [
@@ -7513,8 +7046,8 @@
   },
   {
    "path": "ui/styles/html-classes.js",
-   "lines": 72,
-   "header": "The state of the UI as classes on <html>: the theme, OLED-care mode and the UI tweaks, each driven by a setting. The stylesheets (global.css, the panel, the toasts, the clock's watch.css, theme-red.css, theme-oled.css) select on these classes, so a change of setting is one class toggle and no element is touched.\n\nOn documentElement rather than body: YouTube's leanback app rewrites body.className on tab navigation and panel dialogs and would wipe a body class.",
+   "lines": 84,
+   "header": "The state of the UI as classes on <html>: Pure Black UI, the UI tweaks and the Aura look, each driven by a setting. The stylesheets (styles/theme-aura.css, the panel, the toasts, the clock's watch.css, yt-fixes.css) select on these classes, so a change of setting is one class toggle and no element is touched.\n\nOn documentElement rather than body: YouTube's leanback app rewrites body.className on tab navigation and panel dialogs and would wipe a body class.",
    "imports": [
     {
      "from": "core/config.js",
@@ -7534,11 +7067,7 @@
      "names": []
     },
     {
-     "from": "ui/styles/theme-red.css",
-     "names": []
-    },
-    {
-     "from": "ui/styles/theme-oled.css",
+     "from": "ui/styles/theme-aura.css",
      "names": []
     }
    ],
@@ -7554,7 +7083,6 @@
       "fixMultilineTitles",
       "fixSearchFont",
       "removeBlackBorders",
-      "uiTheme",
       "enableOledCareMode",
       "videoShelfOpacity"
      ]
@@ -7591,8 +7119,6 @@
    ],
    "importedBy": [
     "features/force-codec/index.js",
-    "features/playback-speed-absent.js",
-    "features/playback-speed/index.js",
     "features/sponsorblock/blue-key.js",
     "features/sponsorblock/index.js",
     "features/sponsorblock/skipping.js",
@@ -7623,7 +7149,7 @@
   },
   {
    "path": "userScript.js",
-   "lines": 92,
+   "lines": 82,
    "header": "The script webOS runs inside YouTube's TV site (built as webOSUserScripts/userScript.js). It loads every feature, installs the global hooks and handles launches and relaunches; the order of the imports below is the order things start in (docs/ARCHITECTURE.md).",
    "imports": [
     {
@@ -7680,20 +7206,6 @@
      ]
     },
     {
-     "from": "core/webos.js",
-     "names": [
-      "isWebOS25",
-      "simulatorMode",
-      "getWebOSVersion"
-     ]
-    },
-    {
-     "from": "features/block-webos-cast.ts",
-     "names": [
-      "initBlockWebOSCast"
-     ]
-    },
-    {
      "from": "features/return-dislike/index.js",
      "names": []
     },
@@ -7736,10 +7248,6 @@
      "names": []
     },
     {
-     "from": "features/playback-speed/index.js",
-     "names": []
-    },
-    {
      "from": "core/log.js",
      "names": [
       "createLogger"
@@ -7754,7 +7262,6 @@
      "features/adblock/parse-hook.js#installParseHook",
      "features/adblock/stringify-hook.ts#installStringifyHook",
      "features/force-codec/index.js#installCodecHooks",
-     "core/webos.js#getWebOSVersion",
      "hooks/buffer-limit.js#installBufferLimit",
      "features/logo-style.js#initLogoStyle",
      "features/adblock/tracking-block.js#startTrackingBlock",
@@ -7762,9 +7269,7 @@
      "features/auto-login/whos-watching.js#attemptActiveBypass",
      "features/auto-login/whos-watching.js#resetActiveBypass",
      "core/launch.js#hasLaunchTarget",
-     "core/launch.js#handleLaunch",
-     "core/webos.js#isWebOS25",
-     "features/block-webos-cast.ts#initBlockWebOSCast"
+     "core/launch.js#handleLaunch"
     ],
     "events": {
      "listen": [
@@ -7918,206 +7423,6 @@
    ],
    "atLoad": {},
    "functions": []
-  },
-  {
-   "path": "vendor/playback-speed/audio-engine.js",
-   "lines": 593,
-   "header": "",
-   "imports": [
-    {
-     "from": "vendor/playback-speed/wsola.js",
-     "names": [
-      "WsolaStretcher"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/playback-speed/controller.js"
-   ],
-   "exports": [
-    "AudioEngine"
-   ],
-   "atLoad": {},
-   "functions": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.constructor",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPause",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onWaiting",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onSeeking",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPlaying",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.setVolume",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.configure",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.isSameCfg",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.push",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.lowerBound",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.discard",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.reset",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.destroy",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.reportError",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onAudioData",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.pumpDecoder",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick.node.onended",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.prunePcm",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.softCorrect",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.extractPcm"
-   ]
-  },
-  {
-   "path": "vendor/playback-speed/containers.js",
-   "lines": 844,
-   "header": "Far above what a media fragment holds (a few hundred samples).",
-   "imports": [],
-   "importedBy": [
-    "vendor/playback-speed/mse-hook.js"
-   ],
-   "exports": [
-    "parseBoxes",
-    "classifyMp4",
-    "findMdhdTimescale",
-    "rewriteInitTimescale",
-    "parseInitInfo",
-    "audioConfigFromInit",
-    "demuxFragments",
-    "readVint",
-    "parseElements",
-    "classifyWebm",
-    "findTimecodeScale",
-    "rewriteTimecodeScale",
-    "audioConfigFromWebmInit",
-    "demuxClusters"
-   ],
-   "atLoad": {},
-   "functions": [
-    "vendor/playback-speed/containers.js#parseBoxes",
-    "vendor/playback-speed/containers.js#classifyMp4",
-    "vendor/playback-speed/containers.js#dfs",
-    "vendor/playback-speed/containers.js#findMdhdTimescale",
-    "vendor/playback-speed/containers.js#rewriteInitTimescale",
-    "vendor/playback-speed/containers.js#readDescr",
-    "vendor/playback-speed/containers.js#opusHeadFromDOps",
-    "vendor/playback-speed/containers.js#parseInitInfo",
-    "vendor/playback-speed/containers.js#audioConfigFromInit",
-    "vendor/playback-speed/containers.js#demuxFragments",
-    "vendor/playback-speed/containers.js#readVint",
-    "vendor/playback-speed/containers.js#parseElements",
-    "vendor/playback-speed/containers.js#levelOne",
-    "vendor/playback-speed/containers.js#classifyWebm",
-    "vendor/playback-speed/containers.js#findTimecodeScale",
-    "vendor/playback-speed/containers.js#encodeVint",
-    "vendor/playback-speed/containers.js#rewriteTimecodeScale",
-    "vendor/playback-speed/containers.js#audioConfigFromWebmInit",
-    "vendor/playback-speed/containers.js#demuxClusters"
-   ]
-  },
-  {
-   "path": "vendor/playback-speed/mse-hook.js",
-   "lines": 776,
-   "header": "",
-   "imports": [
-    {
-     "from": "vendor/playback-speed/containers.js",
-     "names": [
-      "classifyMp4",
-      "rewriteInitTimescale",
-      "parseInitInfo",
-      "audioConfigFromInit",
-      "demuxFragments",
-      "parseBoxes",
-      "classifyWebm",
-      "rewriteTimecodeScale",
-      "findTimecodeScale",
-      "audioConfigFromWebmInit",
-      "demuxClusters",
-      "parseElements"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/playback-speed/controller.js",
-    "features/playback-speed/index.js",
-    "features/playback-speed/native-menu.js"
-   ],
-   "exports": [
-    "SUPPORTED_SPEEDS",
-    "isSupportedSpeed",
-    "SpeedTimeMap",
-    "attachElementShim",
-    "installMseHook"
-   ],
-   "atLoad": {},
-   "functions": [
-    "vendor/playback-speed/mse-hook.js#isSupportedSpeed",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.constructor",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.get speed",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.set speed",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.toElement",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.toContent",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges.start",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges.end",
-    "vendor/playback-speed/mse-hook.js#attachElementShim",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.defineProp",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.defineProp.newDesc.set",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges.start",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges.end",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.detach",
-    "vendor/playback-speed/mse-hook.js#installMseHook",
-    "vendor/playback-speed/mse-hook.js#installMseHook.attach",
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.URL.createObjectURL",
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.URL.revokeObjectURL",
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchMediaSource",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchMediaSource.list.item",
-    "vendor/playback-speed/mse-hook.js#installMseHook.looksLikeInitStart",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.remove",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.defineAccessor",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.start",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.end",
-    "vendor/playback-speed/mse-hook.js#installMseHook.uninstall",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.constructor",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get timestampOffset",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.set timestampOffset",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get buffered",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get buffered.start",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get buffered.end",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._addRange",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._evictBehind",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._finishLater",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.remove",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.abort",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.changeType"
-   ]
-  },
-  {
-   "path": "vendor/playback-speed/wsola.js",
-   "lines": 252,
-   "header": "",
-   "imports": [],
-   "importedBy": [
-    "vendor/playback-speed/audio-engine.js"
-   ],
-   "exports": [
-    "WsolaStretcher"
-   ],
-   "atLoad": {},
-   "functions": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.constructor",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.setSpeed",
-    "vendor/playback-speed/wsola.js#WsolaStretcher._ensureInCapacity",
-    "vendor/playback-speed/wsola.js#WsolaStretcher._ensureOutCapacity",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.push",
-    "vendor/playback-speed/wsola.js#WsolaStretcher._process",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.available",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.pull",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.flush",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.reset"
-   ]
   }
  ],
  "functions": [
@@ -8144,8 +7449,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    28,
-    36
+    27,
+    35
    ],
    "description": "The stored settings as an object, or null when there are none or they do not parse.",
    "browser": [
@@ -8162,8 +7467,8 @@
    "params": "stored",
    "exported": false,
    "lines": [
-    44,
-    60
+    43,
+    59
    ],
    "description": "Every option of this build: the stored value where there is one (through the option's `upgrade` when it has one: a value an older build stored), else the default. A key the store holds that this build does not have (a setting from an older one) is left out, so the next write drops it from storage.",
    "calledBy": [
@@ -8177,8 +7482,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    72,
-    79
+    71,
+    78
    ],
    "description": "Writes the whole config to localStorage now; a full or refused storage keeps it in memory only.",
    "browser": [
@@ -8196,8 +7501,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    84,
-    89
+    83,
+    88
    ],
    "description": "Writes a pending debounced change at once (on beforeunload and pagehide), so leaving the app does not lose it.",
    "calls": [
@@ -8214,8 +7519,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    91,
-    93
+    90,
+    92
    ],
    "description": "Starts the 200 ms debounced write unless one is already pending.",
    "calls": [
@@ -8235,8 +7540,8 @@
    "params": "key",
    "exported": false,
    "lines": [
-    98,
-    100
+    97,
+    99
    ],
    "description": "Whether this build has a setting called `key`.",
    "calledBy": [
@@ -8250,8 +7555,8 @@
    "params": "key, verb",
    "exported": false,
    "lines": [
-    103,
-    105
+    102,
+    104
    ],
    "description": "Throws for a key no option defines: a typo, or a key a build removed.",
    "calls": [
@@ -8272,8 +7577,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    108,
-    111
+    107,
+    110
    ],
    "description": "The label the options panel shows for `key`.",
    "calls": [
@@ -8295,8 +7600,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    114,
-    117
+    113,
+    116
    ],
    "description": "The current value of setting `key` (from memory: no storage read). Throws for an unknown key.",
    "calls": [
@@ -8319,8 +7624,6 @@
     "features/emoji-font/observer.js#manageObserverState",
     "features/force-codec/index.js#applyMode",
     "features/logo-style.js#applyLogoStyle",
-    "features/playback-speed/controller.js#createSpeedController.applyReload",
-    "features/playback-speed/index.js#isOn",
     "features/return-dislike/bootstrap.js#bootstrapReturnDislike",
     "features/sponsorblock/bootstrap.js#bootstrapSponsorBlock",
     "features/sponsorblock/labels.js#buildCss",
@@ -8339,7 +7642,6 @@
     "ui/panel/controls/cycle-row.js#createThumbnailQualityControl.sync",
     "ui/panel/pages.js#buildDeArrowPage.sync",
     "ui/panel/pages.js#buildMainPage.updateDependencyState",
-    "ui/panel/panel.js#createHeading.toggleTheme",
     "ui/shortcuts/bindings.js#updateShortcutCache",
     "ui/styles/html-classes.js#read",
     "ui/styles/html-classes.js#syncOledShelfOpacity",
@@ -8353,8 +7655,8 @@
    "params": "key, value",
    "exported": true,
    "lines": [
-    122,
-    142
+    121,
+    141
    ],
    "description": "The per-write log is debug level: configWrite fires per event during colour-picker drags and opacity scrubs (the localStorage write itself is debounced).",
    "calls": [
@@ -8366,7 +7668,6 @@
     "ui/panel/controls/color-picker.js#createColorPicker",
     "ui/panel/controls/cycle-row.js#createCycleControl.cycle",
     "ui/panel/controls/cycle-row.js#createOpacityControl.changeValue",
-    "ui/panel/panel.js#createHeading.toggleTheme",
     "ui/shortcuts/bindings.js#ensureMenuKey",
     "ui/shortcuts/bindings.js#updateShortcutCache"
    ]
@@ -8378,8 +7679,8 @@
    "params": "key, callback",
    "exported": true,
    "lines": [
-    148,
-    152
+    147,
+    151
    ],
    "description": "Calls `callback({ detail: { key, newValue, oldValue } })` whenever `key` changes through configWrite.",
    "calls": [
@@ -8393,7 +7694,6 @@
     "features/emoji-font/index.js#(top level)",
     "features/force-codec/index.js#installCodecHooks",
     "features/logo-style.js#initLogoStyle",
-    "features/playback-speed/index.js#(top level)",
     "features/sponsorblock/index.js#SponsorBlockHandler.setupConfigListeners.listen",
     "features/thumbnail-quality/index.js#(top level)",
     "features/video-quality/index.js#(top level)",
@@ -8416,8 +7716,8 @@
    "params": "key, callback",
    "exported": true,
    "lines": [
-    155,
-    157
+    154,
+    156
    ],
    "description": "Stops calling `callback` for changes of `key`.",
    "calledBy": [
@@ -8431,8 +7731,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    160,
-    163
+    159,
+    162
    ],
    "description": "The default value of setting `key`, as config-options.js declares it.",
    "calls": [
@@ -8449,8 +7749,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    166,
-    168
+    165,
+    167
    ],
    "description": "Export the live object reference directly for zero-overhead caching",
    "calledBy": [
@@ -8976,13 +8276,11 @@
     "core/webos.js#(top level)",
     "features/adblock/log.js#(top level)",
     "features/auto-login/log.js#(top level)",
-    "features/block-webos-cast.ts#(top level)",
     "features/comments-fix.js#(top level)",
     "features/dearrow/log.js#(top level)",
     "features/emoji-font/log.js#(top level)",
     "features/force-codec/log.js#(top level)",
     "features/lang-settings-fix.ts#(top level)",
-    "features/playback-speed/log.js#(top level)",
     "features/return-dislike/index.js#ReturnYouTubeDislike.constructor",
     "features/screensaver-fix/log.js#(top level)",
     "features/sponsorblock/index.js#SponsorBlockHandler.constructor",
@@ -9115,6 +8413,7 @@
     "features/video-quality/index.js#handleNavigation",
     "features/watch/index.js#Watch.updateVisibility",
     "ui/panel/panel.js#createOptionsPanel.syncPopup",
+    "ui/panel/panel.js#schedulePrewarm.warm",
     "ui/shortcuts/actions.js#ACTIONS.refresh_page.run",
     "ui/shortcuts/router.js#inScope"
    ]
@@ -9133,6 +8432,7 @@
    "calledBy": [
     "features/adblock/parse-hook.js#filterResponse",
     "features/screensaver-fix/index.js#classifyPage",
+    "ui/panel/panel.js#schedulePrewarm.warm",
     "ui/shortcuts/actions.js#ACTIONS.refresh_page.run",
     "ui/shortcuts/playback.js#hideControlsAfterPause",
     "ui/shortcuts/router.js#inScope",
@@ -9338,41 +8638,10 @@
     "features/auto-login/whos-watching.js#attemptActiveBypass",
     "features/return-dislike/panel-dom.js#triggerEnter",
     "features/screensaver-fix/shorts-keep-alive.js#setShortsKeepAlive",
-    "features/video-quality/kickstart.js#dismissRaisedControls",
     "ui/shortcuts/helpers.js#simulateBack",
     "ui/shortcuts/oled.js#toggleOledOverlay",
     "ui/shortcuts/playback.js#hideControlsAfterPause",
     "ui/shortcuts/seek.js#doSkipChapter"
-   ]
-  },
-  {
-   "id": "core/speed-cap.js#isQualityCappedBySpeed",
-   "name": "isQualityCappedBySpeed",
-   "kind": "arrow",
-   "params": "",
-   "exported": true,
-   "lines": [
-    9,
-    9
-   ],
-   "description": "Whether the speed feature caps the quality now.",
-   "calledBy": [
-    "features/video-quality/state.js#isForceEnabled"
-   ]
-  },
-  {
-   "id": "core/speed-cap.js#setQualityCappedBySpeed",
-   "name": "setQualityCappedBySpeed",
-   "kind": "function",
-   "params": "on",
-   "exported": true,
-   "lines": [
-    12,
-    14
-   ],
-   "description": "Set by the speed feature when its speed goes above or back under the cap.",
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.setCurrent"
    ]
   },
   {
@@ -9464,37 +8733,16 @@
    "params": "",
    "exported": true,
    "lines": [
-    31,
-    85
+    32,
+    87
    ],
    "description": "The TV's webOS version from the user agent: the platform year, else the firmware (webOS 25), else the Chromium version (the simulators); 6 when nothing matches. Cached.",
    "calledBy": [
     "core/webos.js#isLegacyWebOS",
-    "core/webos.js#isWebOS25",
     "features/adblock/flags.js#recomputeFilterFlags",
     "features/emoji-font/index.js#(top level)",
     "features/return-dislike/navigation.js#(top level)",
-    "ui/panel/pages.js#buildUITweaksPage",
-    "userScript.js#(top level)"
-   ]
-  },
-  {
-   "id": "core/webos.js#isWebOS25",
-   "name": "isWebOS25",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    88,
-    90
-   ],
-   "description": "Whether the TV runs webOS 25 or later.",
-   "calls": [
-    "core/webos.js#getWebOSVersion"
-   ],
-   "calledBy": [
-    "features/video-quality/state.js#(top level)",
-    "userScript.js#(top level)"
+    "ui/panel/pages.js#buildUITweaksPage"
    ]
   },
   {
@@ -9504,10 +8752,10 @@
    "params": "",
    "exported": true,
    "lines": [
-    93,
-    95
+    90,
+    92
    ],
-   "description": "Whether the TV runs webOS 6 or older (the legacy build's platforms).",
+   "description": "Whether the TV runs webOS 6 or older (this build's platforms).",
    "calls": [
     "core/webos.js#getWebOSVersion"
    ],
@@ -9789,8 +9037,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    561,
-    571
+    560,
+    570
    ],
    "description": "",
    "calledBy": [
@@ -9804,8 +9052,8 @@
    "params": "stack",
    "exported": false,
    "lines": [
-    573,
-    584
+    572,
+    583
    ],
    "description": "",
    "calledBy": [
@@ -9819,8 +9067,8 @@
    "params": "stack",
    "exported": false,
    "lines": [
-    586,
-    591
+    585,
+    590
    ],
    "description": "",
    "calledBy": [
@@ -9834,8 +9082,8 @@
    "params": "fn, hint",
    "exported": false,
    "lines": [
-    596,
-    639
+    595,
+    638
    ],
    "description": "Resolve and memoise {module, fn, role, cost, ours} for a callback.",
    "calls": [
@@ -9861,8 +9109,8 @@
    "params": "hint",
    "exported": false,
    "lines": [
-    641,
-    652
+    640,
+    651
    ],
    "description": "",
    "calledBy": [
@@ -9876,8 +9124,8 @@
    "params": "origin",
    "exported": false,
    "lines": [
-    665,
-    676
+    664,
+    675
    ],
    "description": "",
    "calls": [
@@ -9896,8 +9144,8 @@
    "params": "mod",
    "exported": false,
    "lines": [
-    678,
-    682
+    677,
+    681
    ],
    "description": "",
    "calls": [
@@ -9916,8 +9164,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    684,
-    686
+    683,
+    685
    ],
    "description": "",
    "calledBy": [
@@ -9933,8 +9181,8 @@
    "params": "origin, fn, thisArg, args",
    "exported": false,
    "lines": [
-    689,
-    704
+    688,
+    703
    ],
    "description": "Run fn under an attribution context and charge its inclusive wall time.",
    "calls": [
@@ -9958,8 +9206,8 @@
    "params": "limit, windowMs",
    "exported": false,
    "lines": [
-    706,
-    730
+    705,
+    729
    ],
    "description": "",
    "calledBy": [
@@ -9977,8 +9225,8 @@
    "params": "name",
    "exported": false,
    "lines": [
-    797,
-    810
+    796,
+    809
    ],
    "description": "",
    "calls": [
@@ -9997,8 +9245,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    819,
-    830
+    818,
+    829
    ],
    "description": "",
    "calledBy": [
@@ -10012,8 +9260,8 @@
    "params": "fn",
    "exported": false,
    "lines": [
-    833,
-    835
+    832,
+    834
    ],
    "description": "",
    "calledBy": [
@@ -10027,8 +9275,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    837,
-    854
+    836,
+    853
    ],
    "description": "",
    "calls": [
@@ -10047,8 +9295,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    873,
-    880
+    872,
+    879
    ],
    "description": "",
    "calledBy": [
@@ -10062,8 +9310,8 @@
    "params": "fnName, fallbackModule",
    "exported": false,
    "lines": [
-    892,
-    903
+    891,
+    902
    ],
    "description": "",
    "calledBy": [
@@ -10077,8 +9325,8 @@
    "params": "origin, msSpent",
    "exported": false,
    "lines": [
-    905,
-    911
+    904,
+    910
    ],
    "description": "",
    "calls": [
@@ -10097,8 +9345,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    913,
-    925
+    912,
+    924
    ],
    "description": "",
    "calledBy": [
@@ -10112,8 +9360,8 @@
    "params": "t",
    "exported": false,
    "lines": [
-    927,
-    939
+    926,
+    938
    ],
    "description": "",
    "calls": [
@@ -10130,8 +9378,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    941,
-    966
+    940,
+    965
    ],
    "description": "",
    "hooks": [
@@ -10149,8 +9397,8 @@
    "params": "text, reviver",
    "exported": false,
    "lines": [
-    944,
-    953
+    943,
+    952
    ],
    "description": ""
   },
@@ -10161,8 +9409,8 @@
    "params": "value, replacer, space",
    "exported": false,
    "lines": [
-    958,
-    965
+    957,
+    964
    ],
    "description": ""
   },
@@ -10173,8 +9421,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    968,
-    1051
+    967,
+    1050
    ],
    "description": "",
    "calls": [
@@ -10196,8 +9444,8 @@
    "params": "text, reviver",
    "exported": false,
    "lines": [
-    986,
-    1023
+    985,
+    1022
    ],
    "description": "",
    "calls": [
@@ -10215,8 +9463,8 @@
    "params": "value, replacer, space",
    "exported": false,
    "lines": [
-    1028,
-    1048
+    1027,
+    1047
    ],
    "description": "",
    "calls": [
@@ -10231,8 +9479,8 @@
    "params": "url",
    "exported": false,
    "lines": [
-    1068,
-    1074
+    1067,
+    1073
    ],
    "description": "",
    "calledBy": [
@@ -10249,8 +9497,8 @@
    "params": "kind, method, url, ms, ok",
    "exported": false,
    "lines": [
-    1076,
-    1101
+    1075,
+    1100
    ],
    "description": "",
    "calls": [
@@ -10269,8 +9517,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1103,
-    1223
+    1102,
+    1222
    ],
    "description": "",
    "calls": [
@@ -10290,8 +9538,8 @@
    "params": "url, _data",
    "exported": false,
    "lines": [
-    1110,
-    1124
+    1109,
+    1123
    ],
    "description": "",
    "calls": [
@@ -10306,8 +9554,8 @@
    "params": "resource, init",
    "exported": false,
    "lines": [
-    1132,
-    1169
+    1131,
+    1168
    ],
    "description": "",
    "calls": [
@@ -10323,8 +9571,8 @@
    "params": "ok",
    "exported": false,
    "lines": [
-    1138,
-    1143
+    1137,
+    1142
    ],
    "description": "",
    "calls": [
@@ -10342,8 +9590,8 @@
    "params": "method, url",
    "exported": false,
    "lines": [
-    1178,
-    1186
+    1177,
+    1185
    ],
    "description": ""
   },
@@ -10354,8 +9602,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1188,
-    1221
+    1187,
+    1220
    ],
    "description": "",
    "calls": [
@@ -10376,8 +9624,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1193,
-    1201
+    1192,
+    1200
    ],
    "description": "",
    "calls": [
@@ -10396,8 +9644,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1206,
-    1209
+    1205,
+    1208
    ],
    "description": "",
    "calls": [
@@ -10411,8 +9659,8 @@
    "params": "target",
    "exported": false,
    "lines": [
-    1235,
-    1247
+    1234,
+    1246
    ],
    "description": "",
    "calledBy": [
@@ -10427,8 +9675,8 @@
    "params": "o",
    "exported": false,
    "lines": [
-    1249,
-    1259
+    1248,
+    1258
    ],
    "description": "",
    "calledBy": [
@@ -10442,8 +9690,8 @@
    "params": "rec",
    "exported": false,
    "lines": [
-    1261,
-    1265
+    1260,
+    1264
    ],
    "description": "",
    "calledBy": [
@@ -10458,8 +9706,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1267,
-    1376
+    1266,
+    1375
    ],
    "description": "",
    "calledBy": [
@@ -10473,8 +9721,8 @@
    "params": "callback",
    "exported": false,
    "lines": [
-    1273,
-    1331
+    1272,
+    1330
    ],
    "description": "",
    "calls": [
@@ -10491,8 +9739,8 @@
    "params": "records, observer",
    "exported": false,
    "lines": [
-    1287,
-    1307
+    1286,
+    1306
    ],
    "description": "",
    "calls": [
@@ -10511,8 +9759,8 @@
    "params": "target, options",
    "exported": false,
    "lines": [
-    1315,
-    1324
+    1314,
+    1323
    ],
    "description": "",
    "calls": [
@@ -10528,8 +9776,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1325,
-    1328
+    1324,
+    1327
    ],
    "description": ""
   },
@@ -10540,8 +9788,8 @@
    "params": "callback, options",
    "exported": false,
    "lines": [
-    1339,
-    1372
+    1338,
+    1371
    ],
    "description": "",
    "calls": [
@@ -10558,8 +9806,8 @@
    "params": "entries, observer",
    "exported": false,
    "lines": [
-    1352,
-    1358
+    1351,
+    1357
    ],
    "description": "",
    "calls": [
@@ -10577,8 +9825,8 @@
    "params": "target",
    "exported": false,
    "lines": [
-    1361,
-    1369
+    1360,
+    1368
    ],
    "description": "",
    "calls": [
@@ -10593,8 +9841,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1382,
-    1484
+    1381,
+    1483
    ],
    "description": "",
    "calledBy": [
@@ -10608,8 +9856,8 @@
    "params": "fn, delay",
    "exported": false,
    "lines": [
-    1389,
-    1407
+    1388,
+    1406
    ],
    "description": "",
    "calls": [
@@ -10624,8 +9872,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1398,
-    1405
+    1397,
+    1404
    ],
    "description": "",
    "calls": [
@@ -10639,8 +9887,8 @@
    "params": "fn, delay",
    "exported": false,
    "lines": [
-    1409,
-    1440
+    1408,
+    1439
    ],
    "description": "",
    "calls": [
@@ -10656,8 +9904,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1425,
-    1435
+    1424,
+    1434
    ],
    "description": "",
    "calls": [
@@ -10671,8 +9919,8 @@
    "params": "id",
    "exported": false,
    "lines": [
-    1442,
-    1445
+    1441,
+    1444
    ],
    "description": ""
   },
@@ -10683,8 +9931,8 @@
    "params": "fn",
    "exported": false,
    "lines": [
-    1449,
-    1482
+    1448,
+    1481
    ],
    "description": "",
    "calls": [
@@ -10700,8 +9948,8 @@
    "params": "ts",
    "exported": false,
    "lines": [
-    1456,
-    1480
+    1455,
+    1479
    ],
    "description": "",
    "calls": [
@@ -10721,8 +9969,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1493,
-    1542
+    1492,
+    1541
    ],
    "description": "",
    "calls": [
@@ -10742,8 +9990,8 @@
    "params": "proto, name, counter, meter",
    "exported": false,
    "lines": [
-    1495,
-    1508
+    1494,
+    1507
    ],
    "description": "",
    "calledBy": [
@@ -10757,8 +10005,8 @@
    "params": "_sel",
    "exported": false,
    "lines": [
-    1498,
-    1507
+    1497,
+    1506
    ],
    "description": ""
   },
@@ -10769,8 +10017,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1529,
-    1532
+    1528,
+    1531
    ],
    "description": ""
   },
@@ -10781,8 +10029,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1536,
-    1539
+    1535,
+    1538
    ],
    "description": ""
   },
@@ -10793,8 +10041,8 @@
    "params": "type, options",
    "exported": false,
    "lines": [
-    1554,
-    1557
+    1553,
+    1556
    ],
    "description": "",
    "calledBy": [
@@ -10809,8 +10057,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1559,
-    1605
+    1558,
+    1604
    ],
    "description": "",
    "calledBy": [
@@ -10824,8 +10072,8 @@
    "params": "type, listener, options",
    "exported": false,
    "lines": [
-    1567,
-    1593
+    1566,
+    1592
    ],
    "description": "",
    "calls": [
@@ -10841,8 +10089,8 @@
    "params": "type, listener, options",
    "exported": false,
    "lines": [
-    1595,
-    1604
+    1594,
+    1603
    ],
    "description": "",
    "calls": [
@@ -10856,8 +10104,8 @@
    "params": "obj, moduleName",
    "exported": false,
    "lines": [
-    1631,
-    1682
+    1630,
+    1681
    ],
    "description": "",
    "calls": [
@@ -10875,8 +10123,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1662,
-    1664
+    1661,
+    1663
    ],
    "description": "",
    "calls": [
@@ -10893,8 +10141,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1684,
-    1697
+    1683,
+    1696
    ],
    "description": "",
    "calls": [
@@ -10911,8 +10159,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1686,
-    1694
+    1685,
+    1693
    ],
    "description": "",
    "calls": [
@@ -10930,8 +10178,8 @@
    "params": "sel",
    "exported": false,
    "lines": [
-    1709,
-    1715
+    1708,
+    1714
    ],
    "description": "",
    "browser": [
@@ -10949,8 +10197,8 @@
    "params": "sel",
    "exported": false,
    "lines": [
-    1716,
-    1722
+    1715,
+    1721
    ],
    "description": "",
    "browser": [
@@ -10968,8 +10216,8 @@
    "params": "id",
    "exported": false,
    "lines": [
-    1723,
-    1729
+    1722,
+    1728
    ],
    "description": "",
    "calledBy": [
@@ -10983,8 +10231,8 @@
    "params": "cls",
    "exported": false,
    "lines": [
-    1730,
-    1732
+    1729,
+    1731
    ],
    "description": "",
    "calledBy": [
@@ -10998,8 +10246,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1779,
-    1796
+    1778,
+    1795
    ],
    "description": "",
    "calls": [
@@ -11020,8 +10268,8 @@
    "params": "key",
    "exported": false,
    "lines": [
-    1798,
-    1801
+    1797,
+    1800
    ],
    "description": "",
    "calls": [
@@ -11039,8 +10287,8 @@
    "params": "name",
    "exported": false,
    "lines": [
-    1821,
-    1823
+    1820,
+    1822
    ],
    "description": "",
    "calledBy": [
@@ -11055,8 +10303,8 @@
    "params": "name, w",
    "exported": false,
    "lines": [
-    1824,
-    1827
+    1823,
+    1826
    ],
    "description": "",
    "calls": [
@@ -11073,8 +10321,8 @@
    "params": "module, fn",
    "exported": false,
    "lines": [
-    1828,
-    1838
+    1827,
+    1837
    ],
    "description": "",
    "calledBy": [
@@ -11090,8 +10338,8 @@
    "params": "module, fns",
    "exported": false,
    "lines": [
-    1839,
-    1845
+    1838,
+    1844
    ],
    "description": "",
    "calls": [
@@ -11108,8 +10356,8 @@
    "params": "el",
    "exported": false,
    "lines": [
-    1860,
-    1866
+    1859,
+    1865
    ],
    "description": "",
    "calledBy": [
@@ -11123,8 +10371,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1868,
-    1886
+    1867,
+    1885
    ],
    "description": "",
    "calls": [
@@ -11145,8 +10393,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1889,
-    1891
+    1888,
+    1890
    ],
    "description": "The one <video> the mod cares about.",
    "calls": [
@@ -11164,8 +10412,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1900,
-    1913
+    1899,
+    1912
    ],
    "description": "",
    "calls": [
@@ -11187,8 +10435,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1922,
-    1950
+    1921,
+    1949
    ],
    "description": "getElementsByTagName('*') stops at a shadow boundary, and YouTube's ytlr-* elements are custom elements that may hold their subtree in a shadow root. A count of a few hundred on a full watch page is the signature of exactly that, so walk any open roots too and report both figures — the light-DOM number alone would make the DOM gauge meaningless.",
    "browser": [
@@ -11206,8 +10454,8 @@
    "params": "moduleName",
    "exported": false,
    "lines": [
-    1952,
-    1959
+    1951,
+    1958
    ],
    "description": "",
    "calledBy": [
@@ -11221,8 +10469,8 @@
    "params": "type, withinMs",
    "exported": false,
    "lines": [
-    1960,
-    1965
+    1959,
+    1964
    ],
    "description": "",
    "calledBy": [
@@ -11236,8 +10484,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    2702,
-    2704
+    2701,
+    2703
    ],
    "description": "",
    "calledBy": [
@@ -11252,8 +10500,8 @@
    "params": "f",
    "exported": false,
    "lines": [
-    2706,
-    2711
+    2705,
+    2710
    ],
    "description": "",
    "calls": [
@@ -11270,8 +10518,8 @@
    "params": "f, page",
    "exported": false,
    "lines": [
-    2717,
-    2766
+    2716,
+    2765
    ],
    "description": "Evaluate one feature against the current page. This is the function that answers \"what should be happening right now, and is it?\".",
    "calls": [
@@ -11289,8 +10537,8 @@
    "params": "page",
    "exported": false,
    "lines": [
-    2768,
-    2774
+    2767,
+    2773
    ],
    "description": "",
    "calls": [
@@ -11311,8 +10559,8 @@
    "params": "ttl",
    "exported": false,
    "lines": [
-    2783,
-    2790
+    2782,
+    2789
    ],
    "description": "",
    "calls": [
@@ -11330,8 +10578,8 @@
    "params": "list",
    "exported": false,
    "lines": [
-    2799,
-    2808
+    2798,
+    2807
    ],
    "description": "",
    "calledBy": [
@@ -11345,8 +10593,8 @@
    "params": "page, reason",
    "exported": false,
    "lines": [
-    2810,
-    2858
+    2809,
+    2857
    ],
    "description": "",
    "calls": [
@@ -11366,8 +10614,8 @@
    "params": "sweep",
    "exported": false,
    "lines": [
-    2870,
-    2934
+    2869,
+    2933
    ],
    "description": "",
    "calls": [
@@ -11386,8 +10634,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3230,
-    3241
+    3229,
+    3240
    ],
    "description": "",
    "calls": [
@@ -11406,8 +10654,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3247,
-    3426
+    3246,
+    3425
    ],
    "description": "",
    "calls": [
@@ -11428,8 +10676,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3428,
-    3450
+    3427,
+    3449
    ],
    "description": "",
    "calledBy": [
@@ -11443,8 +10691,8 @@
    "params": "reason",
    "exported": false,
    "lines": [
-    3455,
-    3505
+    3454,
+    3504
    ],
    "description": "",
    "calls": [
@@ -11464,8 +10712,8 @@
    "params": "reason",
    "exported": false,
    "lines": [
-    3507,
-    3522
+    3506,
+    3521
    ],
    "description": "",
    "calls": [
@@ -11484,8 +10732,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3528,
-    3608
+    3527,
+    3607
    ],
    "description": "",
    "calls": [
@@ -11510,8 +10758,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3533,
-    3545
+    3532,
+    3544
    ],
    "description": "",
    "calledBy": [
@@ -11525,8 +10773,8 @@
    "params": "tag, styles, text",
    "exported": false,
    "lines": [
-    3643,
-    3653
+    3642,
+    3652
    ],
    "description": "All elements are created here so they can all carry the `twemoji-injected` marker: emoji-font.js treats that class as \"already processed\" and skips the subtree, which keeps the monitor out of the observer it is measuring.",
    "calledBy": [
@@ -11544,8 +10792,8 @@
    "params": "tag, attrs",
    "exported": false,
    "lines": [
-    3655,
-    3663
+    3654,
+    3662
    ],
    "description": "",
    "calledBy": [
@@ -11559,8 +10807,8 @@
    "params": "cx, cy, r, deg",
    "exported": false,
    "lines": [
-    3668,
-    3671
+    3667,
+    3670
    ],
    "description": "",
    "calledBy": [
@@ -11575,8 +10823,8 @@
    "params": "cx, cy, r, a0, a1",
    "exported": false,
    "lines": [
-    3673,
-    3693
+    3672,
+    3692
    ],
    "description": "",
    "calls": [
@@ -11593,8 +10841,8 @@
    "params": "o",
    "exported": false,
    "lines": [
-    3699,
-    3833
+    3698,
+    3832
    ],
    "description": "@param {object} o {size, label, unit, max, redFrom, invert} invert: low values are the problem (used for FPS)",
    "calls": [
@@ -11613,8 +10861,8 @@
    "params": "v, displayText",
    "exported": false,
    "lines": [
-    3823,
-    3831
+    3822,
+    3830
    ],
    "description": "",
    "calls": [
@@ -11628,8 +10876,8 @@
    "params": "label",
    "exported": false,
    "lines": [
-    3835,
-    3850
+    3834,
+    3849
    ],
    "description": "",
    "calls": [
@@ -11646,8 +10894,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3862,
-    4009
+    3861,
+    4008
    ],
    "description": "",
    "calls": [
@@ -11667,8 +10915,8 @@
    "params": "container, cells",
    "exported": false,
    "lines": [
-    4011,
-    4031
+    4010,
+    4030
    ],
    "description": "",
    "calls": [
@@ -11688,8 +10936,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4033,
-    4095
+    4032,
+    4094
    ],
    "description": "",
    "calls": [
@@ -11710,8 +10958,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4097,
-    4135
+    4096,
+    4134
    ],
    "description": "",
    "calls": [
@@ -11731,8 +10979,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4137,
-    4167
+    4136,
+    4166
    ],
    "description": "",
    "calls": [
@@ -11752,8 +11000,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4169,
-    4257
+    4168,
+    4256
    ],
    "description": "",
    "calls": [
@@ -11773,8 +11021,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4259,
-    4331
+    4258,
+    4330
    ],
    "description": "",
    "calls": [
@@ -11798,8 +11046,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4335,
-    4346
+    4334,
+    4345
    ],
    "description": "",
    "calls": [
@@ -11818,8 +11066,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4348,
-    4355
+    4347,
+    4354
    ],
    "description": "",
    "calledBy": [
@@ -11834,8 +11082,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4357,
-    4360
+    4356,
+    4359
    ],
    "description": "",
    "calls": [
@@ -11853,8 +11101,8 @@
    "params": "evt",
    "exported": false,
    "lines": [
-    4412,
-    4415
+    4411,
+    4414
    ],
    "description": "",
    "calledBy": [
@@ -11869,8 +11117,8 @@
    "params": "evt, code",
    "exported": false,
    "lines": [
-    4417,
-    4434
+    4416,
+    4433
    ],
    "description": "",
    "calls": [
@@ -11887,8 +11135,8 @@
    "params": "evt",
    "exported": false,
    "lines": [
-    4444,
-    4448
+    4443,
+    4447
    ],
    "description": "ui.js binds its shortcut router with document.addEventListener('keydown', handler, true) - the same node and the same phase as us. stopPropagation() does NOT stop other listeners registered on that same node, so it never blocked ui.js (or YouTube's own document-level handlers). Only stopImmediatePropagation() does, and it works in our favour because perf_mon is imported first in userScript.js and therefore registered first. Without this, arrow keys pressed while the cluster is open also moved focus around the YouTube UI hidden behind it.",
    "calledBy": [
@@ -11902,8 +11150,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4450,
-    4497
+    4449,
+    4496
    ],
    "description": "",
    "calls": [
@@ -11931,8 +11179,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4514,
-    4573
+    4513,
+    4572
    ],
    "description": "",
    "calls": [
@@ -11959,8 +11207,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4577,
-    4582
+    4576,
+    4581
    ],
    "description": "Outer probes go on last, once every other module in the bundle has installed its own hooks — that is what makes the parse sandwich work.",
    "calls": [
@@ -11979,8 +11227,8 @@
    "params": "reason",
    "exported": false,
    "lines": [
-    4603,
-    4605
+    4602,
+    4604
    ],
    "description": "Full machine-readable snapshot, also printed to the console.",
    "calls": [
@@ -11994,8 +11242,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4609,
-    4611
+    4608,
+    4610
    ],
    "description": "Re-run the feature expectation sweep right now.",
    "calls": [
@@ -12009,8 +11257,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4613,
-    4625
+    4612,
+    4624
    ],
    "description": "What every feature should be doing on this page, and whether it is.",
    "calls": [
@@ -12024,8 +11272,8 @@
    "params": "windowMs",
    "exported": false,
    "lines": [
-    4627,
-    4632
+    4626,
+    4631
    ],
    "description": "Hottest instrumented functions in the last N ms.",
    "calls": [
@@ -12039,8 +11287,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4634,
-    4636
+    4633,
+    4635
    ],
    "description": "Everything the monitor knows about the codebase."
   },
@@ -12051,8 +11299,8 @@
    "params": "samples, iterations",
    "exported": false,
    "lines": [
-    4655,
-    4695
+    4654,
+    4694
    ],
    "description": "Definitive measurement of what the mod's JSON filtering actually costs.\n\nPer-call timings read 0.00ms on this platform because performance.now() is coarsened to ~100us and a single parse finishes well inside that. A loop of N parses takes milliseconds, which is far above the grain, so benchmarking the hooked global against the captured native gives a real per-call figure that the live counters cannot."
   },
@@ -12063,8 +11311,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4698,
-    4703
+    4697,
+    4702
    ],
    "description": "Force a prototype-instrumentation pass (normally polled every 2s).",
    "calls": [
@@ -12078,8 +11326,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4707,
-    4739
+    4706,
+    4738
    ],
    "description": ""
   },
@@ -12696,29 +11944,14 @@
    ]
   },
   {
-   "id": "features/adblock/parse-hook.js#setParsedObjectStep",
-   "name": "setParsedObjectStep",
-   "kind": "function",
-   "params": "fn",
-   "exported": true,
-   "lines": [
-    27,
-    29
-   ],
-   "description": "Sets the step run on every object parsed past the size gate (null: none).",
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
    "id": "features/adblock/parse-hook.js#logSchemaMiss",
    "name": "logSchemaMiss",
    "kind": "function",
    "params": "data, textLength",
    "exported": false,
    "lines": [
-    32,
-    36
+    23,
+    27
    ],
    "description": "Debug log for a large response no schema recognised (the fallback filters ran instead).",
    "calledBy": [
@@ -12732,8 +11965,8 @@
    "params": "data, flags",
    "exported": false,
    "lines": [
-    42,
-    46
+    33,
+    37
    ],
    "description": "The legacy emoji rewrite over frameworkUpdates, the one part of a response the content filters never reach.",
    "calls": [
@@ -12750,8 +11983,8 @@
    "params": "text, reviver",
    "exported": false,
    "lines": [
-    58,
-    67
+    49,
+    58
    ],
    "description": "The JSON.parse replacement. Texts under 500 characters (YouTube's many small blobs) go straight to the native parse; the rest through parseAndFilter.",
    "calls": [
@@ -12765,8 +11998,8 @@
    "params": "text, reviver",
    "exported": false,
    "lines": [
-    73,
-    99
+    64,
+    89
    ],
    "description": "Parses a large text (with tracking parameters blanked first when Tracking Block is on) and, when it is an InnerTube response, runs the filters on it in place.",
    "calls": [
@@ -12785,8 +12018,8 @@
    "params": "data, textLength, flags",
    "exported": false,
    "lines": [
-    105,
-    111
+    95,
+    101
    ],
    "description": "filterResponse, with an error logged instead of thrown: a filter bug must never break YouTube's parse.",
    "calls": [
@@ -12803,8 +12036,8 @@
    "params": "data, textLength, flags",
    "exported": false,
    "lines": [
-    118,
-    160
+    108,
+    150
    ],
    "description": "Everything done to a parsed response, in order: the codec filter, Load Rows Ahead, the content filters (by schema, the fallback search, or the guide's nav entries), then the thumbnail upgrade, DeArrow and the emoji wrap.",
    "calls": [
@@ -12832,8 +12065,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    170,
-    182
+    160,
+    172
    ],
    "description": "Installs the hook, once, for the life of the page.\n\nEvery switch that lives on it (ads, Shorts, guest prompts, endcards, trackingParams, the legacy emoji rewrite, the thumbnail upgrade, DeArrow) is a flag in flags.js, and filterResponse stops after the rows-ahead pass (its own switch, Load Rows Ahead) while none of them is on; force-codec's offer filter runs inside it as well.",
    "hooks": [
@@ -13759,54 +12992,6 @@
    },
    "calledBy": [
     "features/auto-login/index.js#initAutoLogin"
-   ]
-  },
-  {
-   "id": "features/block-webos-cast-absent.js#initBlockWebOSCast",
-   "name": "initBlockWebOSCast",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    5,
-    5
-   ],
-   "description": "Nothing to install on webOS 3 to 6."
-  },
-  {
-   "id": "features/block-webos-cast.ts#isCastWakeUp",
-   "name": "isCastWakeUp",
-   "kind": "function",
-   "params": "url",
-   "exported": false,
-   "lines": [
-    16,
-    21
-   ],
-   "description": "Whether `url` ends its path with the cast wake-up (followed by nothing, a query or a hash).",
-   "calledBy": [
-    "features/block-webos-cast.ts#initBlockWebOSCast"
-   ]
-  },
-  {
-   "id": "features/block-webos-cast.ts#initBlockWebOSCast",
-   "name": "initBlockWebOSCast",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    27,
-    45
-   ],
-   "description": "Wraps window.fetch so the request that wakes webOS's cast receiver fails like a network error; every other request passes through.",
-   "calls": [
-    "features/block-webos-cast.ts#isCastWakeUp"
-   ],
-   "hooks": [
-    "window.fetch"
-   ],
-   "calledBy": [
-    "userScript.js#(top level)"
    ]
   },
   {
@@ -15631,556 +14816,6 @@
    "calledBy": [
     "userScript.js#(top level)"
    ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#restorePosition",
-   "name": "restorePosition",
-   "kind": "function",
-   "params": "player, at, capped",
-   "exported": false,
-   "lines": [
-    31,
-    50
-   ],
-   "description": "On webOS 25 loadVideoById(id, at) starts up to ~25 s before `at`, even at 1x: once the reloaded video plays it is sent back to `at`. When `capped()` the 1080p cap is set again then too: the reload drops it, and YouTube then falls to 480p on a 60 fps video (the frames a 60 Hz screen cannot show count as dropped).",
-   "browser": [
-    "setInterval"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.applyReload"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createAudioSinks",
-   "name": "createAudioSinks",
-   "kind": "function",
-   "params": "onError",
-   "exported": false,
-   "lines": [
-    58,
-    90
-   ],
-   "description": "The audio engines, one at a time: `create({ speed, element })` starts one for a new MediaSource at `speed`, playing along with `element` (its volume and mute followed), and stops the previous one; `release()` stops it. `onError` is the engine's: a video it cannot play.",
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createAudioSinks.release",
-   "name": "createAudioSinks.release",
-   "kind": "arrow",
-   "params": "",
-   "exported": false,
-   "lines": [
-    62,
-    67
-   ],
-   "description": "Stops the engine of the previous MediaSource, if one is playing.",
-   "calledBy": [
-    "features/playback-speed/controller.js#createAudioSinks.create"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createAudioSinks.create",
-   "name": "createAudioSinks.create",
-   "kind": "arrow",
-   "params": "{ speed, element }",
-   "exported": false,
-   "lines": [
-    70,
-    84
-   ],
-   "description": "A new engine for a MediaSource at `speed`, following `element`'s volume.",
-   "calls": [
-    "features/playback-speed/controller.js#createAudioSinks.create.listener",
-    "features/playback-speed/controller.js#createAudioSinks.release",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.constructor"
-   ],
-   "events": {
-    "listen": [
-     "volumechange"
-    ]
-   }
-  },
-  {
-   "id": "features/playback-speed/controller.js#createAudioSinks.create.listener",
-   "name": "createAudioSinks.create.listener",
-   "kind": "arrow",
-   "params": "",
-   "exported": false,
-   "lines": [
-    77,
-    77
-   ],
-   "description": "Follows the <video>'s volume and mute.",
-   "calledBy": [
-    "features/playback-speed/controller.js#createAudioSinks.create"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createAudioSinks.current",
-   "name": "createAudioSinks.current",
-   "kind": "arrow",
-   "params": "",
-   "exported": false,
-   "lines": [
-    87,
-    87
-   ],
-   "description": "The engine playing, or null."
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController",
-   "name": "createSpeedController",
-   "kind": "function",
-   "params": "{ getPlayer, notify, isOn, isSupported }",
-   "exported": true,
-   "lines": [
-    97,
-    239
-   ],
-   "description": "The controller: `getPlayer()` is YouTube's player element (or null), `notify(text)` shows a toast, `isOn()` whether the setting is on, and `isSupported()` whether this TV can (WebCodecs' AudioDecoder).",
-   "calls": [
-    "features/playback-speed/controller.js#createAudioSinks",
-    "features/playback-speed/controller.js#createSpeedController.onError"
-   ],
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.getSpeed",
-   "name": "createSpeedController.getSpeed",
-   "kind": "arrow",
-   "params": "",
-   "exported": false,
-   "lines": [
-    105,
-    105
-   ],
-   "description": "The speed in effect: 1 while the setting is off or the TV cannot."
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.setCurrent",
-   "name": "createSpeedController.setCurrent",
-   "kind": "function",
-   "params": "speed",
-   "exported": false,
-   "lines": [
-    108,
-    111
-   ],
-   "description": "Records a new speed, and whether it holds the video at 1080p (core/speed-cap.js).",
-   "calls": [
-    "core/speed-cap.js#setQualityCappedBySpeed"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.onError",
-    "features/playback-speed/controller.js#createSpeedController.setSpeed",
-    "features/playback-speed/controller.js#createSpeedController.stop"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.position",
-   "name": "createSpeedController.position",
-   "kind": "function",
-   "params": "player",
-   "exported": false,
-   "lines": [
-    114,
-    120
-   ],
-   "description": "The player's position in seconds, 0 when it cannot say.",
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.scheduleReload"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.applyReload",
-   "name": "createSpeedController.applyReload",
-   "kind": "function",
-   "params": "{ position: at, fromSpeed }",
-   "exported": false,
-   "lines": [
-    123,
-    153
-   ],
-   "description": "Reloads the video at the new speed, unless the burst came back to where it started.",
-   "calls": [
-    "core/config.js#configRead",
-    "features/playback-speed/controller.js#restorePosition"
-   ],
-   "settings": {
-    "read": [
-     "forceHighResVideo"
-    ]
-   },
-   "browser": [
-    "setTimeout"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.scheduleReload"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.scheduleReload",
-   "name": "createSpeedController.scheduleReload",
-   "kind": "function",
-   "params": "fromSpeed, immediate",
-   "exported": false,
-   "lines": [
-    156,
-    172
-   ],
-   "description": "Reloads RELOAD_DELAY_MS from now (at once with `immediate`), keeping the burst's start.",
-   "calls": [
-    "features/playback-speed/controller.js#createSpeedController.applyReload",
-    "features/playback-speed/controller.js#createSpeedController.position"
-   ],
-   "browser": [
-    "setTimeout"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.onError",
-    "features/playback-speed/controller.js#createSpeedController.setSpeed",
-    "features/playback-speed/controller.js#createSpeedController.stop"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.setSpeed",
-   "name": "createSpeedController.setSpeed",
-   "kind": "function",
-   "params": "speed, { immediate = false }",
-   "exported": false,
-   "lines": [
-    179,
-    193
-   ],
-   "description": "Plays at `speed` (one of SUPPORTED_SPEEDS): says so, and reloads (at once with `immediate`, for a pick from YouTube's menu). Says why not when the setting is off or the TV cannot.",
-   "calls": [
-    "features/playback-speed/controller.js#createSpeedController.scheduleReload",
-    "features/playback-speed/controller.js#createSpeedController.setCurrent",
-    "vendor/playback-speed/mse-hook.js#isSupportedSpeed"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.reset",
-    "features/playback-speed/controller.js#createSpeedController.step"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.step",
-   "name": "createSpeedController.step",
-   "kind": "function",
-   "params": "dir",
-   "exported": false,
-   "lines": [
-    196,
-    201
-   ],
-   "description": "One step up (dir >= 0) or down the speeds, stopping at the ends.",
-   "calls": [
-    "features/playback-speed/controller.js#createSpeedController.setSpeed"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.reset",
-   "name": "createSpeedController.reset",
-   "kind": "function",
-   "params": "",
-   "exported": false,
-   "lines": [
-    204,
-    206
-   ],
-   "description": "Back to 1x.",
-   "calls": [
-    "features/playback-speed/controller.js#createSpeedController.setSpeed"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.stop",
-   "name": "createSpeedController.stop",
-   "kind": "function",
-   "params": "",
-   "exported": false,
-   "lines": [
-    209,
-    214
-   ],
-   "description": "The setting was turned off: back to 1x at once, not on the next video.",
-   "calls": [
-    "features/playback-speed/controller.js#createSpeedController.scheduleReload",
-    "features/playback-speed/controller.js#createSpeedController.setCurrent"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.onError",
-   "name": "createSpeedController.onError",
-   "kind": "function",
-   "params": "e",
-   "exported": false,
-   "lines": [
-    217,
-    224
-   ],
-   "description": "The engine cannot play this video (an audio codec WebCodecs lacks): back to 1x.",
-   "calls": [
-    "features/playback-speed/controller.js#createSpeedController.scheduleReload",
-    "features/playback-speed/controller.js#createSpeedController.setCurrent"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController"
-   ]
-  },
-  {
-   "id": "features/playback-speed/controller.js#createSpeedController.lastReloadAt",
-   "name": "createSpeedController.lastReloadAt",
-   "kind": "property",
-   "params": "",
-   "exported": false,
-   "lines": [
-    237,
-    237
-   ],
-   "description": "When the last speed change reloaded the video (Date.now()), 0 before any."
-  },
-  {
-   "id": "features/playback-speed/index.js#isOn",
-   "name": "isOn",
-   "kind": "arrow",
-   "params": "",
-   "exported": false,
-   "lines": [
-    39,
-    39
-   ],
-   "description": "Whether the setting is on.",
-   "calls": [
-    "core/config.js#configRead"
-   ],
-   "settings": {
-    "read": [
-     "enablePlaybackSpeed"
-    ]
-   },
-   "calledBy": [
-    "features/playback-speed/index.js#(top level)",
-    "features/playback-speed/index.js#install",
-    "features/playback-speed/index.js#stepSpeed"
-   ]
-  },
-  {
-   "id": "features/playback-speed/index.js#getPlayer",
-   "name": "getPlayer",
-   "kind": "arrow",
-   "params": "",
-   "exported": false,
-   "lines": [
-    42,
-    44
-   ],
-   "description": "YouTube's player element, or null.",
-   "selectors": [
-    "PLAYER_ID",
-    "HTML5_PLAYER_FALLBACK"
-   ],
-   "browser": [
-    "querySelector"
-   ],
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "features/playback-speed/index.js#install",
-   "name": "install",
-   "kind": "function",
-   "params": "",
-   "exported": false,
-   "lines": [
-    53,
-    93
-   ],
-   "description": "Installs everything, once, the first time the setting is on: the engine's MediaSource hook, YouTube's speed menu and button, and the cap of the next video at 1080p above 1.25x.",
-   "calls": [
-    "features/adblock/parse-hook.js#setParsedObjectStep",
-    "features/playback-speed/controller.js#createSpeedController",
-    "features/playback-speed/index.js#getPlayer",
-    "features/playback-speed/index.js#isOn",
-    "features/playback-speed/native-menu.js#bindPlayerRate",
-    "features/playback-speed/native-menu.js#enableNativeSpeedMenu",
-    "features/playback-speed/native-menu.js#enableSpeedButton",
-    "features/playback-speed/native-menu.js#hookRateAssignments",
-    "vendor/playback-speed/mse-hook.js#installMseHook"
-   ],
-   "events": {
-    "listen": [
-     "yt-player-state-change"
-    ]
-   },
-   "browser": [
-    "setInterval"
-   ],
-   "calledBy": [
-    "features/playback-speed/index.js#(top level)",
-    "features/playback-speed/index.js#stepSpeed"
-   ]
-  },
-  {
-   "id": "features/playback-speed/index.js#stepSpeed",
-   "name": "stepSpeed",
-   "kind": "function",
-   "params": "direction",
-   "exported": true,
-   "lines": [
-    96,
-    107
-   ],
-   "description": "One step up (+1) or down (-1) the speeds: the Playback Speed + and - shortcuts.",
-   "calls": [
-    "features/playback-speed/index.js#install",
-    "features/playback-speed/index.js#isOn",
-    "ui/toast/index.js#showNotification"
-   ],
-   "calledBy": [
-    "ui/shortcuts/actions.js#(top level)"
-   ]
-  },
-  {
-   "id": "features/playback-speed/index.js#resetSpeed",
-   "name": "resetSpeed",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    110,
-    112
-   ],
-   "description": "Back to 1x: the Playback Speed 1x shortcut."
-  },
-  {
-   "id": "features/playback-speed/native-menu.js#enableSpeedButton",
-   "name": "enableSpeedButton",
-   "kind": "function",
-   "params": "response",
-   "exported": true,
-   "lines": [
-    21,
-    45
-   ],
-   "description": "Switches on the Speed button of a parsed response's transport controls (top level, or under playerOverlays), giving it the command that opens YouTube's speed overlay when it has none. Returns how many buttons it switched on.",
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "features/playback-speed/native-menu.js#enableNativeSpeedMenu",
-   "name": "enableNativeSpeedMenu",
-   "kind": "function",
-   "params": "isOn",
-   "exported": true,
-   "lines": [
-    52,
-    76
-   ],
-   "description": "Makes YouTube offer its speed options while `isOn()`: `enableSpeedOptions` reads true on every object that does not set it itself (an object that assigns it keeps its own value). Returns the function that takes it away.",
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "features/playback-speed/native-menu.js#wrapRate",
-   "name": "wrapRate",
-   "kind": "function",
-   "params": "original, controller",
-   "exported": false,
-   "lines": [
-    83,
-    100
-   ],
-   "description": "The player's setPlaybackRate, wrapped: YouTube's own call goes through, and a supported speed other than the current one (a pick from its menu) is passed to the controller, unless it came right after a reload.",
-   "calledBy": [
-    "features/playback-speed/native-menu.js#bindPlayerRate",
-    "features/playback-speed/native-menu.js#hookRateAssignments"
-   ]
-  },
-  {
-   "id": "features/playback-speed/native-menu.js#wrapRate.wrapped",
-   "name": "wrapRate.wrapped",
-   "kind": "arrow",
-   "params": "rate",
-   "exported": false,
-   "lines": [
-    86,
-    97
-   ],
-   "description": "setPlaybackRate as YouTube calls it, with the pick passed on.",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#isSupportedSpeed"
-   ]
-  },
-  {
-   "id": "features/playback-speed/native-menu.js#hookRateAssignments",
-   "name": "hookRateAssignments",
-   "kind": "function",
-   "params": "controller",
-   "exported": true,
-   "lines": [
-    108,
-    136
-   ],
-   "description": "Wraps setPlaybackRate where YouTube assigns it on a plain object (its player API is built that way): an accessor on Object.prototype catches the assignment and stores the wrapped function as the object's own property. Returns the function that takes the accessor away.",
-   "calls": [
-    "features/playback-speed/native-menu.js#wrapRate"
-   ],
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "features/playback-speed/native-menu.js#bindPlayerRate",
-   "name": "bindPlayerRate",
-   "kind": "function",
-   "params": "player, controller",
-   "exported": true,
-   "lines": [
-    143,
-    152
-   ],
-   "description": "Wraps the setPlaybackRate of the player element itself (once), keeping the original for the controller to set the menu's value with. Returns whether it wrapped it now.",
-   "calls": [
-    "features/playback-speed/native-menu.js#wrapRate"
-   ],
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "features/playback-speed-absent.js#stepSpeed",
-   "name": "stepSpeed",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    10,
-    12
-   ],
-   "description": "The Playback Speed + and - shortcuts: says the TV cannot.",
-   "calls": [
-    "ui/toast/index.js#showNotification"
-   ]
-  },
-  {
-   "id": "features/playback-speed-absent.js#resetSpeed",
-   "name": "resetSpeed",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    15,
-    15
-   ],
-   "description": "The Playback Speed 1x shortcut: nothing to reset."
   },
   {
    "id": "features/return-dislike/api.js#getCachedDislikes",
@@ -20817,10 +19452,10 @@
    "params": "",
    "exported": false,
    "lines": [
-    22,
-    43
+    19,
+    36
    ],
-   "description": "Leaves the player: timers, listeners and the per-video state go (the webOS 25 kick stays done for the session).",
+   "description": "Leaves the player: timers, listeners and the per-video state go.",
    "calledBy": [
     "features/video-quality/index.js#handleNavigation"
    ]
@@ -20832,8 +19467,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    46,
-    74
+    39,
+    67
    ],
    "description": "Attaches to the TV player once it is there; true when attached (pollUntil's answer).",
    "calls": [
@@ -20859,8 +19494,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    83,
-    96
+    76,
+    89
    ],
    "description": "Looks for the player every 200 ms for the first ten seconds, then once a second for another fifty: a slow first load must still be forced, and a watch page whose player never mounts is not polled for the rest of the session. The poll is cancelled with the bag, so a detached module is never looked for.",
    "calls": [
@@ -20878,8 +19513,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    102,
-    119
+    95,
+    112
    ],
    "description": "Attaches to the player on the watch page (polling until it exists) and sets the stored quality preference.",
    "calls": [
@@ -20905,8 +19540,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    140,
-    157
+    133,
+    150
    ],
    "description": "Attaches on entering the watch page (a tick later, once the page is built) and detaches on leaving it.",
    "calls": [
@@ -20928,8 +19563,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    160,
-    168
+    153,
+    161
    ],
    "description": "Follows page changes, and checks the current page once the document is ready.",
    "calls": [
@@ -20946,78 +19581,17 @@
    ]
   },
   {
-   "id": "features/video-quality/kickstart-absent.js#ensurePlaybackStarts",
-   "name": "ensurePlaybackStarts",
-   "kind": "function, async",
-   "params": "",
-   "exported": true,
-   "lines": [
-    5,
-    5
-   ],
-   "description": "Nothing to kick on webOS 3 to 6."
-  },
-  {
-   "id": "features/video-quality/kickstart.js#dismissRaisedControls",
-   "name": "dismissRaisedControls",
-   "kind": "function",
-   "params": "bag",
-   "exported": false,
-   "lines": [
-    16,
-    26
-   ],
-   "description": "The kick raises the controls bar: when it holds the focus it is hidden (ui/hide-controls.js) and dismissed with three UP presses. All of it is the attach's (`bag`), so leaving the watch page cancels what has not run.",
-   "calls": [
-    "core/remote.js#sendKey",
-    "ui/hide-controls.js#hideControlsFor"
-   ],
-   "selectors": [
-    "CONTROLS",
-    "CONTROLS_FOCUSED_CLASS_WEBOS25"
-   ],
-   "browser": [
-    "querySelector"
-   ],
-   "calledBy": [
-    "features/video-quality/kickstart.js#ensurePlaybackStarts"
-   ]
-  },
-  {
-   "id": "features/video-quality/kickstart.js#ensurePlaybackStarts",
-   "name": "ensurePlaybackStarts",
-   "kind": "function, async",
-   "params": "",
-   "exported": true,
-   "lines": [
-    32,
-    80
-   ],
-   "description": "webOS 25 only, once per session: calls playVideo() until the player reports PLAYING (up to KICKSTART_MAX_ATTEMPTS), then hides the controls that raised with it.",
-   "calls": [
-    "features/video-quality/kickstart.js#dismissRaisedControls"
-   ],
-   "browser": [
-    "requestAnimationFrame",
-    "setTimeout"
-   ],
-   "calledBy": [
-    "features/video-quality/player-state.js#handleStateChange"
-   ]
-  },
-  {
    "id": "features/video-quality/player-state.js#handleStateChange",
    "name": "handleStateChange",
    "kind": "function",
    "params": "state",
    "exported": true,
    "lines": [
-    19,
-    81
+    18,
+    77
    ],
    "description": "The player's state change: published as yt-player-state-change for the clock and SponsorBlock, then, with Force Max Quality on, the quality is forced for a new video.",
    "calls": [
-    "features/video-quality/kickstart.js#ensurePlaybackStarts",
     "features/video-quality/quality.js#interceptAndUpgradeQuality",
     "features/video-quality/quality.js#notifyIfUpgraded",
     "features/video-quality/quality.js#setLocalStorageQuality",
@@ -21213,13 +19787,10 @@
    "params": "",
    "exported": true,
    "lines": [
-    65,
-    69
+    52,
+    54
    ],
-   "description": "Whether quality is forced now: Force Max Quality is on, the player is not an inline preview, and the playback speed does not hold the video at 1080p (core/speed-cap.js).",
-   "calls": [
-    "core/speed-cap.js#isQualityCappedBySpeed"
-   ],
+   "description": "Whether quality is forced now: Force Max Quality is on and the player is not an inline preview.",
    "calledBy": [
     "features/video-quality/quality.js#interceptAndUpgradeQuality",
     "features/video-quality/quality.js#setLocalStorageQuality",
@@ -22339,7 +20910,6 @@
     "ui/panel/pages.js#footNote",
     "ui/panel/pages.js#helpLine",
     "ui/panel/panel.js#createHeading",
-    "ui/panel/panel.js#createHeading.logo",
     "ui/panel/panel.js#createOptionsPanel",
     "ui/panel/panel.js#createTabMenu",
     "ui/shortcuts/oled.js#toggleOledOverlay",
@@ -22354,8 +20924,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    20,
-    31
+    19,
+    30
    ],
    "description": "Lifts the hiding now; a no-op when nothing is hidden.",
    "calledBy": [
@@ -22369,8 +20939,8 @@
    "params": "ms",
    "exported": true,
    "lines": [
-    34,
-    52
+    33,
+    51
    ],
    "description": "Hides them for `ms` (a second call extends the window); returns showControls.",
    "calls": [
@@ -22381,7 +20951,6 @@
     "setTimeout"
    ],
    "calledBy": [
-    "features/video-quality/kickstart.js#dismissRaisedControls",
     "ui/shortcuts/playback.js#hideControlsAfterPause"
    ]
   },
@@ -22460,8 +21029,8 @@
    "params": "labelText, displayValueGetter, stepLeft, stepRight, extraElements",
    "exported": false,
    "lines": [
-    31,
-    109
+    30,
+    108
    ],
    "description": "A focusable row: the label on the left, `< value >` on the right. Left and Right (and a click on the row) step the value; the arrows are clickable too. Enter is the panel's: its keyboard handler clicks the focused row. Returns the row and the function that refreshes its value.",
    "calls": [
@@ -22482,8 +21051,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    41,
-    41
+    40,
+    40
    ],
    "description": "Shows the current value."
   },
@@ -22494,8 +21063,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    51,
-    51
+    50,
+    50
    ],
    "description": "Whether the row is greyed out (setUnavailable): a greyed-out row steps nothing, by key or by pointer.",
    "calledBy": [
@@ -22510,8 +21079,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    54,
-    56
+    53,
+    55
    ],
    "description": "Steps the value back, unless the row is greyed out.",
    "calls": [
@@ -22528,8 +21097,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    58,
-    60
+    57,
+    59
    ],
    "description": "Steps the value forward, unless the row is greyed out.",
    "calls": [
@@ -22546,8 +21115,8 @@
    "params": "text, onPress",
    "exported": false,
    "lines": [
-    63,
-    73
+    62,
+    72
    ],
    "description": "A clickable < or > arrow for the pointer (Magic Remote).",
    "calls": [
@@ -22564,8 +21133,8 @@
    "params": "configKey, labelText, modes, displayMap, extraElements",
    "exported": false,
    "lines": [
-    112,
-    135
+    111,
+    134
    ],
    "description": "A row that cycles `configKey` through `modes`; `displayMap` turns a mode into its label.",
    "calls": [
@@ -22588,8 +21157,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    114,
-    117
+    113,
+    116
    ],
    "description": "The label of the setting's current value (the value itself when the map has none).",
    "calls": [
@@ -22606,8 +21175,8 @@
    "params": "step",
    "exported": false,
    "lines": [
-    119,
-    122
+    118,
+    121
    ],
    "description": "Writes the next (step 1) or previous (-1) value in `modes`, wrapping around.",
    "calls": [
@@ -22625,8 +21194,8 @@
    "params": "configKey, displayMap",
    "exported": false,
    "lines": [
-    142,
-    151
+    141,
+    150
    ],
    "description": "A cycle row that sits among checkbox rows. Its label is indented by one checkbox (the ytaf-aligned rule in controls.css) and starts with the same no-break space the checkbox labels use, so the text lines up with them.",
    "calls": [
@@ -22636,7 +21205,6 @@
    "calledBy": [
     "ui/panel/controls/cycle-row.js#createChoiceControl",
     "ui/panel/controls/cycle-row.js#createLogoControl",
-    "ui/panel/controls/cycle-row.js#createThemeControl",
     "ui/panel/controls/cycle-row.js#createThumbnailQualityControl",
     "ui/panel/controls/cycle-row.js#createVideoCodecControl"
    ]
@@ -22648,8 +21216,8 @@
    "params": "configKey, displayMap",
    "exported": true,
    "lines": [
-    157,
-    158
+    156,
+    157
    ],
    "description": "A row among checkbox rows that cycles `configKey` through the values of `displayMap` (value -> label): the DeArrow choices and the clock.",
    "calls": [
@@ -22667,8 +21235,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    161,
-    161
+    160,
+    160
    ],
    "description": "The YouTube Logo row (Default, Premium, Hidden).",
    "calls": [
@@ -22690,8 +21258,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    164,
-    165
+    163,
+    164
    ],
    "description": "The Force Video Codec row.",
    "calls": [
@@ -22707,37 +21275,14 @@
    ]
   },
   {
-   "id": "ui/panel/controls/cycle-row.js#createThemeControl",
-   "name": "createThemeControl",
-   "kind": "arrow",
-   "params": "",
-   "exported": true,
-   "lines": [
-    168,
-    168
-   ],
-   "description": "The UI Theme row.",
-   "calls": [
-    "ui/panel/controls/cycle-row.js#createAlignedCycleControl"
-   ],
-   "settings": {
-    "other": [
-     "uiTheme"
-    ]
-   },
-   "calledBy": [
-    "ui/panel/pages.js#buildUITweaksPage"
-   ]
-  },
-  {
    "id": "ui/panel/controls/cycle-row.js#createThumbnailQualityControl",
    "name": "createThumbnailQualityControl",
    "kind": "function",
    "params": "",
    "exported": true,
    "lines": [
-    171,
-    178
+    167,
+    174
    ],
    "description": "The Thumbnail Strategy row, greyed out while Max Thumbnail Quality is off.",
    "calls": [
@@ -22764,8 +21309,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    174,
-    174
+    170,
+    170
    ],
    "description": "The strategy only means anything while the feature it tunes is on.",
    "calls": [
@@ -22788,8 +21333,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    184,
-    190
+    180,
+    186
    ],
    "description": "The row of one SponsorBlock category (`sbMode_<category>`): its modes, with the category's colour picker.",
    "calls": [
@@ -22814,8 +21359,8 @@
    "params": "keyIdentifier",
    "exported": true,
    "lines": [
-    193,
-    197
+    189,
+    193
    ],
    "description": "The row of one shortcut key (0-9, red, green, blue): the action it runs.",
    "calls": [
@@ -22838,8 +21383,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    200,
-    207
+    196,
+    203
    ],
    "description": "The Force Previews row (Disabled, Force On, Force Off).",
    "calls": [
@@ -22857,8 +21402,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    213,
-    238
+    209,
+    234
    ],
    "description": "A 0-100 % row in steps of 5 for setting `key` (the video shelf opacity), greyed out while OLED-Care Mode is off.",
    "calls": [
@@ -22885,8 +21430,8 @@
    "params": "delta",
    "exported": false,
    "lines": [
-    219,
-    222
+    215,
+    218
    ],
    "description": "Adds `delta` to the stored value, kept within 0-100.",
    "calls": [
@@ -22904,8 +21449,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    234,
-    234
+    230,
+    230
    ],
    "description": "The shelf opacity applies under OLED-Care Mode only (ui/styles/html-classes.js).",
    "calls": [
@@ -23416,8 +21961,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    34,
-    34
+    32,
+    32
    ],
    "description": "A line of small help text under a row.",
    "calls": [
@@ -23435,8 +21980,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    37,
-    37
+    35,
+    35
    ],
    "description": "The centred small print at the foot of a page: what the feature is and where it comes from.",
    "calls": [
@@ -23454,8 +21999,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    44,
-    100
+    42,
+    98
    ],
    "description": "The Main page: Cosmetic Filtering (Ad Blocking and the filters that depend on it, greyed out while it is off), then the other features.",
    "calls": [
@@ -23499,8 +22044,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    70,
-    75
+    68,
+    73
    ],
    "description": "Greys out the rows that depend on Ad Blocking while it is off.",
    "calls": [
@@ -23523,8 +22068,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    104,
-    135
+    102,
+    133
    ],
    "description": "The SponsorBlock page: the switch, one row per category, and the SponsorBlock options.",
    "calls": [
@@ -23560,8 +22105,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    143,
-    186
+    141,
+    184
    ],
    "description": "The DeArrow page: the switch and the logo, then the title and thumbnail options, greyed out while it is off (and the thumbnail fallback while crowdsourced thumbnails are). Title formatting is in the webOS 22+ build only (features/dearrow/titles.js): the legacy one gets no formatting rows.",
    "calls": [
@@ -23595,8 +22140,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    174,
-    181
+    172,
+    179
    ],
    "description": "Greys out the rows while DeArrow is off, and the fallback while crowdsourced thumbnails are.",
    "calls": [
@@ -23620,8 +22165,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    190,
-    200
+    188,
+    198
    ],
    "description": "The Shortcuts page: one row per configurable key.",
    "calls": [
@@ -23636,17 +22181,16 @@
    "params": "",
    "exported": true,
    "lines": [
-    207,
-    249
+    204,
+    233
    ],
-   "description": "The UI Tweaks page: shelf opacity, previews, titles, rows ahead, Liquid Glass, the theme, the emoji fix on webOS 3/4, and playback speed where the TV can (webOS 23 and newer).",
+   "description": "The UI Tweaks page: shelf opacity, previews, titles, rows ahead, Liquid Glass and the theme.",
    "calls": [
     "core/webos.js#getWebOSVersion",
     "ui/dom.js#createElement",
     "ui/panel/controls/checkbox.js#createConfigCheckbox",
     "ui/panel/controls/cycle-row.js#createOpacityControl",
     "ui/panel/controls/cycle-row.js#createPreviewControl",
-    "ui/panel/controls/cycle-row.js#createThemeControl",
     "ui/panel/controls/section.js#createSection",
     "ui/panel/pages.js#helpLine"
    ],
@@ -23658,8 +22202,7 @@
      "fixSearchFont",
      "enableRowsAhead",
      "removeBlackBorders",
-     "enableLegacyEmojiFix",
-     "enablePlaybackSpeed"
+     "enableLegacyEmojiFix"
     ]
    }
   },
@@ -23670,8 +22213,8 @@
    "params": "pages, container",
    "exported": false,
    "lines": [
-    42,
-    71
+    39,
+    68
    ],
    "description": "The pages, built lazily into `container`: `elements[i]` is page i once built, `ensure(i)` builds it now, `startDeferred()` builds the rest one per animation frame. A builder never runs twice.",
    "calledBy": [
@@ -23685,8 +22228,8 @@
    "params": "index",
    "exported": false,
    "lines": [
-    47,
-    53
+    44,
+    50
    ],
    "description": "Builds page `index` now, if it is not built yet, and adds it to the panel.",
    "calledBy": [
@@ -23700,8 +22243,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    58,
-    69
+    55,
+    66
    ],
    "description": "Builds the pages not built yet, one per animation frame, so opening the panel does not wait for all of them.",
    "calls": [
@@ -23718,8 +22261,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    62,
-    67
+    59,
+    64
    ],
    "description": "Builds the next unbuilt page and asks for another frame.",
    "calls": [
@@ -23739,8 +22282,8 @@
    "params": "pages, onPick, activeIndex",
    "exported": false,
    "lines": [
-    78,
-    103
+    75,
+    100
    ],
    "description": "The tab bar: a button per page, the first one active; `onPick(index)` on a click, and the pointer leaving the bar puts focus back on the open tab (`activeIndex()`). Returns the bar and its buttons.",
    "calls": [
@@ -23757,8 +22300,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    112,
-    114
+    115,
+    117
    ],
    "description": "Whether the options panel is currently shown.",
    "calledBy": [
@@ -23767,64 +22310,87 @@
    ]
   },
   {
-   "id": "ui/panel/panel.js#createHeading",
-   "name": "createHeading",
+   "id": "ui/panel/panel.js#buildPanel",
+   "name": "buildPanel",
    "kind": "function",
-   "params": "afterToggle",
+   "params": "",
    "exported": false,
    "lines": [
-    122,
-    153
+    120,
+    125
    ],
-   "description": "The heading with the logo. A logo click (a Magic Remote pointer affordance; the logo is not in the focus order) flips the theme and hands focus back through `afterToggle`; the UI Theme row on the UI Tweaks page is the key path. There is one drawn logo per look (blue, red, dark): the <html> theme classes pick the one shown (panel.css, theme-red.css, theme-oled.css). A CSS filter on the blue image came out orange for red and too bright for OLED.",
+   "description": "Builds the panel (the Main page included) and puts it in the page, hidden.",
    "calls": [
-    "ui/dom.js#createElement",
-    "ui/panel/panel.js#createHeading.logo"
+    "ui/panel/panel.js#createOptionsPanel"
    ],
    "calledBy": [
-    "ui/panel/panel.js#createOptionsPanel"
+    "ui/panel/panel.js#schedulePrewarm.warm",
+    "ui/panel/panel.js#showOptionsPanel"
    ]
   },
   {
-   "id": "ui/panel/panel.js#createHeading.toggleTheme",
-   "name": "createHeading.toggleTheme",
+   "id": "ui/panel/panel.js#schedulePrewarm",
+   "name": "schedulePrewarm",
+   "kind": "function",
+   "params": "",
+   "exported": false,
+   "lines": [
+    141,
+    161
+   ],
+   "description": "Builds the panel while the TV is idle, so the first press of the menu key shows it instead of building it.\n\nThe build was measured at up to 170 ms of one frozen keydown on webOS 3 (tests/bench/panel-bench.cjs), all of it element creation and the style and layout work behind it. Moving it here costs the same work in a frame nobody is waiting on, and the remote's first press is then one display:block.\n\nOnly the panel shell and the Main page are built: the four pages after it keep building one per frame once the panel is on screen, and building them here would hold ~200 more elements in memory for a tab the user may never open. Nothing is built while a video is playing: decode owns the CPU there.",
+   "calls": [
+    "ui/panel/panel.js#schedulePrewarm.warm"
+   ],
+   "events": {
+    "listen": [
+     "pagehide"
+    ]
+   },
+   "browser": [
+    "setTimeout",
+    "requestIdleCallback"
+   ],
+   "calledBy": [
+    "ui/panel/panel.js#(top level)"
+   ]
+  },
+  {
+   "id": "ui/panel/panel.js#schedulePrewarm.warm",
+   "name": "schedulePrewarm.warm",
    "kind": "arrow",
    "params": "",
    "exported": false,
    "lines": [
-    124,
-    129
+    146,
+    149
    ],
-   "description": "Switches to the next UI theme (a click on the logo).",
+   "description": "Builds the panel now if it is still worth doing.",
    "calls": [
-    "core/config.js#configRead",
-    "core/config.js#configWrite"
+    "core/page-state.js#isShortsPage",
+    "core/page-state.js#isWatchPage",
+    "ui/panel/panel.js#buildPanel"
    ],
-   "settings": {
-    "read": [
-     "uiTheme"
-    ],
-    "write": [
-     "uiTheme"
-    ]
-   }
+   "calledBy": [
+    "ui/panel/panel.js#schedulePrewarm"
+   ]
   },
   {
-   "id": "ui/panel/panel.js#createHeading.logo",
-   "name": "createHeading.logo",
-   "kind": "arrow",
-   "params": "src, variant",
+   "id": "ui/panel/panel.js#createHeading",
+   "name": "createHeading",
+   "kind": "function",
+   "params": "",
    "exported": false,
    "lines": [
-    134,
-    141
+    169,
+    186
    ],
-   "description": "One of the heading's logos (one per theme; CSS shows the current one); a click switches the theme.",
+   "description": "The heading: the Aura mark, the wordmark and the version. Static apart from the version text, and built once (the first open).",
    "calls": [
     "ui/dom.js#createElement"
    ],
    "calledBy": [
-    "ui/panel/panel.js#createHeading"
+    "ui/panel/panel.js#createOptionsPanel"
    ]
   },
   {
@@ -23834,8 +22400,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    159,
-    237
+    192,
+    267
    ],
    "description": "Builds the options panel: heading, tab bar, the Main page (the others are built later), the keyboard handler and the focus trap. Returns the element and its controls.",
    "calls": [
@@ -23849,7 +22415,7 @@
     "ui/panel/panel.js#showOptionsPanel"
    ],
    "calledBy": [
-    "ui/panel/panel.js#showOptionsPanel"
+    "ui/panel/panel.js#buildPanel"
    ]
   },
   {
@@ -23859,8 +22425,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    172,
-    172
+    205,
+    205
    ],
    "description": "Shows the SponsorBlock segment popup beside the panel while its page is open on a watch page.",
    "calls": [
@@ -23877,8 +22443,8 @@
    "params": "pageIndex",
    "exported": false,
    "lines": [
-    178,
-    196
+    211,
+    229
    ],
    "description": "Shows page `pageIndex` (building it first if needed), marks its tab, and moves the focus into it unless the user is on the tab bar.",
    "calls": [
@@ -23896,8 +22462,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    231,
-    231
+    261,
+    261
    ],
    "description": "The tab button of the open page."
   },
@@ -23908,12 +22474,12 @@
    "params": "visible",
    "exported": true,
    "lines": [
-    243,
-    289
+    273,
+    317
    ],
-   "description": "Opens (building it the first time) or closes the options panel, with its keyboard handler, focus trap and popup. Toggles are ignored for 500 ms after the first build.",
+   "description": "Opens (building it the first time, if the idle prewarm has not) or closes the options panel, with its keyboard handler, focus trap and popup.",
    "calls": [
-    "ui/panel/panel.js#createOptionsPanel",
+    "ui/panel/panel.js#buildPanel",
     "ui/shortcuts/bindings.js#ensureMenuKey"
    ],
    "browser": [
@@ -23931,8 +22497,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    296,
-    296
+    324,
+    324
    ],
    "description": "Test hook: whether the panel takes toggles again (the first build's 500 ms block is over)."
   },
@@ -23943,8 +22509,8 @@
    "params": "fn",
    "exported": false,
    "lines": [
-    18,
-    22
+    17,
+    21
    ],
    "description": "Runs `fn` with the live SponsorBlock handler, or says there is none.",
    "calls": [
@@ -23963,8 +22529,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    30,
-    34
+    29,
+    33
    ],
    "description": "Opens or closes the options panel, ending the OLED overlay first (it would cover the panel).",
    "calls": [
@@ -23981,8 +22547,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    41,
-    44
+    40,
+    43
    ],
    "description": "Soft-reloads the page, except on a player page, where it only says it cannot.",
    "calls": [
@@ -23999,8 +22565,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    54,
-    58
+    53,
+    57
    ],
    "description": "The player lookup is here rather than in the router: only this action needs it, and the fallback is a full-document class-selector walk.",
    "calls": [
@@ -24021,8 +22587,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    65,
-    68
+    64,
+    67
    ],
    "description": "Jumps back to the start of the last SponsorBlock segment passed.",
    "calls": [
@@ -24037,8 +22603,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    72,
-    75
+    71,
+    74
    ],
    "description": "Skips the segment SponsorBlock is offering, or jumps to the highlight.",
    "calls": [
@@ -24761,8 +23327,8 @@
    "params": "keys",
    "exported": false,
    "lines": [
-    31,
-    35
+    29,
+    33
    ],
    "description": "The current values of `keys`, as an object.",
    "calls": [
@@ -24779,10 +23345,10 @@
    "params": "",
    "exported": false,
    "lines": [
-    43,
-    53
+    41,
+    54
    ],
-   "description": "The shelf backdrop's opacity, written as a rule of its own rather than a custom property: Chromium 38 (webOS 3) has no var(). Written only while OLED-care mode is on: the rule selects on html.ytaf-oled, so without the mode it would be a stylesheet for nothing.",
+   "description": "The shelf backdrop's opacity, written as a rule of its own rather than a custom property: Chromium 38 (webOS 3) has no var(). Written only while Pure Black UI is on: the rule selects on html.ytaf-oled, so without the mode it would be a stylesheet for nothing.",
    "calls": [
     "core/config.js#configRead"
    ],
@@ -24803,10 +23369,10 @@
    "params": "",
    "exported": true,
    "lines": [
-    59,
-    72
+    60,
+    84
    ],
-   "description": "Sets every class of HTML_CLASSES on <html> from its settings and keeps it in step, and writes the OLED shelf opacity rule.",
+   "description": "Sets every class of HTML_CLASSES on <html> from its settings and keeps it in step, and writes the shelf opacity rule.",
    "calls": [
     "core/config.js#configAddChangeListener",
     "core/dom.js#debounce",
@@ -24830,10 +23396,10 @@
    "params": "",
    "exported": false,
    "lines": [
-    63,
-    63
+    69,
+    75
    ],
-   "description": "Sets or removes one class from the current values of its settings.",
+   "description": "`last` short-circuits a setting that did not change the class: the shelf opacity steps send two listeners here per key press, and a classList.toggle on an unchanged class is still a style invalidation check on Chromium 38.",
    "calls": [
     "ui/styles/html-classes.js#read"
    ],
@@ -24991,8 +23557,6 @@
    },
    "calledBy": [
     "features/force-codec/index.js#applyMode",
-    "features/playback-speed-absent.js#stepSpeed",
-    "features/playback-speed/index.js#stepSpeed",
     "features/sponsorblock/blue-key.js#jumpToHighlight",
     "features/sponsorblock/blue-key.js#manualSkipOrHighlight",
     "features/sponsorblock/blue-key.js#skipToPreviousSegment",
@@ -26002,1590 +24566,9 @@
    "calledBy": [
     "vendor/dearrow/titleFormatter.js#forceKeepFormatting"
    ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.constructor",
-   "name": "AudioEngine.constructor",
-   "kind": "method",
-   "params": "{ win, speed, leadS = 0.4, chunkS = 0.1, extraDelayMs = 0, onError, createStretcher }",
-   "exported": false,
-   "lines": [
-    6,
-    102
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.reportError",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.constructor"
-   ],
-   "browser": [
-    "setInterval"
-   ],
-   "calledBy": [
-    "features/playback-speed/controller.js#createAudioSinks.create"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.onPause",
-   "name": "AudioEngine.onPause",
-   "kind": "assigned",
-   "params": "",
-   "exported": false,
-   "lines": [
-    71,
-    78
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.destroy"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.onWaiting",
-   "name": "AudioEngine.onWaiting",
-   "kind": "assigned",
-   "params": "",
-   "exported": false,
-   "lines": [
-    79,
-    84
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.destroy"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.onSeeking",
-   "name": "AudioEngine.onSeeking",
-   "kind": "assigned",
-   "params": "",
-   "exported": false,
-   "lines": [
-    85,
-    96
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.destroy"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.onPlaying",
-   "name": "AudioEngine.onPlaying",
-   "kind": "assigned",
-   "params": "",
-   "exported": false,
-   "lines": [
-    97,
-    101
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.destroy"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo",
-   "name": "AudioEngine.attachVideo",
-   "kind": "method",
-   "params": "el",
-   "exported": false,
-   "lines": [
-    104,
-    112
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPause",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPlaying",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onSeeking",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onWaiting"
-   ],
-   "events": {
-    "listen": [
-     "pause",
-     "waiting",
-     "seeking",
-     "playing"
-    ]
-   }
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.setVolume",
-   "name": "AudioEngine.setVolume",
-   "kind": "method",
-   "params": "v, muted",
-   "exported": false,
-   "lines": [
-    114,
-    118
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.configure",
-   "name": "AudioEngine.configure",
-   "kind": "method",
-   "params": "cfg",
-   "exported": false,
-   "lines": [
-    120,
-    150
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.isSameCfg",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onAudioData",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.pumpDecoder",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.reportError"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.isSameCfg",
-   "name": "AudioEngine.isSameCfg",
-   "kind": "method",
-   "params": "c1, c2",
-   "exported": false,
-   "lines": [
-    152,
-    172
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.configure"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.push",
-   "name": "AudioEngine.push",
-   "kind": "method",
-   "params": "chunks",
-   "exported": false,
-   "lines": [
-    174,
-    194
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.lowerBound",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.pumpDecoder"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.lowerBound",
-   "name": "AudioEngine.lowerBound",
-   "kind": "method",
-   "params": "ptsUs",
-   "exported": false,
-   "lines": [
-    196,
-    205
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.pumpDecoder",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.push"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.discard",
-   "name": "AudioEngine.discard",
-   "kind": "method",
-   "params": "a, b",
-   "exported": false,
-   "lines": [
-    207,
-    252
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.reset",
-   "name": "AudioEngine.reset",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    254,
-    266
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.destroy",
-   "name": "AudioEngine.destroy",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    268,
-    285
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPause",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPlaying",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onSeeking",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onWaiting",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.reportError",
-   "name": "AudioEngine.reportError",
-   "kind": "method",
-   "params": "e",
-   "exported": false,
-   "lines": [
-    287,
-    293
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.configure",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.constructor"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.onAudioData",
-   "name": "AudioEngine.onAudioData",
-   "kind": "method",
-   "params": "data",
-   "exported": false,
-   "lines": [
-    295,
-    313
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.configure"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.pumpDecoder",
-   "name": "AudioEngine.pumpDecoder",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    315,
-    339
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.lowerBound"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.configure",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.push",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture",
-   "name": "AudioEngine.stopFuture",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    341,
-    351
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.destroy",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.discard",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onPause",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onSeeking",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.onWaiting",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.reset",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.tick",
-   "name": "AudioEngine.tick",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    353,
-    518
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.extractPcm",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.prunePcm",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.pumpDecoder",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.softCorrect",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.stopFuture"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.constructor"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.tick.node.onended",
-   "name": "AudioEngine.tick.node.onended",
-   "kind": "assigned",
-   "params": "",
-   "exported": false,
-   "lines": [
-    511,
-    511
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.prunePcm",
-   "name": "AudioEngine.prunePcm",
-   "kind": "method",
-   "params": "beforeT",
-   "exported": false,
-   "lines": [
-    520,
-    533
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.softCorrect",
-   "name": "AudioEngine.softCorrect",
-   "kind": "method",
-   "params": "drift",
-   "exported": false,
-   "lines": [
-    535,
-    552
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/audio-engine.js#AudioEngine.extractPcm",
-   "name": "AudioEngine.extractPcm",
-   "kind": "method",
-   "params": "startT, duration",
-   "exported": false,
-   "lines": [
-    554,
-    592
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.tick"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#parseBoxes",
-   "name": "parseBoxes",
-   "kind": "function",
-   "params": "u8, start, end",
-   "exported": true,
-   "lines": [
-    4,
-    60
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/containers.js#audioConfigFromInit",
-    "vendor/playback-speed/containers.js#classifyMp4",
-    "vendor/playback-speed/containers.js#demuxFragments",
-    "vendor/playback-speed/containers.js#dfs",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#classifyMp4",
-   "name": "classifyMp4",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    62,
-    69
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#parseBoxes"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#dfs",
-   "name": "dfs",
-   "kind": "function",
-   "params": "u8, start, end, target",
-   "exported": false,
-   "lines": [
-    71,
-    87
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#parseBoxes"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/containers.js#audioConfigFromInit",
-    "vendor/playback-speed/containers.js#findMdhdTimescale",
-    "vendor/playback-speed/containers.js#parseInitInfo"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#findMdhdTimescale",
-   "name": "findMdhdTimescale",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    89,
-    102
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#dfs"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/containers.js#parseInitInfo",
-    "vendor/playback-speed/containers.js#rewriteInitTimescale"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#rewriteInitTimescale",
-   "name": "rewriteInitTimescale",
-   "kind": "function",
-   "params": "u8, speed",
-   "exported": true,
-   "lines": [
-    104,
-    118
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#findMdhdTimescale"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#readDescr",
-   "name": "readDescr",
-   "kind": "function",
-   "params": "view, start, end",
-   "exported": false,
-   "lines": [
-    120,
-    132
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/containers.js#audioConfigFromInit"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#opusHeadFromDOps",
-   "name": "opusHeadFromDOps",
-   "kind": "function",
-   "params": "d",
-   "exported": false,
-   "lines": [
-    134,
-    148
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/containers.js#audioConfigFromInit"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#parseInitInfo",
-   "name": "parseInitInfo",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    150,
-    165
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#dfs",
-    "vendor/playback-speed/containers.js#findMdhdTimescale"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#audioConfigFromInit",
-   "name": "audioConfigFromInit",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    167,
-    240
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#dfs",
-    "vendor/playback-speed/containers.js#opusHeadFromDOps",
-    "vendor/playback-speed/containers.js#parseBoxes",
-    "vendor/playback-speed/containers.js#readDescr"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#demuxFragments",
-   "name": "demuxFragments",
-   "kind": "function",
-   "params": "u8, { timescale, trex }",
-   "exported": true,
-   "lines": [
-    242,
-    432
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#parseBoxes"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#readVint",
-   "name": "readVint",
-   "kind": "function",
-   "params": "u8, start",
-   "exported": true,
-   "lines": [
-    434,
-    465
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/containers.js#demuxClusters",
-    "vendor/playback-speed/containers.js#parseElements",
-    "vendor/playback-speed/containers.js#rewriteTimecodeScale"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#parseElements",
-   "name": "parseElements",
-   "kind": "function",
-   "params": "u8, start, end",
-   "exported": true,
-   "lines": [
-    467,
-    516
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#readVint"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/containers.js#audioConfigFromWebmInit",
-    "vendor/playback-speed/containers.js#demuxClusters",
-    "vendor/playback-speed/containers.js#findTimecodeScale",
-    "vendor/playback-speed/containers.js#levelOne",
-    "vendor/playback-speed/containers.js#rewriteTimecodeScale",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#levelOne",
-   "name": "levelOne",
-   "kind": "function",
-   "params": "u8",
-   "exported": false,
-   "lines": [
-    521,
-    526
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#parseElements"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/containers.js#classifyWebm",
-    "vendor/playback-speed/containers.js#demuxClusters"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#classifyWebm",
-   "name": "classifyWebm",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    528,
-    537
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#levelOne"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#findTimecodeScale",
-   "name": "findTimecodeScale",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    539,
-    560
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#parseElements"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/containers.js#rewriteTimecodeScale",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#encodeVint",
-   "name": "encodeVint",
-   "kind": "function",
-   "params": "val",
-   "exported": false,
-   "lines": [
-    562,
-    582
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/containers.js#rewriteTimecodeScale"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#rewriteTimecodeScale",
-   "name": "rewriteTimecodeScale",
-   "kind": "function",
-   "params": "u8, speed",
-   "exported": true,
-   "lines": [
-    584,
-    672
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#encodeVint",
-    "vendor/playback-speed/containers.js#findTimecodeScale",
-    "vendor/playback-speed/containers.js#parseElements",
-    "vendor/playback-speed/containers.js#readVint"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#audioConfigFromWebmInit",
-   "name": "audioConfigFromWebmInit",
-   "kind": "function",
-   "params": "u8",
-   "exported": true,
-   "lines": [
-    674,
-    733
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#parseElements"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/containers.js#demuxClusters",
-   "name": "demuxClusters",
-   "kind": "function",
-   "params": "u8, { timecodeScale, trackNumber }",
-   "exported": true,
-   "lines": [
-    735,
-    844
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#levelOne",
-    "vendor/playback-speed/containers.js#parseElements",
-    "vendor/playback-speed/containers.js#readVint"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#isSupportedSpeed",
-   "name": "isSupportedSpeed",
-   "kind": "function",
-   "params": "speed",
-   "exported": true,
-   "lines": [
-    18,
-    20
-   ],
-   "description": "",
-   "calledBy": [
-    "features/playback-speed/controller.js#createSpeedController.setSpeed",
-    "features/playback-speed/native-menu.js#wrapRate.wrapped",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.set speed"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.constructor",
-   "name": "SpeedTimeMap.constructor",
-   "kind": "method",
-   "params": "speed",
-   "exported": false,
-   "lines": [
-    23,
-    26
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.get speed",
-   "name": "SpeedTimeMap.get speed",
-   "kind": "getter",
-   "params": "",
-   "exported": false,
-   "lines": [
-    28,
-    30
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.set speed",
-   "name": "SpeedTimeMap.set speed",
-   "kind": "setter",
-   "params": "value",
-   "exported": false,
-   "lines": [
-    32,
-    37
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#isSupportedSpeed"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.toElement",
-   "name": "SpeedTimeMap.toElement",
-   "kind": "method",
-   "params": "t",
-   "exported": false,
-   "lines": [
-    39,
-    41
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.toContent",
-   "name": "SpeedTimeMap.toContent",
-   "kind": "method",
-   "params": "t",
-   "exported": false,
-   "lines": [
-    43,
-    45
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges",
-   "name": "SpeedTimeMap.mapRanges",
-   "kind": "method",
-   "params": "ranges, direction",
-   "exported": false,
-   "lines": [
-    47,
-    65
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.toContent",
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.toElement"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges.start",
-   "name": "SpeedTimeMap.mapRanges.start",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    54,
-    58
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#SpeedTimeMap.mapRanges.end",
-   "name": "SpeedTimeMap.mapRanges.end",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    59,
-    63
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim",
-   "name": "attachElementShim",
-   "kind": "function",
-   "params": "el, timeMap, { onRateRequest }",
-   "exported": true,
-   "lines": [
-    68,
-    160
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#attachElementShim.defineProp",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.detach",
-    "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.attach"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim.defineProp",
-   "name": "attachElementShim.defineProp",
-   "kind": "arrow",
-   "params": "prop, get, set",
-   "exported": false,
-   "lines": [
-    73,
-    99
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#attachElementShim"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim.defineProp.newDesc.set",
-   "name": "attachElementShim.defineProp.newDesc.set",
-   "kind": "assigned",
-   "params": "val",
-   "exported": false,
-   "lines": [
-    93,
-    95
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges",
-   "name": "attachElementShim.mapRanges",
-   "kind": "arrow",
-   "params": "ranges",
-   "exported": false,
-   "lines": [
-    101,
-    105
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#attachElementShim"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges.start",
-   "name": "attachElementShim.mapRanges.start",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    103,
-    103
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim.mapRanges.end",
-   "name": "attachElementShim.mapRanges.end",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    104,
-    104
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#attachElementShim.detach",
-   "name": "attachElementShim.detach",
-   "kind": "function",
-   "params": "",
-   "exported": false,
-   "lines": [
-    150,
-    157
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#attachElementShim"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook",
-   "name": "installMseHook",
-   "kind": "function",
-   "params": "win, { getSpeed, createAudioSink, onRateRequest, onError, onNativeAudio }",
-   "exported": true,
-   "lines": [
-    162,
-    776
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.attach"
-   ],
-   "calledBy": [
-    "features/playback-speed/index.js#install"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.attach",
-   "name": "installMseHook.attach",
-   "kind": "function",
-   "params": "el, session",
-   "exported": false,
-   "lines": [
-    185,
-    191
-   ],
-   "description": "Attaching twice would stack two shims (x S^2): reuse a live one for the same session, replace one that belongs to another session.",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#attachElementShim"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook",
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.win.URL.createObjectURL",
-   "name": "installMseHook.win.URL.createObjectURL",
-   "kind": "assigned",
-   "params": "obj",
-   "exported": false,
-   "lines": [
-    193,
-    199
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.win.URL.revokeObjectURL",
-   "name": "installMseHook.win.URL.revokeObjectURL",
-   "kind": "assigned",
-   "params": "url",
-   "exported": false,
-   "lines": [
-    202,
-    205
-   ],
-   "description": "Don't keep every MediaSource (and its audio engine) alive for the session."
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer",
-   "name": "installMseHook.win.MediaSource.prototype.addSourceBuffer",
-   "kind": "assigned",
-   "params": "mime",
-   "exported": false,
-   "lines": [
-    224,
-    270
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#SpeedTimeMap.constructor",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.constructor",
-    "vendor/playback-speed/mse-hook.js#installMseHook.attach",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchMediaSource",
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchMediaSource",
-   "name": "installMseHook.patchMediaSource",
-   "kind": "function",
-   "params": "ms, session",
-   "exported": false,
-   "lines": [
-    272,
-    325
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchMediaSource.list.item",
-   "name": "installMseHook.patchMediaSource.list.item",
-   "kind": "property",
-   "params": "idx",
-   "exported": false,
-   "lines": [
-    308,
-    313
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.looksLikeInitStart",
-   "name": "installMseHook.looksLikeInitStart",
-   "kind": "function",
-   "params": "u8",
-   "exported": false,
-   "lines": [
-    327,
-    341
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer",
-   "name": "installMseHook.patchVideoSourceBuffer",
-   "kind": "function",
-   "params": "sb, mime, speed, onError",
-   "exported": false,
-   "lines": [
-    343,
-    439
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.defineAccessor"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.appendBuffer",
-   "name": "installMseHook.patchVideoSourceBuffer.sb.appendBuffer",
-   "kind": "assigned",
-   "params": "data",
-   "exported": false,
-   "lines": [
-    350,
-    389
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#classifyMp4",
-    "vendor/playback-speed/containers.js#classifyWebm",
-    "vendor/playback-speed/containers.js#rewriteInitTimescale",
-    "vendor/playback-speed/containers.js#rewriteTimecodeScale",
-    "vendor/playback-speed/mse-hook.js#installMseHook.looksLikeInitStart"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.sb.remove",
-   "name": "installMseHook.patchVideoSourceBuffer.sb.remove",
-   "kind": "assigned",
-   "params": "start, end",
-   "exported": false,
-   "lines": [
-    391,
-    393
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.defineAccessor",
-   "name": "installMseHook.patchVideoSourceBuffer.defineAccessor",
-   "kind": "arrow",
-   "params": "prop, scale",
-   "exported": false,
-   "lines": [
-    395,
-    412
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.start",
-   "name": "installMseHook.patchVideoSourceBuffer.start",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    433,
-    433
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.patchVideoSourceBuffer.end",
-   "name": "installMseHook.patchVideoSourceBuffer.end",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    434,
-    434
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.uninstall",
-   "name": "installMseHook.uninstall",
-   "kind": "function",
-   "params": "",
-   "exported": false,
-   "lines": [
-    441,
-    448
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.constructor",
-   "name": "installMseHook.FakeAudioSourceBuffer.constructor",
-   "kind": "method",
-   "params": "win, mime, speed, sink, onError",
-   "exported": false,
-   "lines": [
-    457,
-    476
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.win.MediaSource.prototype.addSourceBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get timestampOffset",
-   "name": "installMseHook.FakeAudioSourceBuffer.get timestampOffset",
-   "kind": "getter",
-   "params": "",
-   "exported": false,
-   "lines": [
-    478,
-    480
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.set timestampOffset",
-   "name": "installMseHook.FakeAudioSourceBuffer.set timestampOffset",
-   "kind": "setter",
-   "params": "val",
-   "exported": false,
-   "lines": [
-    481,
-    483
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get buffered",
-   "name": "installMseHook.FakeAudioSourceBuffer.get buffered",
-   "kind": "getter",
-   "params": "",
-   "exported": false,
-   "lines": [
-    485,
-    502
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get buffered.start",
-   "name": "installMseHook.FakeAudioSourceBuffer.get buffered.start",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    491,
-    495
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.get buffered.end",
-   "name": "installMseHook.FakeAudioSourceBuffer.get buffered.end",
-   "kind": "property",
-   "params": "i",
-   "exported": false,
-   "lines": [
-    496,
-    500
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._addRange",
-   "name": "installMseHook.FakeAudioSourceBuffer._addRange",
-   "kind": "method",
-   "params": "start, end",
-   "exported": false,
-   "lines": [
-    504,
-    521
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer",
-   "name": "installMseHook.FakeAudioSourceBuffer.appendBuffer",
-   "kind": "method",
-   "params": "data",
-   "exported": false,
-   "lines": [
-    523,
-    696
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/containers.js#audioConfigFromInit",
-    "vendor/playback-speed/containers.js#audioConfigFromWebmInit",
-    "vendor/playback-speed/containers.js#classifyMp4",
-    "vendor/playback-speed/containers.js#classifyWebm",
-    "vendor/playback-speed/containers.js#demuxClusters",
-    "vendor/playback-speed/containers.js#demuxFragments",
-    "vendor/playback-speed/containers.js#findTimecodeScale",
-    "vendor/playback-speed/containers.js#parseBoxes",
-    "vendor/playback-speed/containers.js#parseElements",
-    "vendor/playback-speed/containers.js#parseInitInfo",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._addRange",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._evictBehind",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._finishLater"
-   ],
-   "events": {
-    "emit": [
-     "updatestart"
-    ]
-   }
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._evictBehind",
-   "name": "installMseHook.FakeAudioSourceBuffer._evictBehind",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    698,
-    708
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._finishLater",
-   "name": "installMseHook.FakeAudioSourceBuffer._finishLater",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    710,
-    722
-   ],
-   "description": "",
-   "events": {
-    "emit": [
-     "update",
-     "updateend"
-    ]
-   },
-   "calledBy": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.remove"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.remove",
-   "name": "installMseHook.FakeAudioSourceBuffer.remove",
-   "kind": "method",
-   "params": "start, end",
-   "exported": false,
-   "lines": [
-    724,
-    750
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._finishLater"
-   ],
-   "events": {
-    "emit": [
-     "updatestart"
-    ]
-   }
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.abort",
-   "name": "installMseHook.FakeAudioSourceBuffer.abort",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    752,
-    764
-   ],
-   "description": "",
-   "events": {
-    "emit": [
-     "abort",
-     "updateend"
-    ]
-   }
-  },
-  {
-   "id": "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.changeType",
-   "name": "installMseHook.FakeAudioSourceBuffer.changeType",
-   "kind": "method",
-   "params": "type",
-   "exported": false,
-   "lines": [
-    766,
-    773
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.constructor",
-   "name": "WsolaStretcher.constructor",
-   "kind": "method",
-   "params": "{ sampleRate, channels, frameMs = 46, searchMs = 12, searchStep = 1, corrStep = 1 }",
-   "exported": false,
-   "lines": [
-    2,
-    48
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.constructor"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.setSpeed",
-   "name": "WsolaStretcher.setSpeed",
-   "kind": "method",
-   "params": "s",
-   "exported": false,
-   "lines": [
-    50,
-    52
-   ],
-   "description": ""
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher._ensureInCapacity",
-   "name": "WsolaStretcher._ensureInCapacity",
-   "kind": "method",
-   "params": "required",
-   "exported": false,
-   "lines": [
-    54,
-    63
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.push"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher._ensureOutCapacity",
-   "name": "WsolaStretcher._ensureOutCapacity",
-   "kind": "method",
-   "params": "required",
-   "exported": false,
-   "lines": [
-    65,
-    74
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher._process",
-    "vendor/playback-speed/wsola.js#WsolaStretcher.push"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.push",
-   "name": "WsolaStretcher.push",
-   "kind": "method",
-   "params": "channelArrays",
-   "exported": false,
-   "lines": [
-    76,
-    99
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher._ensureInCapacity",
-    "vendor/playback-speed/wsola.js#WsolaStretcher._ensureOutCapacity",
-    "vendor/playback-speed/wsola.js#WsolaStretcher._process"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.flush"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher._process",
-   "name": "WsolaStretcher._process",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    101,
-    187
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher._ensureOutCapacity"
-   ],
-   "calledBy": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.push"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.available",
-   "name": "WsolaStretcher.available",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    189,
-    196
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.pull"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.pull",
-   "name": "WsolaStretcher.pull",
-   "kind": "method",
-   "params": "n",
-   "exported": false,
-   "lines": [
-    198,
-    231
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.available"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.flush",
-   "name": "WsolaStretcher.flush",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    233,
-    242
-   ],
-   "description": "",
-   "calls": [
-    "vendor/playback-speed/wsola.js#WsolaStretcher.push"
-   ]
-  },
-  {
-   "id": "vendor/playback-speed/wsola.js#WsolaStretcher.reset",
-   "name": "WsolaStretcher.reset",
-   "kind": "method",
-   "params": "",
-   "exported": false,
-   "lines": [
-    244,
-    251
-   ],
-   "description": ""
   }
  ],
  "settings": {
-  "uiTheme": {
-   "label": "UI Theme",
-   "default": "blue-force-field",
-   "other": [
-    "ui/panel/controls/cycle-row.js#createThemeControl",
-    "ui/styles/html-classes.js#(top level)"
-   ],
-   "read": [
-    "ui/panel/panel.js#createHeading.toggleTheme"
-   ],
-   "write": [
-    "ui/panel/panel.js#createHeading.toggleTheme"
-   ]
-  },
   "enableAdBlock": {
    "label": "Ad Blocking",
    "default": true,
@@ -27654,7 +24637,7 @@
   },
   "dearrowTitleFormatting": {
    "label": "Title formatting",
-   "default": "title_case",
+   "default": "disable",
    "other": [
     "features/dearrow/constants.js#(top level)",
     "ui/panel/pages.js#buildDeArrowPage"
@@ -27709,19 +24692,6 @@
    "read": [
     "features/dearrow/sweep.js#sweepTiles",
     "features/dearrow/tiles.js#applyToTile"
-   ]
-  },
-  "enablePlaybackSpeed": {
-   "label": "Playback Speed (experimental)",
-   "default": false,
-   "listen": [
-    "features/playback-speed/index.js#(top level)"
-   ],
-   "read": [
-    "features/playback-speed/index.js#isOn"
-   ],
-   "other": [
-    "ui/panel/pages.js#buildUITweaksPage"
    ]
   },
   "upgradeThumbnails": {
@@ -27990,8 +24960,8 @@
    ]
   },
   "enableOledCareMode": {
-   "label": "OLED-Care Mode (True Black UI)",
-   "default": false,
+   "label": "Pure Black UI (OLED)",
+   "default": true,
    "other": [
     "dev/perf-mon.js#(top level)",
     "ui/panel/pages.js#buildMainPage",
@@ -28097,7 +25067,6 @@
     "features/video-quality/index.js#(top level)"
    ],
    "read": [
-    "features/playback-speed/controller.js#createSpeedController.applyReload",
     "features/video-quality/index.js#initVideoQuality"
    ]
   },
@@ -28206,11 +25175,6 @@
     "features/video-quality/index.js#setupListeners"
    ]
   },
-  "abort": {
-   "emit": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.abort"
-   ]
-  },
   "beforeunload": {
    "listen": [
     "core/config.js#(top level)",
@@ -28301,19 +25265,18 @@
   "pagehide": {
    "listen": [
     "core/config.js#(top level)",
-    "features/thumbnail-quality/index.js#(top level)"
+    "features/thumbnail-quality/index.js#(top level)",
+    "ui/panel/panel.js#schedulePrewarm"
    ]
   },
   "pause": {
    "listen": [
-    "features/screensaver-fix/decoder-stall.js#(top level)",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo"
+    "features/screensaver-fix/decoder-stall.js#(top level)"
    ]
   },
   "playing": {
    "listen": [
-    "features/screensaver-fix/decoder-stall.js#(top level)",
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo"
+    "features/screensaver-fix/decoder-stall.js#(top level)"
    ]
   },
   "request": {
@@ -28327,51 +25290,21 @@
     "features/sponsorblock/video-events.js#bindWindowEvents"
    ]
   },
-  "seeking": {
-   "listen": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo"
-   ]
-  },
   "timeupdate": {
    "listen": [
     "dev/perf-mon.js#ensureVideoTickProbe",
     "features/sponsorblock/skipping.js#attachTimeListener"
    ]
   },
-  "update": {
-   "emit": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._finishLater"
-   ]
-  },
   "updateend": {
    "listen": [
     "hooks/buffer-limit.js#patchAppend.proto.appendBuffer"
-   ],
-   "emit": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer._finishLater",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.abort"
-   ]
-  },
-  "updatestart": {
-   "emit": [
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.appendBuffer",
-    "vendor/playback-speed/mse-hook.js#installMseHook.FakeAudioSourceBuffer.remove"
    ]
   },
   "visibilitychange": {
    "listen": [
     "features/thumbnail-quality/index.js#(top level)",
     "features/watch/index.js#Watch.startClock"
-   ]
-  },
-  "volumechange": {
-   "listen": [
-    "features/playback-speed/controller.js#createAudioSinks.create"
-   ]
-  },
-  "waiting": {
-   "listen": [
-    "vendor/playback-speed/audio-engine.js#AudioEngine.attachVideo"
    ]
   },
   "webOSRelaunch": {
@@ -28381,7 +25314,6 @@
   },
   "yt-player-state-change": {
    "listen": [
-    "features/playback-speed/index.js#install",
     "features/sponsorblock/video-events.js#bindWindowEvents",
     "features/watch/index.js#Watch.setupGlobalListeners"
    ],
@@ -28447,7 +25379,6 @@
    "value": "ytlr-player__player-container-player",
    "note": "",
    "usedBy": [
-    "features/playback-speed/index.js#getPlayer",
     "features/screensaver-fix/shorts-keep-alive.js#setShortsKeepAlive",
     "features/video-quality/index.js#attachToPlayer",
     "ui/shortcuts/actions.js#ACTIONS.toggle_subs.run"
@@ -28472,7 +25403,6 @@
    "value": ".html5-video-player",
    "note": "Older player root, tried when PLAYER_ID is not on the page.",
    "usedBy": [
-    "features/playback-speed/index.js#getPlayer",
     "ui/shortcuts/actions.js#ACTIONS.toggle_subs.run"
    ]
   },
@@ -28522,7 +25452,6 @@
    "value": "yt-focus-container[idomkey=\"controls\"]",
    "note": "Transport controls and the progress bar",
    "usedBy": [
-    "features/video-quality/kickstart.js#dismissRaisedControls",
     "ui/shortcuts/playback.js#controlsFocused"
    ]
   },
@@ -28544,9 +25473,7 @@
   "CONTROLS_FOCUSED_CLASS_WEBOS25": {
    "value": "MFDzfe--focused",
    "note": "The controls holding the focus, as seen on the webOS 25 first-play path only.",
-   "usedBy": [
-    "features/video-quality/kickstart.js#dismissRaisedControls"
-   ]
+   "usedBy": []
   },
   "PROGRESS_BAR_RENDERER": {
    "value": "ytlr-multi-markers-player-bar-renderer",
@@ -28809,7 +25736,6 @@
   ],
   "window.fetch": [
    "dev/perf-mon.js#installNetworkProbes",
-   "features/block-webos-cast.ts#initBlockWebOSCast",
    "hooks/fetch.ts#FetchRegistry.constructor"
   ]
  }

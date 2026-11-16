@@ -551,18 +551,18 @@ const legacy = flavour === 'legacy';
 
   // ---- a teardown during the fetch --------------------------------------------------------
   {
-    // The 5 s timeout at a twentieth, 250 ms: the teardown lands well before
-    // it even on a loaded machine, and the wait below goes past it.
+    // The 5 s timeout at a fifth, 1 s: the teardown has a whole second to land
+    // even on a loaded machine, and the wait below goes past the timeout.
     const p = sponsorBlockPage([seg('sponsor', 20, 30)], {}, 40, {
       hang: true,
-      timers: { scale: 20, from: 500 }
+      timers: { scale: 5, from: 500 }
     });
     await p.ready();
     p.win.location.hash = '#/';
     await waitFor(() => p.sb() === null);
     t('leaving the page while the fetch is pending destroys the handler', p.sb() === null);
     if (!legacy) t('webOS 22+: the pending request is aborted', p.pending[0].aborted === true);
-    await wait(300); // past the timeout
+    await wait(1200); // past the timeout
     t(
       'a destroyed handler does not ask the fallback server',
       p.pending.length === 1,

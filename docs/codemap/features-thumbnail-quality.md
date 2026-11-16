@@ -214,7 +214,7 @@ Entry point called from the JSON.parse hook in adblock/parse-hook.js. `responseT
 >
 > JSON carries no failure signal the way a CSS background fallback does, and maxresdefault does not exist for every video - YouTube answers a miss with a small grey placeholder rather than a 404 (see PLACEHOLDER_MAX_BYTES). Hence the modes in state.js and the verification queue in probes.js. This file wires the switches, the cache's lifetime and the arrow-key pause.
 
-103 lines · imports [core/config.js](core.md#mod-config-js), [features/thumbnail-quality/ladder.js](#mod-ladder-js), [features/thumbnail-quality/state.js](#mod-state-js), [features/thumbnail-quality/cache.js](#mod-cache-js), [features/thumbnail-quality/probes.js](#mod-probes-js), [features/thumbnail-quality/navigation-pause.js](#mod-navigation-pause-js) · imported by [features/adblock/parse-hook.js](features-adblock.md#mod-parse-hook-js)
+105 lines · imports [core/config.js](core.md#mod-config-js), [features/thumbnail-quality/ladder.js](#mod-ladder-js), [features/thumbnail-quality/state.js](#mod-state-js), [features/thumbnail-quality/cache.js](#mod-cache-js), [features/thumbnail-quality/probes.js](#mod-probes-js), [features/thumbnail-quality/navigation-pause.js](#mod-navigation-pause-js) · imported by [features/adblock/parse-hook.js](features-adblock.md#mod-parse-hook-js)
 
 **At load:**
 

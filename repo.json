@@ -1,48 +1,28 @@
 {
   "paging": {
     "page": 1,
-    "count": 2,
+    "count": 1,
     "maxPage": 1,
-    "itemsTotal": 2
+    "itemsTotal": 1
   },
   "packages": [
     {
       "id": "youtube.leanback.v4",
-      "title": "YouTube AdFree",
-      "description": "YouTube AdFree",
-      "iconUri": "https://raw.githubusercontent.com/NicholasBly/youtube-webos/main/assets/icon.png",
+      "title": "YouTube Aura",
+      "description": "YouTube Aura for the LG OLED55B7V (webOS 3.x)",
+      "iconUri": "https://raw.githubusercontent.com/whhiitee/youtube-aura-webos/main/assets/aura-icon.png",
       "manifest": {
         "id": "youtube.leanback.v4",
-        "version": "0.8.5",
+        "version": "1.0.0",
         "type": "web",
-        "title": "YouTube AdFree",
-        "appDescription": "YouTube AdFree",
-        "iconUri": "https://raw.githubusercontent.com/NicholasBly/youtube-webos/main/assets/icon.png",
-        "sourceUrl": "https://github.com/NicholasBly/youtube-webos",
+        "title": "YouTube Aura",
+        "appDescription": "YouTube Aura for the LG OLED55B7V (webOS 3.x)",
+        "iconUri": "https://raw.githubusercontent.com/whhiitee/youtube-aura-webos/main/assets/aura-icon.png",
+        "sourceUrl": "https://github.com/whhiitee/youtube-aura-webos",
         "rootRequired": false,
-        "ipkUrl": "https://github.com/NicholasBly/youtube-webos/releases/download/0.8.5/youtube.leanback.v4_0.8.5_all.ipk",
+        "ipkUrl": "https://github.com/whhiitee/youtube-aura-webos/releases/download/v1.0.0/youtube.leanback.v4_1.0.0_all_oled55b7v.ipk",
         "ipkHash": {
-          "sha256": "41b8a13e57093b120f47548befc919dc1b65e12440b610609988bab51a0f6128"
-        }
-      }
-    },
-    {
-      "id": "youtube.leanback.v4.webos22",
-      "title": "YouTube AdFree (webOS 22+)",
-      "description": "YouTube AdFree for webOS 22 and newer. Lighter optimized build supporting newer hardware.",
-      "iconUri": "https://raw.githubusercontent.com/NicholasBly/youtube-webos/main/assets/icon.png",
-      "manifest": {
-        "id": "youtube.leanback.v4.webos22",
-        "version": "0.8.5",
-        "type": "web",
-        "title": "YouTube AdFree (webOS 22+)",
-        "appDescription": "YouTube AdFree for webOS 22 and newer. Lighter optimized build supporting newer hardware.",
-        "iconUri": "https://raw.githubusercontent.com/NicholasBly/youtube-webos/main/assets/icon.png",
-        "sourceUrl": "https://github.com/NicholasBly/youtube-webos",
-        "rootRequired": false,
-        "ipkUrl": "https://github.com/NicholasBly/youtube-webos/releases/download/0.8.5/youtube.leanback.v4_0.8.5_all_webOS22%2B.ipk",
-        "ipkHash": {
-          "sha256": "fca8855b7155aceb1d930002a4dd11e49b67e509e97e63b9b6e6f8d348dad987"
+          "sha256": "FILLED_AT_RELEASE"
         }
       }
     }
