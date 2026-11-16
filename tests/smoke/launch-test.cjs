@@ -1,9 +1,9 @@
 /**
  * The launcher page (dist/index.js) builds the YouTube URL from the launch
- * parameters, each build's under the oldest engine it runs on: the legacy one
- * under a simulated Chromium 38, the webOS 22+ one under Chrome 87.
+ * parameters, under a simulated Chromium 38: the engine of the TV this build is
+ * for.
  *
- * Run: node tests/smoke/launch-test.cjs [index.js] [legacy|modern]   (default dist/index.js, legacy)
+ * Run: node tests/smoke/launch-test.cjs [index.js]   (default dist/index.js)
  */
 const fs = require('fs');
 const { JSDOM } = require('jsdom');

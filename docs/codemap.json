@@ -682,7 +682,7 @@
   },
   {
    "path": "dev/perf-mon.js",
-   "lines": 4740,
+   "lines": 4735,
    "header": "perf-mon.js — YTAF Engine Diagnostics ===================================================================== Dev-only instrumentation for the webOS YouTube mod.\n\nWHAT IT DOES 1. Hooks every runtime boundary this mod actually crosses (JSON.parse, JSON.stringify, fetch, XHR, MutationObserver, IntersectionObserver, timers, rAF, DOM queries, layout reads, event listeners) and charges the cost back to the module + function responsible. 2. Carries a registry of every function in the codebase and its role, so the cluster reports \"this is firing / this is silent / this should not be running here\" instead of anonymous numbers. 3. Runs a feature-expectation sweep on every page transition: for each enabled option it knows what should happen on this page, and verifies it against live DOM and runtime evidence. 4. Renders an automotive instrument cluster sized for a TV across a room. 5. Emits machine-readable bottleneck reports for an AI agent to review.\n\nLOAD ORDER MATTERS. Import this first in userScript.js (after the polyfills). It installs \"inner\" probes immediately, so it sits underneath adblock's JSON.parse hook and can time the native parse; then it arms \"outer\" probes in a deferred task once the bundle has finished evaluating, so it also sits above every mod hook and can time the total. Mod overhead = outer - inner.\n\nREMOTE   Press 0 three times within 1.5s to toggle the cluster. LEFT/RIGHT tab. UP/DOWN scroll. OK emits a report. BACK closes. (YELLOW is NOT used: YouTube's own leanback UI claims it, and screensaver-fix.js synthesises a YELLOW press every 30s on Shorts.) CONSOLE  __PERF.help(), __PERF.toggle()",
    "imports": [],
    "importedBy": [
@@ -930,25 +930,9 @@
    "functions": []
   },
   {
-   "path": "features/adblock/emoji-wrap-absent.js",
-   "lines": 11,
-   "header": "The webOS 22+ build's emoji-wrap.js (webpack.config.js): the legacy emoji fix is off on every engine that runs this build, so nothing here is reached with work to do.",
-   "imports": [],
-   "importedBy": [],
-   "exports": [
-    "wrapEmojiInTree",
-    "mayNeedEmojiWork"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/adblock/emoji-wrap-absent.js#wrapEmojiInTree",
-    "features/adblock/emoji-wrap-absent.js#mayNeedEmojiWork"
-   ]
-  },
-  {
    "path": "features/adblock/emoji-wrap.js",
    "lines": 250,
-   "header": "The legacy emoji fix's half in the response: every emoji in the parsed tree wrapped in sentinel characters, so features/emoji-font can swap it for an image on webOS 3 and 4. The webOS 22+ build carries emoji-wrap-absent.js in its place (webpack.config.js): the fix is never on there.",
+   "header": "The legacy emoji fix's half in the response: every emoji in the parsed tree wrapped in sentinel characters, so features/emoji-font can swap it for an image. This build is webOS 3, where the system font has no colour emoji, so the fix is on by default and this module is always the one in the bundle.",
    "imports": [
     {
      "from": "features/adblock/log.js",
@@ -8819,8 +8803,8 @@
    "params": "fn",
    "exported": false,
    "lines": [
-    308,
-    320
+    305,
+    317
    ],
    "description": "",
    "calledBy": [
@@ -8834,8 +8818,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    560,
-    570
+    556,
+    566
    ],
    "description": "",
    "calledBy": [
@@ -8849,8 +8833,8 @@
    "params": "stack",
    "exported": false,
    "lines": [
-    572,
-    583
+    568,
+    579
    ],
    "description": "",
    "calledBy": [
@@ -8864,8 +8848,8 @@
    "params": "stack",
    "exported": false,
    "lines": [
-    585,
-    590
+    581,
+    586
    ],
    "description": "",
    "calledBy": [
@@ -8879,8 +8863,8 @@
    "params": "fn, hint",
    "exported": false,
    "lines": [
-    595,
-    638
+    591,
+    634
    ],
    "description": "Resolve and memoise {module, fn, role, cost, ours} for a callback.",
    "calls": [
@@ -8906,8 +8890,8 @@
    "params": "hint",
    "exported": false,
    "lines": [
-    640,
-    651
+    636,
+    647
    ],
    "description": "",
    "calledBy": [
@@ -8921,8 +8905,8 @@
    "params": "origin",
    "exported": false,
    "lines": [
-    664,
-    675
+    660,
+    671
    ],
    "description": "",
    "calls": [
@@ -8941,8 +8925,8 @@
    "params": "mod",
    "exported": false,
    "lines": [
-    677,
-    681
+    673,
+    677
    ],
    "description": "",
    "calls": [
@@ -8961,8 +8945,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    683,
-    685
+    679,
+    681
    ],
    "description": "",
    "calledBy": [
@@ -8978,8 +8962,8 @@
    "params": "origin, fn, thisArg, args",
    "exported": false,
    "lines": [
-    688,
-    703
+    684,
+    699
    ],
    "description": "Run fn under an attribution context and charge its inclusive wall time.",
    "calls": [
@@ -9003,8 +8987,8 @@
    "params": "limit, windowMs",
    "exported": false,
    "lines": [
-    705,
-    729
+    701,
+    725
    ],
    "description": "",
    "calledBy": [
@@ -9022,8 +9006,8 @@
    "params": "name",
    "exported": false,
    "lines": [
-    796,
-    809
+    792,
+    805
    ],
    "description": "",
    "calls": [
@@ -9042,8 +9026,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    818,
-    829
+    814,
+    825
    ],
    "description": "",
    "calledBy": [
@@ -9057,8 +9041,8 @@
    "params": "fn",
    "exported": false,
    "lines": [
-    832,
-    834
+    828,
+    830
    ],
    "description": "",
    "calledBy": [
@@ -9072,8 +9056,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    836,
-    853
+    832,
+    849
    ],
    "description": "",
    "calls": [
@@ -9092,8 +9076,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    872,
-    879
+    868,
+    875
    ],
    "description": "",
    "calledBy": [
@@ -9107,8 +9091,8 @@
    "params": "fnName, fallbackModule",
    "exported": false,
    "lines": [
-    891,
-    902
+    887,
+    898
    ],
    "description": "",
    "calledBy": [
@@ -9122,8 +9106,8 @@
    "params": "origin, msSpent",
    "exported": false,
    "lines": [
-    904,
-    910
+    900,
+    906
    ],
    "description": "",
    "calls": [
@@ -9142,8 +9126,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    912,
-    924
+    908,
+    920
    ],
    "description": "",
    "calledBy": [
@@ -9157,8 +9141,8 @@
    "params": "t",
    "exported": false,
    "lines": [
-    926,
-    938
+    922,
+    934
    ],
    "description": "",
    "calls": [
@@ -9175,8 +9159,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    940,
-    965
+    936,
+    961
    ],
    "description": "",
    "hooks": [
@@ -9194,8 +9178,8 @@
    "params": "text, reviver",
    "exported": false,
    "lines": [
-    943,
-    952
+    939,
+    948
    ],
    "description": ""
   },
@@ -9206,8 +9190,8 @@
    "params": "value, replacer, space",
    "exported": false,
    "lines": [
-    957,
-    964
+    953,
+    960
    ],
    "description": ""
   },
@@ -9218,8 +9202,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    967,
-    1050
+    963,
+    1046
    ],
    "description": "",
    "calls": [
@@ -9241,8 +9225,8 @@
    "params": "text, reviver",
    "exported": false,
    "lines": [
-    985,
-    1022
+    981,
+    1018
    ],
    "description": "",
    "calls": [
@@ -9260,8 +9244,8 @@
    "params": "value, replacer, space",
    "exported": false,
    "lines": [
-    1027,
-    1047
+    1023,
+    1043
    ],
    "description": "",
    "calls": [
@@ -9276,8 +9260,8 @@
    "params": "url",
    "exported": false,
    "lines": [
-    1067,
-    1073
+    1063,
+    1069
    ],
    "description": "",
    "calledBy": [
@@ -9294,8 +9278,8 @@
    "params": "kind, method, url, ms, ok",
    "exported": false,
    "lines": [
-    1075,
-    1100
+    1071,
+    1096
    ],
    "description": "",
    "calls": [
@@ -9314,8 +9298,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1102,
-    1222
+    1098,
+    1218
    ],
    "description": "",
    "calls": [
@@ -9335,8 +9319,8 @@
    "params": "url, _data",
    "exported": false,
    "lines": [
-    1109,
-    1123
+    1105,
+    1119
    ],
    "description": "",
    "calls": [
@@ -9351,8 +9335,8 @@
    "params": "resource, init",
    "exported": false,
    "lines": [
-    1131,
-    1168
+    1127,
+    1164
    ],
    "description": "",
    "calls": [
@@ -9368,8 +9352,8 @@
    "params": "ok",
    "exported": false,
    "lines": [
-    1137,
-    1142
+    1133,
+    1138
    ],
    "description": "",
    "calls": [
@@ -9387,8 +9371,8 @@
    "params": "method, url",
    "exported": false,
    "lines": [
-    1177,
-    1185
+    1173,
+    1181
    ],
    "description": ""
   },
@@ -9399,8 +9383,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1187,
-    1220
+    1183,
+    1216
    ],
    "description": "",
    "calls": [
@@ -9421,8 +9405,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1192,
-    1200
+    1188,
+    1196
    ],
    "description": "",
    "calls": [
@@ -9441,8 +9425,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1205,
-    1208
+    1201,
+    1204
    ],
    "description": "",
    "calls": [
@@ -9456,8 +9440,8 @@
    "params": "target",
    "exported": false,
    "lines": [
-    1234,
-    1246
+    1230,
+    1242
    ],
    "description": "",
    "calledBy": [
@@ -9472,8 +9456,8 @@
    "params": "o",
    "exported": false,
    "lines": [
-    1248,
-    1258
+    1244,
+    1254
    ],
    "description": "",
    "calledBy": [
@@ -9487,8 +9471,8 @@
    "params": "rec",
    "exported": false,
    "lines": [
-    1260,
-    1264
+    1256,
+    1260
    ],
    "description": "",
    "calledBy": [
@@ -9503,8 +9487,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1266,
-    1375
+    1262,
+    1371
    ],
    "description": "",
    "calledBy": [
@@ -9518,8 +9502,8 @@
    "params": "callback",
    "exported": false,
    "lines": [
-    1272,
-    1330
+    1268,
+    1326
    ],
    "description": "",
    "calls": [
@@ -9536,8 +9520,8 @@
    "params": "records, observer",
    "exported": false,
    "lines": [
-    1286,
-    1306
+    1282,
+    1302
    ],
    "description": "",
    "calls": [
@@ -9556,8 +9540,8 @@
    "params": "target, options",
    "exported": false,
    "lines": [
-    1314,
-    1323
+    1310,
+    1319
    ],
    "description": "",
    "calls": [
@@ -9573,8 +9557,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1324,
-    1327
+    1320,
+    1323
    ],
    "description": ""
   },
@@ -9585,8 +9569,8 @@
    "params": "callback, options",
    "exported": false,
    "lines": [
-    1338,
-    1371
+    1334,
+    1367
    ],
    "description": "",
    "calls": [
@@ -9603,8 +9587,8 @@
    "params": "entries, observer",
    "exported": false,
    "lines": [
-    1351,
-    1357
+    1347,
+    1353
    ],
    "description": "",
    "calls": [
@@ -9622,8 +9606,8 @@
    "params": "target",
    "exported": false,
    "lines": [
-    1360,
-    1368
+    1356,
+    1364
    ],
    "description": "",
    "calls": [
@@ -9638,8 +9622,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1381,
-    1483
+    1377,
+    1479
    ],
    "description": "",
    "calledBy": [
@@ -9653,8 +9637,8 @@
    "params": "fn, delay",
    "exported": false,
    "lines": [
-    1388,
-    1406
+    1384,
+    1402
    ],
    "description": "",
    "calls": [
@@ -9669,8 +9653,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1397,
-    1404
+    1393,
+    1400
    ],
    "description": "",
    "calls": [
@@ -9684,8 +9668,8 @@
    "params": "fn, delay",
    "exported": false,
    "lines": [
-    1408,
-    1439
+    1404,
+    1435
    ],
    "description": "",
    "calls": [
@@ -9701,8 +9685,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1424,
-    1434
+    1420,
+    1430
    ],
    "description": "",
    "calls": [
@@ -9716,8 +9700,8 @@
    "params": "id",
    "exported": false,
    "lines": [
-    1441,
-    1444
+    1437,
+    1440
    ],
    "description": ""
   },
@@ -9728,8 +9712,8 @@
    "params": "fn",
    "exported": false,
    "lines": [
-    1448,
-    1481
+    1444,
+    1477
    ],
    "description": "",
    "calls": [
@@ -9745,8 +9729,8 @@
    "params": "ts",
    "exported": false,
    "lines": [
-    1455,
-    1479
+    1451,
+    1475
    ],
    "description": "",
    "calls": [
@@ -9766,8 +9750,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1492,
-    1541
+    1488,
+    1537
    ],
    "description": "",
    "calls": [
@@ -9787,8 +9771,8 @@
    "params": "proto, name, counter, meter",
    "exported": false,
    "lines": [
-    1494,
-    1507
+    1490,
+    1503
    ],
    "description": "",
    "calledBy": [
@@ -9802,8 +9786,8 @@
    "params": "_sel",
    "exported": false,
    "lines": [
-    1497,
-    1506
+    1493,
+    1502
    ],
    "description": ""
   },
@@ -9814,8 +9798,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1528,
-    1531
+    1524,
+    1527
    ],
    "description": ""
   },
@@ -9826,8 +9810,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1535,
-    1538
+    1531,
+    1534
    ],
    "description": ""
   },
@@ -9838,8 +9822,8 @@
    "params": "type, options",
    "exported": false,
    "lines": [
-    1553,
-    1556
+    1549,
+    1552
    ],
    "description": "",
    "calledBy": [
@@ -9854,8 +9838,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1558,
-    1604
+    1554,
+    1600
    ],
    "description": "",
    "calledBy": [
@@ -9869,8 +9853,8 @@
    "params": "type, listener, options",
    "exported": false,
    "lines": [
-    1566,
-    1592
+    1562,
+    1588
    ],
    "description": "",
    "calls": [
@@ -9886,8 +9870,8 @@
    "params": "type, listener, options",
    "exported": false,
    "lines": [
-    1594,
-    1603
+    1590,
+    1599
    ],
    "description": "",
    "calls": [
@@ -9901,8 +9885,8 @@
    "params": "obj, moduleName",
    "exported": false,
    "lines": [
-    1630,
-    1681
+    1626,
+    1677
    ],
    "description": "",
    "calls": [
@@ -9920,8 +9904,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1661,
-    1663
+    1657,
+    1659
    ],
    "description": "",
    "calls": [
@@ -9938,8 +9922,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1683,
-    1696
+    1679,
+    1692
    ],
    "description": "",
    "calls": [
@@ -9956,8 +9940,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1685,
-    1693
+    1681,
+    1689
    ],
    "description": "",
    "calls": [
@@ -9975,8 +9959,8 @@
    "params": "sel",
    "exported": false,
    "lines": [
-    1708,
-    1714
+    1704,
+    1710
    ],
    "description": "",
    "browser": [
@@ -9994,8 +9978,8 @@
    "params": "sel",
    "exported": false,
    "lines": [
-    1715,
-    1721
+    1711,
+    1717
    ],
    "description": "",
    "browser": [
@@ -10013,8 +9997,8 @@
    "params": "id",
    "exported": false,
    "lines": [
-    1722,
-    1728
+    1718,
+    1724
    ],
    "description": "",
    "calledBy": [
@@ -10028,8 +10012,8 @@
    "params": "cls",
    "exported": false,
    "lines": [
-    1729,
-    1731
+    1725,
+    1727
    ],
    "description": "",
    "calledBy": [
@@ -10043,8 +10027,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1778,
-    1795
+    1773,
+    1790
    ],
    "description": "",
    "calls": [
@@ -10065,8 +10049,8 @@
    "params": "key",
    "exported": false,
    "lines": [
-    1797,
-    1800
+    1792,
+    1795
    ],
    "description": "",
    "calls": [
@@ -10084,8 +10068,8 @@
    "params": "name",
    "exported": false,
    "lines": [
-    1820,
-    1822
+    1815,
+    1817
    ],
    "description": "",
    "calledBy": [
@@ -10100,8 +10084,8 @@
    "params": "name, w",
    "exported": false,
    "lines": [
-    1823,
-    1826
+    1818,
+    1821
    ],
    "description": "",
    "calls": [
@@ -10118,8 +10102,8 @@
    "params": "module, fn",
    "exported": false,
    "lines": [
-    1827,
-    1837
+    1822,
+    1832
    ],
    "description": "",
    "calledBy": [
@@ -10135,8 +10119,8 @@
    "params": "module, fns",
    "exported": false,
    "lines": [
-    1838,
-    1844
+    1833,
+    1839
    ],
    "description": "",
    "calls": [
@@ -10153,8 +10137,8 @@
    "params": "el",
    "exported": false,
    "lines": [
-    1859,
-    1865
+    1854,
+    1860
    ],
    "description": "",
    "calledBy": [
@@ -10168,8 +10152,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1867,
-    1885
+    1862,
+    1880
    ],
    "description": "",
    "calls": [
@@ -10190,8 +10174,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1888,
-    1890
+    1883,
+    1885
    ],
    "description": "The one <video> the mod cares about.",
    "calls": [
@@ -10209,8 +10193,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1899,
-    1912
+    1894,
+    1907
    ],
    "description": "",
    "calls": [
@@ -10232,8 +10216,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    1921,
-    1949
+    1916,
+    1944
    ],
    "description": "getElementsByTagName('*') stops at a shadow boundary, and YouTube's ytlr-* elements are custom elements that may hold their subtree in a shadow root. A count of a few hundred on a full watch page is the signature of exactly that, so walk any open roots too and report both figures — the light-DOM number alone would make the DOM gauge meaningless.",
    "browser": [
@@ -10251,8 +10235,8 @@
    "params": "moduleName",
    "exported": false,
    "lines": [
-    1951,
-    1958
+    1946,
+    1953
    ],
    "description": "",
    "calledBy": [
@@ -10266,8 +10250,8 @@
    "params": "type, withinMs",
    "exported": false,
    "lines": [
-    1959,
-    1964
+    1954,
+    1959
    ],
    "description": "",
    "calledBy": [
@@ -10281,8 +10265,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    2701,
-    2703
+    2696,
+    2698
    ],
    "description": "",
    "calledBy": [
@@ -10297,8 +10281,8 @@
    "params": "f",
    "exported": false,
    "lines": [
-    2705,
-    2710
+    2700,
+    2705
    ],
    "description": "",
    "calls": [
@@ -10315,8 +10299,8 @@
    "params": "f, page",
    "exported": false,
    "lines": [
-    2716,
-    2765
+    2711,
+    2760
    ],
    "description": "Evaluate one feature against the current page. This is the function that answers \"what should be happening right now, and is it?\".",
    "calls": [
@@ -10334,8 +10318,8 @@
    "params": "page",
    "exported": false,
    "lines": [
-    2767,
-    2773
+    2762,
+    2768
    ],
    "description": "",
    "calls": [
@@ -10356,8 +10340,8 @@
    "params": "ttl",
    "exported": false,
    "lines": [
-    2782,
-    2789
+    2777,
+    2784
    ],
    "description": "",
    "calls": [
@@ -10375,8 +10359,8 @@
    "params": "list",
    "exported": false,
    "lines": [
-    2798,
-    2807
+    2793,
+    2802
    ],
    "description": "",
    "calledBy": [
@@ -10390,8 +10374,8 @@
    "params": "page, reason",
    "exported": false,
    "lines": [
-    2809,
-    2857
+    2804,
+    2852
    ],
    "description": "",
    "calls": [
@@ -10411,8 +10395,8 @@
    "params": "sweep",
    "exported": false,
    "lines": [
-    2869,
-    2933
+    2864,
+    2928
    ],
    "description": "",
    "calls": [
@@ -10431,8 +10415,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3229,
-    3240
+    3224,
+    3235
    ],
    "description": "",
    "calls": [
@@ -10451,8 +10435,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3246,
-    3425
+    3241,
+    3420
    ],
    "description": "",
    "calls": [
@@ -10473,8 +10457,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3427,
-    3449
+    3422,
+    3444
    ],
    "description": "",
    "calledBy": [
@@ -10488,8 +10472,8 @@
    "params": "reason",
    "exported": false,
    "lines": [
-    3454,
-    3504
+    3449,
+    3499
    ],
    "description": "",
    "calls": [
@@ -10509,8 +10493,8 @@
    "params": "reason",
    "exported": false,
    "lines": [
-    3506,
-    3521
+    3501,
+    3516
    ],
    "description": "",
    "calls": [
@@ -10529,8 +10513,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3527,
-    3607
+    3522,
+    3602
    ],
    "description": "",
    "calls": [
@@ -10555,8 +10539,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3532,
-    3544
+    3527,
+    3539
    ],
    "description": "",
    "calledBy": [
@@ -10570,8 +10554,8 @@
    "params": "tag, styles, text",
    "exported": false,
    "lines": [
-    3642,
-    3652
+    3637,
+    3647
    ],
    "description": "All elements are created here so they can all carry the `twemoji-injected` marker: emoji-font.js treats that class as \"already processed\" and skips the subtree, which keeps the monitor out of the observer it is measuring.",
    "calledBy": [
@@ -10589,8 +10573,8 @@
    "params": "tag, attrs",
    "exported": false,
    "lines": [
-    3654,
-    3662
+    3649,
+    3657
    ],
    "description": "",
    "calledBy": [
@@ -10604,8 +10588,8 @@
    "params": "cx, cy, r, deg",
    "exported": false,
    "lines": [
-    3667,
-    3670
+    3662,
+    3665
    ],
    "description": "",
    "calledBy": [
@@ -10620,8 +10604,8 @@
    "params": "cx, cy, r, a0, a1",
    "exported": false,
    "lines": [
-    3672,
-    3692
+    3667,
+    3687
    ],
    "description": "",
    "calls": [
@@ -10638,8 +10622,8 @@
    "params": "o",
    "exported": false,
    "lines": [
-    3698,
-    3832
+    3693,
+    3827
    ],
    "description": "@param {object} o {size, label, unit, max, redFrom, invert} invert: low values are the problem (used for FPS)",
    "calls": [
@@ -10658,8 +10642,8 @@
    "params": "v, displayText",
    "exported": false,
    "lines": [
-    3822,
-    3830
+    3817,
+    3825
    ],
    "description": "",
    "calls": [
@@ -10673,8 +10657,8 @@
    "params": "label",
    "exported": false,
    "lines": [
-    3834,
-    3849
+    3829,
+    3844
    ],
    "description": "",
    "calls": [
@@ -10691,8 +10675,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    3861,
-    4008
+    3856,
+    4003
    ],
    "description": "",
    "calls": [
@@ -10712,8 +10696,8 @@
    "params": "container, cells",
    "exported": false,
    "lines": [
-    4010,
-    4030
+    4005,
+    4025
    ],
    "description": "",
    "calls": [
@@ -10733,8 +10717,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4032,
-    4094
+    4027,
+    4089
    ],
    "description": "",
    "calls": [
@@ -10755,8 +10739,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4096,
-    4134
+    4091,
+    4129
    ],
    "description": "",
    "calls": [
@@ -10776,8 +10760,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4136,
-    4166
+    4131,
+    4161
    ],
    "description": "",
    "calls": [
@@ -10797,8 +10781,8 @@
    "params": "c",
    "exported": false,
    "lines": [
-    4168,
-    4256
+    4163,
+    4251
    ],
    "description": "",
    "calls": [
@@ -10818,8 +10802,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4258,
-    4330
+    4253,
+    4325
    ],
    "description": "",
    "calls": [
@@ -10843,8 +10827,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4334,
-    4345
+    4329,
+    4340
    ],
    "description": "",
    "calls": [
@@ -10863,8 +10847,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4347,
-    4354
+    4342,
+    4349
    ],
    "description": "",
    "calledBy": [
@@ -10879,8 +10863,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4356,
-    4359
+    4351,
+    4354
    ],
    "description": "",
    "calls": [
@@ -10898,8 +10882,8 @@
    "params": "evt",
    "exported": false,
    "lines": [
-    4411,
-    4414
+    4406,
+    4409
    ],
    "description": "",
    "calledBy": [
@@ -10914,8 +10898,8 @@
    "params": "evt, code",
    "exported": false,
    "lines": [
-    4416,
-    4433
+    4411,
+    4428
    ],
    "description": "",
    "calls": [
@@ -10932,8 +10916,8 @@
    "params": "evt",
    "exported": false,
    "lines": [
-    4443,
-    4447
+    4438,
+    4442
    ],
    "description": "ui.js binds its shortcut router with document.addEventListener('keydown', handler, true) - the same node and the same phase as us. stopPropagation() does NOT stop other listeners registered on that same node, so it never blocked ui.js (or YouTube's own document-level handlers). Only stopImmediatePropagation() does, and it works in our favour because perf_mon is imported first in userScript.js and therefore registered first. Without this, arrow keys pressed while the cluster is open also moved focus around the YouTube UI hidden behind it.",
    "calledBy": [
@@ -10947,8 +10931,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4449,
-    4496
+    4444,
+    4491
    ],
    "description": "",
    "calls": [
@@ -10976,8 +10960,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4513,
-    4572
+    4508,
+    4567
    ],
    "description": "",
    "calls": [
@@ -11004,8 +10988,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4576,
-    4581
+    4571,
+    4576
    ],
    "description": "Outer probes go on last, once every other module in the bundle has installed its own hooks — that is what makes the parse sandwich work.",
    "calls": [
@@ -11024,8 +11008,8 @@
    "params": "reason",
    "exported": false,
    "lines": [
-    4602,
-    4604
+    4597,
+    4599
    ],
    "description": "Full machine-readable snapshot, also printed to the console.",
    "calls": [
@@ -11039,8 +11023,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4608,
-    4610
+    4603,
+    4605
    ],
    "description": "Re-run the feature expectation sweep right now.",
    "calls": [
@@ -11054,8 +11038,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4612,
-    4624
+    4607,
+    4619
    ],
    "description": "What every feature should be doing on this page, and whether it is.",
    "calls": [
@@ -11069,8 +11053,8 @@
    "params": "windowMs",
    "exported": false,
    "lines": [
-    4626,
-    4631
+    4621,
+    4626
    ],
    "description": "Hottest instrumented functions in the last N ms.",
    "calls": [
@@ -11084,8 +11068,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4633,
-    4635
+    4628,
+    4630
    ],
    "description": "Everything the monitor knows about the codebase."
   },
@@ -11096,8 +11080,8 @@
    "params": "samples, iterations",
    "exported": false,
    "lines": [
-    4654,
-    4694
+    4649,
+    4689
    ],
    "description": "Definitive measurement of what the mod's JSON filtering actually costs.\n\nPer-call timings read 0.00ms on this platform because performance.now() is coarsened to ~100us and a single parse finishes well inside that. A loop of N parses takes milliseconds, which is far above the grain, so benchmarking the hooked global against the captured native gives a real per-call figure that the live counters cannot."
   },
@@ -11108,8 +11092,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    4697,
-    4702
+    4692,
+    4697
    ],
    "description": "Force a prototype-instrumentation pass (normally polled every 2s).",
    "calls": [
@@ -11123,34 +11107,10 @@
    "params": "",
    "exported": false,
    "lines": [
-    4706,
-    4738
+    4701,
+    4733
    ],
    "description": ""
-  },
-  {
-   "id": "features/adblock/emoji-wrap-absent.js#wrapEmojiInTree",
-   "name": "wrapEmojiInTree",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    6,
-    6
-   ],
-   "description": "Nothing to wrap."
-  },
-  {
-   "id": "features/adblock/emoji-wrap-absent.js#mayNeedEmojiWork",
-   "name": "mayNeedEmojiWork",
-   "kind": "function",
-   "params": "",
-   "exported": true,
-   "lines": [
-    9,
-    11
-   ],
-   "description": "No emoji work on this build."
   },
   {
    "id": "features/adblock/emoji-wrap.js#classBody",

@@ -1,14 +1,12 @@
 /**
- * Loads a built bundle in a jsdom page shaped like the YouTube TV app and
+ * Loads the built bundle in a jsdom page shaped like the YouTube TV app and
  * asserts it survives evaluation and installs what it should: the JSON hooks,
- * the stylesheet (one <style>, written once), and for the legacy flavour the
- * polyfills. The legacy flavour
- * runs under the Chromium 38 downgrade; the modern one (webOS 22+, Chrome 87)
- * runs on a modern engine, where the point is the code paths that only exist
- * there (no polyfills.js, no emoji-font, no buffer-limit), which once shipped a
- * crash the legacy smoke could not see.
+ * the stylesheet (one <style>, written once), and the polyfills.
  *
- * Run: node tests/smoke/smoke.cjs [bundle] [legacy|modern]
+ * The page runs under the Chromium 38 downgrade: this build targets the LG
+ * OLED55B7V, and the harness reproduces that engine's missing APIs.
+ *
+ * Run: node tests/smoke/smoke.cjs [bundle]
  */
 const fs = require('fs');
 const path = require('path');

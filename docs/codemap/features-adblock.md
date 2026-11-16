@@ -2,7 +2,7 @@
 
 Part of the [code map](../CODEMAP.md), generated from the source by `tools/codemap.mjs`: do not edit it by hand.
 
-Modules: [features/adblock/constants.js](#mod-constants-js), [features/adblock/emoji-wrap-absent.js](#mod-emoji-wrap-absent-js), [features/adblock/emoji-wrap.js](#mod-emoji-wrap-js), [features/adblock/fallback.js](#mod-fallback-js), [features/adblock/flags.js](#mod-flags-js), [features/adblock/index.js](#mod-index-js), [features/adblock/item-filters.js](#mod-item-filters-js), [features/adblock/log.js](#mod-log-js), [features/adblock/nav-filters.js](#mod-nav-filters-js), [features/adblock/parse-hook.js](#mod-parse-hook-js), [features/adblock/player-filters.js](#mod-player-filters-js), [features/adblock/response-filters.js](#mod-response-filters-js), [features/adblock/search.js](#mod-search-js), [features/adblock/stringify-hook.ts](#mod-stringify-hook-ts), [features/adblock/text-fixes.js](#mod-text-fixes-js), [features/adblock/tracking-block.js](#mod-tracking-block-js)
+Modules: [features/adblock/constants.js](#mod-constants-js), [features/adblock/emoji-wrap.js](#mod-emoji-wrap-js), [features/adblock/fallback.js](#mod-fallback-js), [features/adblock/flags.js](#mod-flags-js), [features/adblock/index.js](#mod-index-js), [features/adblock/item-filters.js](#mod-item-filters-js), [features/adblock/log.js](#mod-log-js), [features/adblock/nav-filters.js](#mod-nav-filters-js), [features/adblock/parse-hook.js](#mod-parse-hook-js), [features/adblock/player-filters.js](#mod-player-filters-js), [features/adblock/response-filters.js](#mod-response-filters-js), [features/adblock/search.js](#mod-search-js), [features/adblock/stringify-hook.ts](#mod-stringify-hook-ts), [features/adblock/text-fixes.js](#mod-text-fixes-js), [features/adblock/tracking-block.js](#mod-tracking-block-js)
 
 <a id="mod-constants-js"></a>
 
@@ -16,29 +16,11 @@ Modules: [features/adblock/constants.js](#mod-constants-js), [features/adblock/e
 
 - **Settings:** uses `enableAdBlock`, `enableTrackingBlock`, `removeGlobalShorts`, `removeLiveVideos`, `removeTopLiveGames`, `removeMostRelevant`, `hideGuestSignInPrompts`, `enableLegacyEmojiFix`, `hideEndcards`, `upgradeThumbnails`, `enableRowsAhead`, `enableDeArrow`
 
-<a id="mod-emoji-wrap-absent-js"></a>
-
-## features/adblock/emoji-wrap-absent.js
-
-> The webOS 22+ build's emoji-wrap.js (webpack.config.js): the legacy emoji fix is off on every engine that runs this build, so nothing here is reached with work to do.
-
-11 lines
-
-<a id="fn-emoji-wrap-absent-js-wrapemojiintree"></a>
-**`wrapEmojiInTree()`** · function, exported · L6–6
-
-Nothing to wrap.
-
-<a id="fn-emoji-wrap-absent-js-mayneedemojiwork"></a>
-**`mayNeedEmojiWork()`** · function, exported · L9–11
-
-No emoji work on this build.
-
 <a id="mod-emoji-wrap-js"></a>
 
 ## features/adblock/emoji-wrap.js
 
-> The legacy emoji fix's half in the response: every emoji in the parsed tree wrapped in sentinel characters, so features/emoji-font can swap it for an image on webOS 3 and 4. The webOS 22+ build carries emoji-wrap-absent.js in its place (webpack.config.js): the fix is never on there.
+> The legacy emoji fix's half in the response: every emoji in the parsed tree wrapped in sentinel characters, so features/emoji-font can swap it for an image. This build is webOS 3, where the system font has no colour emoji, so the fix is on by default and this module is always the one in the bundle.
 
 250 lines · imports [features/adblock/log.js](#mod-log-js) · imported by [features/adblock/item-filters.js](#mod-item-filters-js), [features/adblock/parse-hook.js](#mod-parse-hook-js), [features/adblock/response-filters.js](#mod-response-filters-js)
 

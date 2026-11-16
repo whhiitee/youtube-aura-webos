@@ -735,7 +735,7 @@ const pad = PAD; // keeps every payload over the 500-byte gate
     P('{"a":1,"b":2}', (k, v) => (typeof v === 'number' ? v * 2 : v)).a === 2
   );
 
-  // ---- the legacy emoji rewrite: webOS 3 and 4 only, the webOS 22+ bundle has none ----
+  // ---- the legacy emoji rewrite: on for this build (webOS 3 has no colour emoji) ----
   if (legacy) {
     {
       // videoDetails.title is a bare string field; the emoji walker only rewrites

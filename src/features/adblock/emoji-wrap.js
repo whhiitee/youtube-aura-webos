@@ -1,7 +1,7 @@
 // The legacy emoji fix's half in the response: every emoji in the parsed tree
 // wrapped in sentinel characters, so features/emoji-font can swap it for an
-// image on webOS 3 and 4. The webOS 22+ build carries emoji-wrap-absent.js in
-// its place (webpack.config.js): the fix is never on there.
+// image. This build is webOS 3, where the system font has no colour emoji, so
+// the fix is on by default and this module is always the one in the bundle.
 import { log } from './log.js';
 
 // One emoji character: the symbols below in the BMP, or any astral

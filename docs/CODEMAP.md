@@ -2,7 +2,7 @@
 
 Generated from the source by `tools/codemap.mjs`; do not edit it by hand. After changing code, run `npm run codemap` (`npm test` fails while the map is out of date). A function's description is the comment right above it in the source: improve it there.
 
-**148 modules, 859 named functions**, 736 of them described (the perf monitor in `src/dev/` is a development tool, not in release builds, and is listed in short form). This page is the index; each folder has a page in [codemap/](codemap/) with every function of its modules. The overview (boot order, the hooks, how a response flows through the filters) is [ARCHITECTURE.md](ARCHITECTURE.md); the same data for scripts is [codemap.json](codemap.json).
+**147 modules, 857 named functions**, 734 of them described (the perf monitor in `src/dev/` is a development tool, not in release builds, and is listed in short form). This page is the index; each folder has a page in [codemap/](codemap/) with every function of its modules. The overview (boot order, the hooks, how a response flows through the filters) is [ARCHITECTURE.md](ARCHITECTURE.md); the same data for scripts is [codemap.json](codemap.json).
 
 How to read it:
 
@@ -41,10 +41,9 @@ How to read it:
 | [core/version.js](codemap/core.md#mod-version-js) | 8 | 0 | The version the options panel shows in its heading: "0.8.5" for a release, "0.8.5 b2" for test build 2. |
 | [core/webos.js](codemap/core.md#mod-webos-js) | 92 | 2 | The platform: which webOS version this is (from the user agent, cached) and whether it is the simulator. |
 | [core/yt-storage.js](codemap/core.md#mod-yt-storage-js) | 36 | 3 | The records the leanback app keeps in localStorage (JSON, usually { data, creation, expiration }), read and written in one place: a record that is missing, malformed or behind a storage error reads as null, and a writ... |
-| [dev/perf-mon.js](codemap/dev.md#mod-perf-mon-js) | 4740 | 142 | perf-mon.js — YTAF Engine Diagnostics ===================================================================== Dev-only instrumentation for the webOS YouTube mod. |
+| [dev/perf-mon.js](codemap/dev.md#mod-perf-mon-js) | 4735 | 142 | perf-mon.js — YTAF Engine Diagnostics ===================================================================== Dev-only instrumentation for the webOS YouTube mod. |
 | [features/adblock/constants.js](codemap/features-adblock.md#mod-constants-js) | 54 | 0 | String tables shared by the adblock modules. |
-| [features/adblock/emoji-wrap-absent.js](codemap/features-adblock.md#mod-emoji-wrap-absent-js) | 11 | 2 | The webOS 22+ build's emoji-wrap.js (webpack.config.js): the legacy emoji fix is off on every engine that runs this build, so nothing here is reached with work to do. |
-| [features/adblock/emoji-wrap.js](codemap/features-adblock.md#mod-emoji-wrap-js) | 250 | 10 | The legacy emoji fix's half in the response: every emoji in the parsed tree wrapped in sentinel characters, so features/emoji-font can swap it for an image on webOS 3 and 4. |
+| [features/adblock/emoji-wrap.js](codemap/features-adblock.md#mod-emoji-wrap-js) | 250 | 10 | The legacy emoji fix's half in the response: every emoji in the parsed tree wrapped in sentinel characters, so features/emoji-font can swap it for an image. |
 | [features/adblock/fallback.js](codemap/features-adblock.md#mod-fallback-js) | 82 | 3 | The fallback for a response no schema path matched, and the guide filter for the small guide response: one bounded search over the body serves both. |
 | [features/adblock/flags.js](codemap/features-adblock.md#mod-flags-js) | 97 | 2 | The filter switches as one mutable snapshot, refreshed when a setting changes rather than re-read on every JSON.parse. |
 | [features/adblock/index.js](codemap/features-adblock.md#mod-index-js) | 7 | 0 | Ad blocking: the JSON.parse and JSON.stringify hooks (parse-hook.js, stringify-hook.ts) that userScript.js installs for the life of the page, and the telemetry blockers (tracking-block.js); all of them follow the adbl... |

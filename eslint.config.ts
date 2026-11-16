@@ -39,7 +39,7 @@ const configs = [
       'no-useless-return': 'error',
       'arrow-body-style': ['error', 'as-needed'],
       'no-lonely-if': 'error',
-      // Off: the webOS 22+ bundle targets Chrome 87, which has no Object.hasOwn.
+      // Off: the build targets Chromium 38, which has no Object.hasOwn.
       'prefer-object-has-own': 'off',
       'prefer-exponentiation-operator': 'error',
       'prefer-regex-literals': ['error', { disallowRedundantWrapping: true }],
@@ -161,7 +161,15 @@ const configs = [
   {
     // A block with nothing but `ignores` is a global ignore list, wherever it sits.
     // Dot-directories hold local tools' files (worktrees, scratch files).
-    ignores: ['dist/**/*', '.*/**', 'src/vendor/**/*']
+    ignores: [
+      'dist/**/*',
+      '.*/**',
+      // Third-party code, kept as its authors wrote it (there is none in this
+      // build; the folder stays for anything vendored later).
+      'src/vendor/**/*',
+      // A bundle built for the benchmarks (tests/bench/README.md).
+      'tests/bench/baseline/**/*'
+    ]
   }
 ] as const satisfies Linter.Config[];
 

@@ -295,9 +295,6 @@
     [/ytaf-hide-logo|ytaf-premium-logo/, 'features/logo-style'],
     [/ytaf-watch/, 'features/watch'],
     [/attemptActiveBypass|ytaf-bypass-style|lastFired/, 'features/auto-login'],
-    // The dot keeps the literal out of the perf bundle, where bundle-check
-    // reads it as the cast block that the legacy build aliases away.
-    [/wake_cast_co.e/, 'features/block-webos-cast'],
     [
       /ytaf-fix-titles|ytaf-remove-borders|ytaf-tab-btn|ytaf-ui-container|ytaf-oled|ytaf-toast/,
       'ui'
@@ -351,7 +348,6 @@
     'features/rows-ahead',
     'features/comments-fix',
     'features/lang-settings-fix',
-    'features/block-webos-cast',
     'features/logo-style',
     'ui',
     'core',
@@ -1742,7 +1738,6 @@
   const CONFIG_KEY = 'ytaf-configuration';
 
   const CONFIG_DEFAULTS = {
-    uiTheme: 'blue-force-field',
     enableAdBlock: true,
     enableTrackingBlock: false,
     enableReturnYouTubeDislike: true,
