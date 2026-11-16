@@ -271,6 +271,30 @@ and look for breaks of them when optimising:
 - Test builds: `npm run build -- --env build=2` shows "1.0.0 b2" in the
   settings heading.
 
+## Releasing
+
+1. Bump the version in `package.json` (and `assets/appinfo.json`, which
+   `npm run version` syncs). The panel shows it; `tests/smoke/bundle-check.cjs`
+   asserts it is in the bundle.
+2. `npm test` — everything, including the ES5 and CSS checks.
+3. Commit, then tag and push the tag:
+
+   ```sh
+   git tag -a v1.1.0 -m "YouTube Aura 1.1.0"
+   git push origin v1.1.0
+   ```
+
+   `.github/workflows/release.yml` runs the suite, packages the `.ipk`, names it
+   `..._oled55b7v.ipk`, writes `SHA256SUMS.txt` and publishes both on the
+   release for that tag. It packages the source, never a `.ipk` committed to
+   `dist/`, so the asset always matches the tag.
+4. `repo.json` (the Homebrew Channel source) points at the release asset and
+   carries its SHA-256. `ares-package` embeds timestamps, so the hash differs
+   between builds: take it from the release page (`SHA256SUMS.txt`, or the asset
+   digest) and update `repo.json` in a follow-up commit. The committed
+   `dist/*.ipk` is the released file, so a fresh clone installs what the release
+   has.
+
 ### For AI agents
 
 - Start from the [module table](CODEMAP.md#modules), then open the page of the
