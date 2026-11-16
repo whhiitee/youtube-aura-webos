@@ -25,7 +25,7 @@ Visits every object under `root` (itself included) breadth first, down to `maxDe
 
 > Every setting the app knows about, with its default and the label the options panel shows, plus the value tables the cycle controls choose from. An option's `upgrade(stored)` turns a value an older build stored into this build's (core/config.js applies it when the settings load).
 
-272 lines · imports [core/text.js](#mod-text-js) · imported by [core/config.js](#mod-config-js), [ui/panel/pages.js](ui-panel.md#mod-pages-js), [ui/shortcuts/bindings.js](ui-shortcuts.md#mod-bindings-js)
+253 lines · imports [core/text.js](#mod-text-js) · imported by [core/config.js](#mod-config-js), [ui/panel/pages.js](ui-panel.md#mod-pages-js), [ui/shortcuts/bindings.js](ui-shortcuts.md#mod-bindings-js)
 
 **At load:**
 
@@ -37,7 +37,7 @@ Visits every object under `root` (itself included) breadth first, down to `maxDe
 
 > Persisted settings: one localStorage entry, read into memory once, written back debounced, with change listeners per key. The option tables themselves live in config-options.js and are re-exported here so callers import one module.
 
-167 lines · imports [core/config-options.js](#mod-config-options-js), [core/log.js](#mod-log-js) · imported by [core/per-video.js](#mod-per-video-js), [features/adblock/flags.js](features-adblock.md#mod-flags-js), [features/auto-login/index.js](features-auto-login.md#mod-index-js), [features/auto-login/previews.js](features-auto-login.md#mod-previews-js), [features/auto-login/whos-watching.js](features-auto-login.md#mod-whos-watching-js), [features/dearrow/index.js](features-dearrow.md#mod-index-js), [features/dearrow/lookup.js](features-dearrow.md#mod-lookup-js), [features/dearrow/sweep.js](features-dearrow.md#mod-sweep-js), [features/dearrow/thumbs.js](features-dearrow.md#mod-thumbs-js), [features/dearrow/tiles.js](features-dearrow.md#mod-tiles-js), [features/dearrow/titles.js](features-dearrow.md#mod-titles-js), [features/emoji-font/index.js](features-emoji-font.md#mod-index-js), [features/emoji-font/observer.js](features-emoji-font.md#mod-observer-js), [features/force-codec/index.js](features-force-codec.md#mod-index-js), [features/logo-style.js](features.md#mod-logo-style-js), [features/return-dislike/bootstrap.js](features-return-dislike.md#mod-bootstrap-js), [features/sponsorblock/blue-key.js](features-sponsorblock.md#mod-blue-key-js), [features/sponsorblock/bootstrap.js](features-sponsorblock.md#mod-bootstrap-js), [features/sponsorblock/constants.js](features-sponsorblock.md#mod-constants-js), [features/sponsorblock/index.js](features-sponsorblock.md#mod-index-js), [features/sponsorblock/labels.js](features-sponsorblock.md#mod-labels-js), [features/sponsorblock/overlay.js](features-sponsorblock.md#mod-overlay-js), [features/sponsorblock/segments.js](features-sponsorblock.md#mod-segments-js), [features/sponsorblock/skipping.js](features-sponsorblock.md#mod-skipping-js), [features/thumbnail-quality/index.js](features-thumbnail-quality.md#mod-index-js), [features/thumbnail-quality/state.js](features-thumbnail-quality.md#mod-state-js), [features/video-quality/index.js](features-video-quality.md#mod-index-js), [features/watch/index.js](features-watch.md#mod-index-js), [ui/panel/controls/checkbox.js](ui-panel.md#mod-controls-checkbox-js), [ui/panel/controls/color-picker.js](ui-panel.md#mod-controls-color-picker-js), [ui/panel/controls/cycle-row.js](ui-panel.md#mod-controls-cycle-row-js), [ui/panel/pages.js](ui-panel.md#mod-pages-js), [ui/shortcuts/bindings.js](ui-shortcuts.md#mod-bindings-js), [ui/styles/html-classes.js](ui-styles.md#mod-html-classes-js), [ui/toast/index.js](ui-toast.md#mod-index-js)
+166 lines · imports [core/config-options.js](#mod-config-options-js), [core/log.js](#mod-log-js) · imported by [core/per-video.js](#mod-per-video-js), [features/adblock/flags.js](features-adblock.md#mod-flags-js), [features/auto-login/index.js](features-auto-login.md#mod-index-js), [features/auto-login/previews.js](features-auto-login.md#mod-previews-js), [features/auto-login/whos-watching.js](features-auto-login.md#mod-whos-watching-js), [features/dearrow/index.js](features-dearrow.md#mod-index-js), [features/dearrow/lookup.js](features-dearrow.md#mod-lookup-js), [features/dearrow/sweep.js](features-dearrow.md#mod-sweep-js), [features/dearrow/thumbs.js](features-dearrow.md#mod-thumbs-js), [features/dearrow/tiles.js](features-dearrow.md#mod-tiles-js), [features/dearrow/titles.js](features-dearrow.md#mod-titles-js), [features/emoji-font/index.js](features-emoji-font.md#mod-index-js), [features/emoji-font/observer.js](features-emoji-font.md#mod-observer-js), [features/force-codec/index.js](features-force-codec.md#mod-index-js), [features/logo-style.js](features.md#mod-logo-style-js), [features/return-dislike/bootstrap.js](features-return-dislike.md#mod-bootstrap-js), [features/sponsorblock/blue-key.js](features-sponsorblock.md#mod-blue-key-js), [features/sponsorblock/bootstrap.js](features-sponsorblock.md#mod-bootstrap-js), [features/sponsorblock/constants.js](features-sponsorblock.md#mod-constants-js), [features/sponsorblock/index.js](features-sponsorblock.md#mod-index-js), [features/sponsorblock/labels.js](features-sponsorblock.md#mod-labels-js), [features/sponsorblock/overlay.js](features-sponsorblock.md#mod-overlay-js), [features/sponsorblock/segments.js](features-sponsorblock.md#mod-segments-js), [features/sponsorblock/skipping.js](features-sponsorblock.md#mod-skipping-js), [features/thumbnail-quality/index.js](features-thumbnail-quality.md#mod-index-js), [features/thumbnail-quality/state.js](features-thumbnail-quality.md#mod-state-js), [features/video-quality/index.js](features-video-quality.md#mod-index-js), [features/watch/index.js](features-watch.md#mod-index-js), [ui/panel/controls/checkbox.js](ui-panel.md#mod-controls-checkbox-js), [ui/panel/controls/color-picker.js](ui-panel.md#mod-controls-color-picker-js), [ui/panel/controls/cycle-row.js](ui-panel.md#mod-controls-cycle-row-js), [ui/panel/pages.js](ui-panel.md#mod-pages-js), [ui/shortcuts/bindings.js](ui-shortcuts.md#mod-bindings-js), [ui/styles/html-classes.js](ui-styles.md#mod-html-classes-js), [ui/toast/index.js](ui-toast.md#mod-index-js)
 
 **At load:**
 
@@ -45,7 +45,7 @@ Visits every object under `root` (itself included) breadth first, down to `maxDe
 - **Events:** listens to `beforeunload`, `pagehide`
 
 <a id="fn-config-js-loadstoredconfig"></a>
-**`loadStoredConfig()`** · function · L27–35
+**`loadStoredConfig()`** · function · L26–34
 
 The stored settings as an object, or null when there are none or they do not parse.
 
@@ -53,14 +53,14 @@ The stored settings as an object, or null when there are none or they do not par
 - **Browser:** `localStorage`
 
 <a id="fn-config-js-buildconfig"></a>
-**`buildConfig(stored)`** · function · L43–59
+**`buildConfig(stored)`** · function · L42–58
 
 Every option of this build: the stored value where there is one (through the option's `upgrade` when it has one: a value an older build stored), else the default. A key the store holds that this build does not have (a setting from an older one) is left out, so the next write drops it from storage.
 
 - **Called by:** [at load](#mod-config-js)
 
 <a id="fn-config-js-writenow"></a>
-**`writeNow()`** · function · L71–78
+**`writeNow()`** · function · L70–77
 
 Writes the whole config to localStorage now; a full or refused storage keeps it in memory only.
 
@@ -68,7 +68,7 @@ Writes the whole config to localStorage now; a full or refused storage keeps it 
 - **Browser:** `localStorage`
 
 <a id="fn-config-js-flushpendingwrite"></a>
-**`flushPendingWrite()`** · arrow · L83–88
+**`flushPendingWrite()`** · arrow · L82–87
 
 Writes a pending debounced change at once (on beforeunload and pagehide), so leaving the app does not lose it.
 
@@ -76,7 +76,7 @@ Writes a pending debounced change at once (on beforeunload and pagehide), so lea
 - **Called by:** [at load](#mod-config-js)
 
 <a id="fn-config-js-schedulewrite"></a>
-**`scheduleWrite()`** · arrow · L90–92
+**`scheduleWrite()`** · arrow · L89–91
 
 Starts the 200 ms debounced write unless one is already pending.
 
@@ -85,14 +85,14 @@ Starts the 200 ms debounced write unless one is already pending.
 - **Browser:** `setTimeout`
 
 <a id="fn-config-js-configexists"></a>
-**`configExists(key)`** · function · L97–99
+**`configExists(key)`** · function · L96–98
 
 Whether this build has a setting called `key`.
 
 - **Called by:** [assertKey](#fn-config-js-assertkey)
 
 <a id="fn-config-js-assertkey"></a>
-**`assertKey(key, verb)`** · function · L102–104
+**`assertKey(key, verb)`** · function · L101–103
 
 Throws for a key no option defines: a typo, or a key a build removed.
 
@@ -100,7 +100,7 @@ Throws for a key no option defines: a typo, or a key a build removed.
 - **Called by:** [configAddChangeListener](#fn-config-js-configaddchangelistener), [configGetDefault](#fn-config-js-configgetdefault), [configGetDesc](#fn-config-js-configgetdesc), [configRead](#fn-config-js-configread), [configWrite](#fn-config-js-configwrite)
 
 <a id="fn-config-js-configgetdesc"></a>
-**`configGetDesc(key)`** · function, exported · L107–110
+**`configGetDesc(key)`** · function, exported · L106–109
 
 The label the options panel shows for `key`.
 
@@ -108,15 +108,15 @@ The label the options panel shows for `key`.
 - **Called by:** [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/cycle-row.js › createAlignedCycleControl](ui-panel.md#fn-controls-cycle-row-js-createalignedcyclecontrol), [ui/panel/controls/cycle-row.js › createOpacityControl](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol), [ui/panel/controls/cycle-row.js › createPreviewControl](ui-panel.md#fn-controls-cycle-row-js-createpreviewcontrol), [ui/panel/controls/cycle-row.js › createSegmentControl](ui-panel.md#fn-controls-cycle-row-js-createsegmentcontrol), [ui/panel/controls/cycle-row.js › createShortcutControl](ui-panel.md#fn-controls-cycle-row-js-createshortcutcontrol)
 
 <a id="fn-config-js-configread"></a>
-**`configRead(key)`** · function, exported · L113–116
+**`configRead(key)`** · function, exported · L112–115
 
 The current value of setting `key` (from memory: no storage read). Throws for an unknown key.
 
 - **Calls:** [assertKey](#fn-config-js-assertkey)
-- **Called by:** [features/auto-login/index.js › initAutoLogin](features-auto-login.md#fn-index-js-initautologin), [features/auto-login/previews.js › initPreviews](features-auto-login.md#fn-previews-js-initpreviews), [features/auto-login/whos-watching.js › attemptActiveBypass](features-auto-login.md#fn-whos-watching-js-attemptactivebypass), [features/dearrow/index.js › onSettingsChange](features-dearrow.md#fn-index-js-onsettingschange), [features/dearrow/index.js › scheduleSweep](features-dearrow.md#fn-index-js-schedulesweep), [features/dearrow/lookup.js › pump](features-dearrow.md#fn-lookup-js-pump), [features/dearrow/lookup.js › resolve](features-dearrow.md#fn-lookup-js-resolve), [features/dearrow/lookup.js › resolveThumb](features-dearrow.md#fn-lookup-js-resolvethumb), [features/dearrow/sweep.js › sweepTiles](features-dearrow.md#fn-sweep-js-sweeptiles), [features/dearrow/thumbs.js › copyWidth](features-dearrow.md#fn-thumbs-js-copywidth), [features/dearrow/tiles.js › applyToTile](features-dearrow.md#fn-tiles-js-applytotile), [features/dearrow/titles.js › crowdsourcedTitle](features-dearrow.md#fn-titles-js-crowdsourcedtitle), [features/dearrow/titles.js › formatTitle](features-dearrow.md#fn-titles-js-formattitle), [features/emoji-font/observer.js › manageObserverState](features-emoji-font.md#fn-observer-js-manageobserverstate), [features/force-codec/index.js › applyMode](features-force-codec.md#fn-index-js-applymode), [features/logo-style.js › applyLogoStyle](features.md#fn-logo-style-js-applylogostyle), [features/return-dislike/bootstrap.js › bootstrapReturnDislike](features-return-dislike.md#fn-bootstrap-js-bootstrapreturndislike), [features/sponsorblock/bootstrap.js › bootstrapSponsorBlock](features-sponsorblock.md#fn-bootstrap-js-bootstrapsponsorblock), [features/sponsorblock/labels.js › buildCss](features-sponsorblock.md#fn-labels-js-buildcss), [features/sponsorblock/labels.js › pickFullLabel](features-sponsorblock.md#fn-labels-js-pickfulllabel), [features/sponsorblock/labels.js › skippableSeconds](features-sponsorblock.md#fn-labels-js-skippableseconds), [features/thumbnail-quality/state.js (at load)](features-thumbnail-quality.md#mod-state-js), [features/video-quality/index.js › initVideoQuality](features-video-quality.md#fn-index-js-initvideoquality), [features/watch/index.js (at load)](features-watch.md#mod-index-js), [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker), [ui/panel/controls/cycle-row.js › createCycleControl.cycle](ui-panel.md#fn-controls-cycle-row-js-createcyclecontrol-cycle), [ui/panel/controls/cycle-row.js › createCycleControl.displayValue](ui-panel.md#fn-controls-cycle-row-js-createcyclecontrol-displayvalue), [ui/panel/controls/cycle-row.js › createOpacityControl](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol), [ui/panel/controls/cycle-row.js › createOpacityControl.changeValue](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol-changevalue), [ui/panel/controls/cycle-row.js › createOpacityControl.sync](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol-sync), [ui/panel/controls/cycle-row.js › createThumbnailQualityControl.sync](ui-panel.md#fn-controls-cycle-row-js-createthumbnailqualitycontrol-sync), [ui/panel/pages.js › buildDeArrowPage.sync](ui-panel.md#fn-pages-js-builddearrowpage-sync), [ui/panel/pages.js › buildMainPage.updateDependencyState](ui-panel.md#fn-pages-js-buildmainpage-updatedependencystate), [ui/shortcuts/bindings.js › updateShortcutCache](ui-shortcuts.md#fn-bindings-js-updateshortcutcache), [ui/styles/html-classes.js › read](ui-styles.md#fn-html-classes-js-read), [ui/styles/html-classes.js › syncOledShelfOpacity](ui-styles.md#fn-html-classes-js-syncoledshelfopacity), [ui/toast/index.js › showNotification](ui-toast.md#fn-index-js-shownotification)
+- **Called by:** [features/auto-login/index.js › initAutoLogin](features-auto-login.md#fn-index-js-initautologin), [features/auto-login/previews.js › initPreviews](features-auto-login.md#fn-previews-js-initpreviews), [features/auto-login/whos-watching.js › attemptActiveBypass](features-auto-login.md#fn-whos-watching-js-attemptactivebypass), [features/dearrow/index.js › onSettingsChange](features-dearrow.md#fn-index-js-onsettingschange), [features/dearrow/index.js › scheduleSweep](features-dearrow.md#fn-index-js-schedulesweep), [features/dearrow/lookup.js › pump](features-dearrow.md#fn-lookup-js-pump), [features/dearrow/lookup.js › resolve](features-dearrow.md#fn-lookup-js-resolve), [features/dearrow/lookup.js › resolveThumb](features-dearrow.md#fn-lookup-js-resolvethumb), [features/dearrow/sweep.js › sweepTiles](features-dearrow.md#fn-sweep-js-sweeptiles), [features/dearrow/thumbs.js › copyWidth](features-dearrow.md#fn-thumbs-js-copywidth), [features/dearrow/tiles.js › applyToTile](features-dearrow.md#fn-tiles-js-applytotile), [features/dearrow/titles.js › crowdsourcedTitle](features-dearrow.md#fn-titles-js-crowdsourcedtitle), [features/emoji-font/observer.js › manageObserverState](features-emoji-font.md#fn-observer-js-manageobserverstate), [features/force-codec/index.js › applyMode](features-force-codec.md#fn-index-js-applymode), [features/logo-style.js › applyLogoStyle](features.md#fn-logo-style-js-applylogostyle), [features/return-dislike/bootstrap.js › bootstrapReturnDislike](features-return-dislike.md#fn-bootstrap-js-bootstrapreturndislike), [features/sponsorblock/bootstrap.js › bootstrapSponsorBlock](features-sponsorblock.md#fn-bootstrap-js-bootstrapsponsorblock), [features/sponsorblock/labels.js › buildCss](features-sponsorblock.md#fn-labels-js-buildcss), [features/sponsorblock/labels.js › pickFullLabel](features-sponsorblock.md#fn-labels-js-pickfulllabel), [features/sponsorblock/labels.js › skippableSeconds](features-sponsorblock.md#fn-labels-js-skippableseconds), [features/thumbnail-quality/state.js (at load)](features-thumbnail-quality.md#mod-state-js), [features/video-quality/index.js › initVideoQuality](features-video-quality.md#fn-index-js-initvideoquality), [features/watch/index.js (at load)](features-watch.md#mod-index-js), [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker), [ui/panel/controls/cycle-row.js › createCycleControl.cycle](ui-panel.md#fn-controls-cycle-row-js-createcyclecontrol-cycle), [ui/panel/controls/cycle-row.js › createCycleControl.displayValue](ui-panel.md#fn-controls-cycle-row-js-createcyclecontrol-displayvalue), [ui/panel/controls/cycle-row.js › createOpacityControl](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol), [ui/panel/controls/cycle-row.js › createOpacityControl.changeValue](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol-changevalue), [ui/panel/controls/cycle-row.js › createOpacityControl.sync](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol-sync), [ui/panel/controls/cycle-row.js › createThumbnailQualityControl.sync](ui-panel.md#fn-controls-cycle-row-js-createthumbnailqualitycontrol-sync), [ui/panel/pages.js › buildDeArrowPage.sync](ui-panel.md#fn-pages-js-builddearrowpage-sync), [ui/panel/pages.js › buildMainPage.updateDependencyState](ui-panel.md#fn-pages-js-buildmainpage-updatedependencystate), [ui/shortcuts/bindings.js › updateShortcutCache](ui-shortcuts.md#fn-bindings-js-updateshortcutcache), [ui/styles/html-classes.js › read](ui-styles.md#fn-html-classes-js-read), [ui/styles/html-classes.js › syncOledShelfOpacity](ui-styles.md#fn-html-classes-js-syncoledshelfopacity), [ui/toast/index.js › showNotification](ui-toast.md#fn-index-js-shownotification)
 
 <a id="fn-config-js-configwrite"></a>
-**`configWrite(key, value)`** · function, exported · L121–141
+**`configWrite(key, value)`** · function, exported · L120–140
 
 The per-write log is debug level: configWrite fires per event during colour-picker drags and opacity scrubs (the localStorage write itself is debounced).
 
@@ -124,7 +124,7 @@ The per-write log is debug level: configWrite fires per event during colour-pick
 - **Called by:** [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker), [ui/panel/controls/cycle-row.js › createCycleControl.cycle](ui-panel.md#fn-controls-cycle-row-js-createcyclecontrol-cycle), [ui/panel/controls/cycle-row.js › createOpacityControl.changeValue](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol-changevalue), [ui/shortcuts/bindings.js › ensureMenuKey](ui-shortcuts.md#fn-bindings-js-ensuremenukey), [ui/shortcuts/bindings.js › updateShortcutCache](ui-shortcuts.md#fn-bindings-js-updateshortcutcache)
 
 <a id="fn-config-js-configaddchangelistener"></a>
-**`configAddChangeListener(key, callback)`** · function, exported · L147–151
+**`configAddChangeListener(key, callback)`** · function, exported · L146–150
 
 Calls `callback({ detail: { key, newValue, oldValue } })` whenever `key` changes through configWrite.
 
@@ -132,14 +132,14 @@ Calls `callback({ detail: { key, newValue, oldValue } })` whenever `key` changes
 - **Called by:** [core/per-video.js › bootstrapPerVideo](#fn-per-video-js-bootstrappervideo), [features/adblock/flags.js (at load)](features-adblock.md#mod-flags-js), [features/auto-login/index.js (at load)](features-auto-login.md#mod-index-js), [features/dearrow/index.js (at load)](features-dearrow.md#mod-index-js), [features/emoji-font/index.js (at load)](features-emoji-font.md#mod-index-js), [features/force-codec/index.js › installCodecHooks](features-force-codec.md#fn-index-js-installcodechooks), [features/logo-style.js › initLogoStyle](features.md#fn-logo-style-js-initlogostyle), [features/sponsorblock/index.js › SponsorBlockHandler.setupConfigListeners.listen](features-sponsorblock.md#fn-index-js-sponsorblockhandler-setupconfiglisteners-listen), [features/thumbnail-quality/index.js (at load)](features-thumbnail-quality.md#mod-index-js), [features/video-quality/index.js (at load)](features-video-quality.md#mod-index-js), [features/watch/index.js (at load)](features-watch.md#mod-index-js), [ui/panel/controls/checkbox.js › createConfigCheckbox](ui-panel.md#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker), [ui/panel/controls/cycle-row.js › createCycleControl](ui-panel.md#fn-controls-cycle-row-js-createcyclecontrol), [ui/panel/controls/cycle-row.js › createOpacityControl](ui-panel.md#fn-controls-cycle-row-js-createopacitycontrol), [ui/panel/controls/cycle-row.js › createThumbnailQualityControl](ui-panel.md#fn-controls-cycle-row-js-createthumbnailqualitycontrol), [ui/panel/pages.js › buildDeArrowPage](ui-panel.md#fn-pages-js-builddearrowpage), [ui/panel/pages.js › buildMainPage](ui-panel.md#fn-pages-js-buildmainpage), [ui/shortcuts/bindings.js (at load)](ui-shortcuts.md#mod-bindings-js), [ui/styles/html-classes.js › initHtmlClasses](ui-styles.md#fn-html-classes-js-inithtmlclasses)
 
 <a id="fn-config-js-configremovechangelistener"></a>
-**`configRemoveChangeListener(key, callback)`** · function, exported · L154–156
+**`configRemoveChangeListener(key, callback)`** · function, exported · L153–155
 
 Stops calling `callback` for changes of `key`.
 
 - **Called by:** [features/sponsorblock/index.js › SponsorBlockHandler.setupConfigListeners.listen](features-sponsorblock.md#fn-index-js-sponsorblockhandler-setupconfiglisteners-listen)
 
 <a id="fn-config-js-configgetdefault"></a>
-**`configGetDefault(key)`** · function, exported · L159–162
+**`configGetDefault(key)`** · function, exported · L158–161
 
 The default value of setting `key`, as config-options.js declares it.
 
@@ -147,7 +147,7 @@ The default value of setting `key`, as config-options.js declares it.
 - **Called by:** [ui/panel/controls/color-picker.js › createColorPicker](ui-panel.md#fn-controls-color-picker-js-createcolorpicker)
 
 <a id="fn-config-js-configgetall"></a>
-**`configGetAll()`** · function, exported · L165–167
+**`configGetAll()`** · function, exported · L164–166
 
 Export the live object reference directly for zero-overhead caching
 

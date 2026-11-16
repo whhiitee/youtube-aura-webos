@@ -79,9 +79,14 @@ Proven unnecessary for this TV, not hidden behind a setting:
   absent stand-in: webOS 3 has no cast receiver to wake.
 + **The webOS 25 first-play kickstart** (`features/video-quality/kickstart.js`)
   and its stand-in: the webOS 3 player starts on its own.
-+ **DeArrow's title formatter** (`src/vendor/dearrow/`, ~33 KiB) and its setting
-  row: it needs `Intl` features Chromium 38 does not have, and upstream only
-  ever enabled it on webOS 5/6. Crowdsourced titles and thumbnails remain.
++ **DeArrow's title formatter** (`src/vendor/dearrow/`, ~33 KiB, and
+  `features/dearrow/formatter.js` with its absent stand-in) and its two
+  settings (`dearrowTitleFormatting`, `dearrowCleanEmojis`) with the rows they
+  drove: it needs `Intl.Segmenter` and modern `Intl` text casing that Chromium
+  38 does not have, and upstream only ever enabled it on webOS 5/6.
+  Crowdsourced titles (with the submitter's `>` markers taken out) and
+  thumbnails remain. The two settings are dropped from storage on the next
+  write, like any key this build does not declare.
 + **The second UI theme**: `theme-red.css`, the three per-theme logo PNGs, the
   `UI Theme` row, the `uiTheme` setting and the logo-click theme toggle. A
   stored `uiTheme` is dropped on the next settings write, like any key this
@@ -100,12 +105,21 @@ Proven unnecessary for this TV, not hidden behind a setting:
 + The clock's specular backdrop is no longer the only thing distinguishing it
   from the picture: it is a hairline card that goes true black under Pure Black
   UI.
++ `core/config-options.js` read `navigator.language` at load to pick DeArrow's
+  default title formatting, which made the generated code map depend on the
+  machine's locale (it passed on Windows and failed on Linux CI). The setting
+  is gone, so the defaults are constants again.
++ Timing-dependent tests no longer fail on a loaded machine: `pollUntil`'s
+  cases, the emoji fix's convergence window, the player poll and the
+  SponsorBlock teardown now poll for their outcome instead of waiting a fixed
+  time, and the checks get 300 s so prettier and eslint are not killed while
+  the test scripts share the CPU.
 
 ### Performance
 
 | | 0.8.5 | 1.0.0 | |
 | --- | --- | --- | --- |
-| `userScript.js` | 238.1 KiB | 221.6 KiB | −6.9 % |
+| `userScript.js` | 238.1 KiB | 221.1 KiB | −7.1 % |
 | CSS in the bundle | 19.4 KiB | 17.6 KiB | −9 % |
 | CSS selectors | 193 | 166 | −27 |
 | First settings press: handler | 65.2 ms | 11.0 ms | −83 % |

@@ -4,11 +4,9 @@
 import {
   configRead,
   configAddChangeListener,
-  dearrowTitleFormats,
   dearrowThumbnailFallbacks,
   clockModes
 } from '../../core/config.js';
-import { titleFormattingSupported } from '../../features/dearrow/index.js';
 import { isGuestMode } from '../../core/guest-mode.js';
 import { getWebOSVersion } from '../../core/webos.js';
 import { createElement } from '../dom.js';
@@ -135,8 +133,7 @@ export function buildSponsorPage() {
 // --- Page 3: DeArrow ---
 /**
  * The DeArrow page: the switch and the logo, then the title and thumbnail options, greyed out while
- * it is off (and the thumbnail fallback while crowdsourced thumbnails are). Title formatting is in
- * the webOS 22+ build only (features/dearrow/titles.js): the legacy one gets no formatting rows.
+ * it is off (and the thumbnail fallback while crowdsourced thumbnails are).
  */
 export function buildDeArrowPage() {
   const pageDeArrow = createElement('div', {
@@ -149,14 +146,7 @@ export function buildDeArrowPage() {
   const elBadge = createConfigCheckbox('dearrowShowBadge');
   pageDeArrow.appendChild(elBadge);
 
-  // Formatting applies to every title shown, crowdsourced or YouTube's own.
   const titleRows = [createConfigCheckbox('dearrowCrowdTitles')];
-  if (titleFormattingSupported) {
-    titleRows.push(
-      createChoiceControl('dearrowTitleFormatting', dearrowTitleFormats),
-      createConfigCheckbox('dearrowCleanEmojis')
-    );
-  }
   const elFallback = createChoiceControl('dearrowThumbnailFallback', dearrowThumbnailFallbacks);
   const elFallbackHelp = helpLine(
     "Random frame: a frame DeArrow picks from the video. Start, middle and end frames: YouTube's own."

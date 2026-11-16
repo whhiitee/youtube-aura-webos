@@ -13,7 +13,6 @@ export {
   sbModesHighlight,
   forcePreviewModes,
   videoCodecModes,
-  dearrowTitleFormats,
   dearrowThumbnailFallbacks,
   clockModes
 } from './config-options.js';

@@ -12,8 +12,7 @@
 //      (sweep.js). Tiles are rebuilt as the user moves around, so the sweep
 //      also follows every parse and key press.
 // What is shown follows the extension: the top title or thumbnail unless it
-// is the original or voted below zero (a locked one always wins), with the
-// extension's own title formatter (src/vendor/dearrow).
+// is the original or voted below zero (a locked one always wins).
 import { configRead, configAddChangeListener } from '../../core/config.js';
 import { CACHE_LIMIT, DEARROW_CONFIG_KEYS, SWEEP_DELAY } from './constants.js';
 import { videos, nextGeneration } from './state.js';
@@ -22,8 +21,6 @@ import { patchResponseTiles, unpatchResponses, applyToVideo } from './tiles.js';
 import { sweepTiles } from './sweep.js';
 import { queueLookups, clearQueue, setChangeHandler } from './lookup.js';
 import { log } from './log.js';
-
-export { titleFormattingSupported } from './titles.js';
 
 let sweepTimer = null;
 

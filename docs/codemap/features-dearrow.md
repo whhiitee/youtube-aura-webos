@@ -2,7 +2,7 @@
 
 Part of the [code map](../CODEMAP.md), generated from the source by `tools/codemap.mjs`: do not edit it by hand.
 
-Modules: [features/dearrow/constants.js](#mod-constants-js), [features/dearrow/formatter-absent.js](#mod-formatter-absent-js), [features/dearrow/formatter.js](#mod-formatter-js), [features/dearrow/index.js](#mod-index-js), [features/dearrow/log.js](#mod-log-js), [features/dearrow/lookup.js](#mod-lookup-js), [features/dearrow/state.js](#mod-state-js), [features/dearrow/sweep.js](#mod-sweep-js), [features/dearrow/thumbs.js](#mod-thumbs-js), [features/dearrow/tiles.js](#mod-tiles-js), [features/dearrow/titles.js](#mod-titles-js)
+Modules: [features/dearrow/constants.js](#mod-constants-js), [features/dearrow/index.js](#mod-index-js), [features/dearrow/log.js](#mod-log-js), [features/dearrow/lookup.js](#mod-lookup-js), [features/dearrow/state.js](#mod-state-js), [features/dearrow/sweep.js](#mod-sweep-js), [features/dearrow/thumbs.js](#mod-thumbs-js), [features/dearrow/tiles.js](#mod-tiles-js), [features/dearrow/titles.js](#mod-titles-js)
 
 <a id="mod-constants-js"></a>
 
@@ -10,32 +10,11 @@ Modules: [features/dearrow/constants.js](#mod-constants-js), [features/dearrow/f
 
 > DeArrow's servers, limits and timings (features/dearrow).
 
-70 lines · imported by [features/dearrow/index.js](#mod-index-js), [features/dearrow/lookup.js](#mod-lookup-js), [features/dearrow/sweep.js](#mod-sweep-js), [features/dearrow/thumbs.js](#mod-thumbs-js), [features/dearrow/tiles.js](#mod-tiles-js)
+68 lines · imported by [features/dearrow/index.js](#mod-index-js), [features/dearrow/lookup.js](#mod-lookup-js), [features/dearrow/sweep.js](#mod-sweep-js), [features/dearrow/thumbs.js](#mod-thumbs-js), [features/dearrow/tiles.js](#mod-tiles-js)
 
 **At load:**
 
-- **Settings:** uses `enableDeArrow`, `dearrowCrowdTitles`, `dearrowTitleFormatting`, `dearrowCleanEmojis`, `dearrowCrowdThumbnails`, `dearrowThumbnailFallback`, `dearrowShowBadge`, `upgradeThumbnails`, `thumbnailQualityMode`
-
-<a id="mod-formatter-absent-js"></a>
-
-## features/dearrow/formatter-absent.js
-
-> What the legacy build (webOS 3 to 6) has in place of formatter.js (webpack.config.js): no title formatting, so the panel shows no formatting rows and titles keep the case they were written in. The one thing the formatter does to every title is kept: a submitter's ">" before a word (which tells the formatter to leave that word alone) is taken out.
-
-19 lines
-
-<a id="fn-formatter-absent-js-formattitleinternal"></a>
-**`formatTitleInternal(title)`** · function, exported · L17–19
-
-The title with the ">" markers taken out and the ends trimmed, as the formatter's own unformatted path leaves it (cleanUnformattedTitle).
-
-<a id="mod-formatter-js"></a>
-
-## features/dearrow/formatter.js
-
-> DeArrow's title formatter (src/vendor/dearrow, GPL-3.0), as the feature uses it. The legacy build has formatter-absent.js in its place (webpack.config.js): the formatter is 48 KiB there, and of the TVs that build runs on only webOS 5 and 6 could use it.
-
-13 lines · imports [vendor/dearrow/shim.js](vendor-dearrow.md#mod-shim-js) · imported by [features/dearrow/titles.js](#mod-titles-js)
+- **Settings:** uses `enableDeArrow`, `dearrowCrowdTitles`, `dearrowCrowdThumbnails`, `dearrowThumbnailFallback`, `dearrowShowBadge`, `upgradeThumbnails`, `thumbnailQualityMode`
 
 <a id="mod-index-js"></a>
 
@@ -43,9 +22,9 @@ The title with the ">" markers taken out and the ends trimmed, as the formatter'
 
 > DeArrow (https://dearrow.ajay.app): crowdsourced titles and thumbnails in place of clickbait ones, on the tiles of shelves and grids. Off by default; its own page in the options panel.
 >
-> A branding lookup takes a request per video, which the JSON.parse hook cannot wait for, so it works in two halves: 1. applyDeArrow() runs in the parse hook (adblock/parse-hook.js) and writes what is already decided into every tile of the response, so those render right the first time; videos not seen before are queued for a lookup (lookup.js). 2. When a lookup lands, the tiles already on screen are patched (sweep.js). Tiles are rebuilt as the user moves around, so the sweep also follows every parse and key press. What is shown follows the extension: the top title or thumbnail unless it is the original or voted below zero (a locked one always wins), with the extension's own title formatter (src/vendor/dearrow).
+> A branding lookup takes a request per video, which the JSON.parse hook cannot wait for, so it works in two halves: 1. applyDeArrow() runs in the parse hook (adblock/parse-hook.js) and writes what is already decided into every tile of the response, so those render right the first time; videos not seen before are queued for a lookup (lookup.js). 2. When a lookup lands, the tiles already on screen are patched (sweep.js). Tiles are rebuilt as the user moves around, so the sweep also follows every parse and key press. What is shown follows the extension: the top title or thumbnail unless it is the original or voted below zero (a locked one always wins).
 
-123 lines · imports [core/config.js](core.md#mod-config-js), [features/dearrow/constants.js](#mod-constants-js), [features/dearrow/state.js](#mod-state-js), [features/dearrow/thumbs.js](#mod-thumbs-js), [features/dearrow/tiles.js](#mod-tiles-js), [features/dearrow/sweep.js](#mod-sweep-js), [features/dearrow/lookup.js](#mod-lookup-js), [features/dearrow/log.js](#mod-log-js) · imported by [features/adblock/parse-hook.js](features-adblock.md#mod-parse-hook-js), [ui/panel/pages.js](ui-panel.md#mod-pages-js)
+120 lines · imports [core/config.js](core.md#mod-config-js), [features/dearrow/constants.js](#mod-constants-js), [features/dearrow/state.js](#mod-state-js), [features/dearrow/thumbs.js](#mod-thumbs-js), [features/dearrow/tiles.js](#mod-tiles-js), [features/dearrow/sweep.js](#mod-sweep-js), [features/dearrow/lookup.js](#mod-lookup-js), [features/dearrow/log.js](#mod-log-js) · imported by [features/adblock/parse-hook.js](features-adblock.md#mod-parse-hook-js)
 
 **At load:**
 
@@ -53,14 +32,14 @@ The title with the ">" markers taken out and the ends trimmed, as the formatter'
 - **Events:** listens to `keydown`
 
 <a id="fn-index-js-cancelsweep"></a>
-**`cancelSweep()`** · function · L31–34
+**`cancelSweep()`** · function · L28–31
 
 Drops the sweep waiting for its moment.
 
 - **Called by:** [restoreTiles](#fn-index-js-restoretiles)
 
 <a id="fn-index-js-schedulesweep"></a>
-**`scheduleSweep()`** · function · L37–43
+**`scheduleSweep()`** · function · L34–40
 
 Sweeps the rendered tiles SWEEP_DELAY from now, once however often it is asked.
 
@@ -70,7 +49,7 @@ Sweeps the rendered tiles SWEEP_DELAY from now, once however often it is asked.
 - **Browser:** `setTimeout`
 
 <a id="fn-index-js-restoretiles"></a>
-**`restoreTiles()`** · function · L46–49
+**`restoreTiles()`** · function · L43–46
 
 Puts YouTube's own titles and thumbnails back on screen; a pending sweep would undo it.
 
@@ -78,7 +57,7 @@ Puts YouTube's own titles and thumbnails back on screen; a pending sweep would u
 - **Called by:** [wipe](#fn-index-js-wipe)
 
 <a id="fn-index-js-wipe"></a>
-**`wipe()`** · function · L56–64
+**`wipe()`** · function · L53–61
 
 Forgets everything (too many videos remembered, or DeArrow switched off): originals back on screen and in the stored responses while they are still known, then the videos, the queue and the thumbnails, whose blobs are freed.
 
@@ -86,7 +65,7 @@ Forgets everything (too many videos remembered, or DeArrow switched off): origin
 - **Called by:** [applyDeArrow](#fn-index-js-applydearrow), [onSettingsChange](#fn-index-js-onsettingschange)
 
 <a id="fn-index-js-applydearrow"></a>
-**`applyDeArrow(data, responseType)`** · function, exported · L72–80
+**`applyDeArrow(data, responseType)`** · function, exported · L69–77
 
 The parse hook's step (adblock/parse-hook.js) for an InnerTube response: its video tiles get what is decided, new videos are queued for a lookup, and the rendered tiles are swept a moment later. Player responses carry no tiles and are skipped.
 
@@ -94,7 +73,7 @@ The parse hook's step (adblock/parse-hook.js) for an InnerTube response: its vid
 - **Called by:** [features/adblock/parse-hook.js › filterResponse](features-adblock.md#fn-parse-hook-js-filterresponse)
 
 <a id="fn-index-js-onsettingschange"></a>
-**`onSettingsChange()`** · function · L89–103
+**`onSettingsChange()`** · function · L86–100
 
 A DeArrow setting changed: everything is decided again (answers already fetched are reused), newest first, since those are the videos likely on screen. Turned off, YouTube's own come back everywhere and everything DeArrow kept goes with them: up to BLOB_BUDGET of thumbnail copies would otherwise stay in memory for the rest of the session.
 
@@ -511,28 +490,28 @@ Walks a parsed response breadth first (so videos come in screen order), bounded 
 
 ## features/dearrow/titles.js
 
-> DeArrow's titles: the crowdsourced one when it is trusted, else YouTube's own, either formatted as Title formatting says by the extension's own formatter (formatter.js; the legacy build has none, and keeps titles as written).
+> DeArrow's titles: the crowdsourced one when it is trusted, else YouTube's own, either of them with the submitter's ">" markers taken out.
+>
+> This build has no title formatter: the extension's formatter needs `Intl` features Chromium 38 does not have (it was only ever enabled on webOS 5 and 6), so titles keep the case they were written in and the settings carry no formatting rows.
 
-63 lines · imports [core/config.js](core.md#mod-config-js), [features/dearrow/formatter.js](#mod-formatter-js) · imported by [features/dearrow/lookup.js](#mod-lookup-js)
+46 lines · imports [core/config.js](core.md#mod-config-js) · imported by [features/dearrow/lookup.js](#mod-lookup-js)
+
+<a id="fn-titles-js-formattitleinternal"></a>
+**`formatTitleInternal(title)`** · function, exported · L15–17
+
+The title as the formatter's unformatted path leaves it: markers out, ends trimmed.
+
+- **Called by:** [resolveTitle](#fn-titles-js-resolvetitle)
 
 <a id="fn-titles-js-istrusted"></a>
-**`isTrusted(entry)`** · function, exported · L24–26
+**`isTrusted(entry)`** · function, exported · L23–25
 
 A submission DeArrow would show: not the original, and locked or voted zero or above.
 
 - **Called by:** [features/dearrow/lookup.js › resolveThumb](#fn-lookup-js-resolvethumb), [crowdsourcedTitle](#fn-titles-js-crowdsourcedtitle)
 
-<a id="fn-titles-js-formattitle"></a>
-**`formatTitle(title, isCustom)`** · function · L33–42
-
-`title` formatted as Title formatting says, the same for a crowdsourced one (`isCustom`, whose ">" markers keep a word as written) as for YouTube's; resolves with the text.
-
-- **Calls:** [core/config.js › configRead](core.md#fn-config-js-configread), [vendor/dearrow/titleFormatter.js › formatTitleInternal](vendor-dearrow.md#fn-titleformatter-js-formattitleinternal)
-- **Called by:** [resolveTitle](#fn-titles-js-resolvetitle)
-- **Settings:** reads `dearrowTitleFormatting`, `dearrowCleanEmojis`
-
 <a id="fn-titles-js-crowdsourcedtitle"></a>
-**`crowdsourcedTitle(video)`** · function, exported · L45–49
+**`crowdsourcedTitle(video)`** · function, exported · L28–32
 
 The crowdsourced title the settings let a video show: the top one when it is trusted, else null.
 
@@ -541,9 +520,9 @@ The crowdsourced title the settings let a video show: the top one when it is tru
 - **Settings:** reads `dearrowCrowdTitles`
 
 <a id="fn-titles-js-resolvetitle"></a>
-**`resolveTitle(video)`** · function, async, exported · L56–63
+**`resolveTitle(video)`** · function, exported · L39–46
 
-The title a video's tiles should show, or null for YouTube's own: the top crowdsourced one when it is trusted, else the original when formatting changes it.
+The title a video's tiles should show, or null for YouTube's own: the top crowdsourced one when it is trusted, else the original when taking the markers out changes it.
 
-- **Calls:** [crowdsourcedTitle](#fn-titles-js-crowdsourcedtitle), [formatTitle](#fn-titles-js-formattitle)
+- **Calls:** [crowdsourcedTitle](#fn-titles-js-crowdsourcedtitle), [formatTitleInternal](#fn-titles-js-formattitleinternal)
 - **Called by:** [features/dearrow/lookup.js › resolve](#fn-lookup-js-resolve)

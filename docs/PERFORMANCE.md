@@ -122,12 +122,12 @@ CPU there.
 
 | | upstream 0.8.5 | Aura | Change |
 | --- | --- | --- | --- |
-| `userScript.js` | 243 801 B (238.1 KiB) | **226 931 B (221.6 KiB)** | **−16 870 B (−6.9 %)** |
+| `userScript.js` | 243 801 B (238.1 KiB) | **226 420 B (221.1 KiB)** | **−17 381 B (−7.1 %)** |
 | CSS in the bundle | 19 407 B | 17 644 B | −1 763 B |
 | CSS selectors | 193 | 166 | −27 |
 | Attribute-testing selectors | 22 | 16 | −6 |
 | `index.js` (launcher) | 8 267 B | 8 267 B | — |
-| `.ipk` (compressed) | 236 868 B (231.3 KiB) | **90 942 B (88.8 KiB)** | −61 % |
+| `.ipk` (compressed) | 236 868 B (231.3 KiB) | **90 830 B (88.7 KiB)** | −61 % |
 
 What left the bundle:
 

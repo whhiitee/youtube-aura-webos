@@ -2,39 +2,44 @@
 
 What every package in `package.json` is for, which of them end up on the TV,
 how to update them without slowing the app down, and the security status.
-Checked on 2026-10-24 (0.8.5).
+Checked on 2026-11-16 (1.0.0).
 
 ## What runs on the TV
 
-Only four npm packages are inside the bundles. Everything else is a build,
+Only four npm packages are inside the bundle. Everything else is a build,
 lint or test tool that runs on your computer, and only matters to the TV
 through what it writes into the bundle.
 
-| Package | In which build | What it does | Pinned |
-| --- | --- | --- | --- |
-| `whatwg-fetch` | legacy (webOS 3) | `fetch()` for Chromium 38, which has none | 3.6.20 |
-| `@babel/runtime` | legacy | Babel's helpers (classes, private fields, for-of, async) | 8.0.7 |
-| `@twemoji/api` | legacy (webOS 3/4) | Emoji images for the Emoji + Characters Fix | 16.0.1 |
-| `tiny-sha256` | both | SponsorBlock's privacy hash of the video id | 1.0.2 |
+| Package | What it does | Pinned |
+| --- | --- | --- |
+| `whatwg-fetch` | `fetch()` for Chromium 38, which has none | 3.6.20 |
+| `@babel/runtime` | Babel's helpers (classes, private fields, for-of, async) | 8.0.7 |
+| `@twemoji/api` | Emoji images for the Emoji + Characters Fix | 16.0.1 |
+| `tiny-sha256` | SponsorBlock's privacy hash of the video id | 1.0.2 |
 
-Two pieces of third-party code are not npm packages but copied into
-`src/vendor/` (0.8.5 build 2), so they change only when someone copies a new
-version in: DeArrow's title formatter (GPL-3.0, webOS 22+ build only) and the
-playback speed engine (GPL-3.0, webOS 22+ build only). Where each came from is
-in `src/vendor/README.md`.
+**No third-party code is vendored any more.** Upstream kept two pieces in
+`src/vendor/`, and Aura removed both because this TV cannot run them:
 
-They are pinned to exact versions on purpose: a routine `npm update` must not
-change TV code without a decision. `@twemoji/api` stays on 16.0.1 because the
-emoji image URLs it builds have to match the image set it loads (see 0.8.2 in
-the changelog); move both together.
+| Was in `src/vendor/` | From | Why it is gone |
+| --- | --- | --- |
+| DeArrow's title formatter | [ajayyy/DeArrow](https://github.com/ajayyy/DeArrow) `src/titles/titleFormatter.ts` @ 482cf997, vendored by @magicsk in NicholasBly/youtube-webos#200 | needs `Intl.Segmenter` and modern `Intl` casing (Chromium 38 has neither) |
+| The playback speed engine | @GiacomoCa in webosbrew/youtube-webos#484, ported by @Schmiddisen in NicholasBly/youtube-webos#194 | needs WebCodecs (Chrome 94+) |
+
+Both were GPL-3.0, as this project is; the provenance is kept here and in the
+README so the authorship survives the removal.
+
+The four packages are pinned to exact versions on purpose: a routine
+`npm update` must not change TV code without a decision. `@twemoji/api` stays on
+16.0.1 because the emoji image URLs it builds have to match the image set it
+loads (see 0.8.2 in the changelog); move both together.
 
 ## Build and test tools (your computer only)
 
 | Package | Used by |
 | --- | --- |
 | `webpack`, `webpack-cli` | `npm run build` |
-| `babel-loader`, `@babel/core`, `@babel/preset-env`, `@babel/plugin-transform-runtime`, `@babel/plugin-transform-typescript` | Compiling `src/` for Chrome 38 (legacy) and Chrome 87 (webOS 22+), `babel.config.js` |
-| `terser-webpack-plugin` | Minifying the bundles |
+| `babel-loader`, `@babel/core`, `@babel/preset-env`, `@babel/plugin-transform-runtime`, `@babel/plugin-transform-typescript` | Compiling `src/` to ES5 for Chromium 38, `babel.config.js` |
+| `terser-webpack-plugin` | Minifying the bundle |
 | `postcss`, `postcss-loader`, `autoprefixer`, `cssnano` | The stylesheets: `-webkit-` prefixes for old engines, minifying |
 | `copy-webpack-plugin` | Copies `assets/` and `index.html` into `dist/` |
 | `@webos-tools/cli` | `ares-package`, `ares-install`, `ares-launch`, `ares-inspect` |

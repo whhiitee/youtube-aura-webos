@@ -21,7 +21,7 @@
   },
   {
    "path": "core/config-options.js",
-   "lines": 272,
+   "lines": 253,
    "header": "Every setting the app knows about, with its default and the label the options panel shows, plus the value tables the cycle controls choose from. An option's `upgrade(stored)` turns a value an older build stored into this build's (core/config.js applies it when the settings load).",
    "imports": [
     {
@@ -40,7 +40,6 @@
     "segmentTypes",
     "logoStyles",
     "thumbnailQualityModes",
-    "dearrowTitleFormats",
     "dearrowThumbnailFallbacks",
     "clockModes",
     "shortcutActions",
@@ -60,7 +59,7 @@
   },
   {
    "path": "core/config.js",
-   "lines": 167,
+   "lines": 166,
    "header": "Persisted settings: one localStorage entry, read into memory once, written back debounced, with change listeners per key. The option tables themselves live in config-options.js and are re-exported here so callers import one module.",
    "imports": [
     {
@@ -122,7 +121,6 @@
     "sbModesHighlight",
     "forcePreviewModes",
     "videoCodecModes",
-    "dearrowTitleFormats",
     "dearrowThumbnailFallbacks",
     "clockModes",
     "configGetDesc",
@@ -1895,7 +1893,7 @@
   },
   {
    "path": "features/dearrow/constants.js",
-   "lines": 70,
+   "lines": 68,
    "header": "DeArrow's servers, limits and timings (features/dearrow).",
    "imports": [],
    "importedBy": [
@@ -1931,8 +1929,6 @@
      "other": [
       "enableDeArrow",
       "dearrowCrowdTitles",
-      "dearrowTitleFormatting",
-      "dearrowCleanEmojis",
       "dearrowCrowdThumbnails",
       "dearrowThumbnailFallback",
       "dearrowShowBadge",
@@ -1944,48 +1940,9 @@
    "functions": []
   },
   {
-   "path": "features/dearrow/formatter-absent.js",
-   "lines": 19,
-   "header": "What the legacy build (webOS 3 to 6) has in place of formatter.js (webpack.config.js): no title formatting, so the panel shows no formatting rows and titles keep the case they were written in. The one thing the formatter does to every title is kept: a submitter's \">\" before a word (which tells the formatter to leave that word alone) is taken out.",
-   "imports": [],
-   "importedBy": [],
-   "exports": [
-    "formattingSupported",
-    "TitleFormatting",
-    "formatTitleInternal"
-   ],
-   "atLoad": {},
-   "functions": [
-    "features/dearrow/formatter-absent.js#formatTitleInternal"
-   ]
-  },
-  {
-   "path": "features/dearrow/formatter.js",
-   "lines": 13,
-   "header": "DeArrow's title formatter (src/vendor/dearrow, GPL-3.0), as the feature uses it. The legacy build has formatter-absent.js in its place (webpack.config.js): the formatter is 48 KiB there, and of the TVs that build runs on only webOS 5 and 6 could use it.",
-   "imports": [
-    {
-     "from": "vendor/dearrow/shim.js",
-     "names": [
-      "unicodeRegExpSupported"
-     ]
-    }
-   ],
-   "importedBy": [
-    "features/dearrow/titles.js"
-   ],
-   "exports": [
-    "formatTitleInternal",
-    "TitleFormatting",
-    "formattingSupported"
-   ],
-   "atLoad": {},
-   "functions": []
-  },
-  {
    "path": "features/dearrow/index.js",
-   "lines": 123,
-   "header": "DeArrow (https://dearrow.ajay.app): crowdsourced titles and thumbnails in place of clickbait ones, on the tiles of shelves and grids. Off by default; its own page in the options panel.\n\nA branding lookup takes a request per video, which the JSON.parse hook cannot wait for, so it works in two halves: 1. applyDeArrow() runs in the parse hook (adblock/parse-hook.js) and writes what is already decided into every tile of the response, so those render right the first time; videos not seen before are queued for a lookup (lookup.js). 2. When a lookup lands, the tiles already on screen are patched (sweep.js). Tiles are rebuilt as the user moves around, so the sweep also follows every parse and key press. What is shown follows the extension: the top title or thumbnail unless it is the original or voted below zero (a locked one always wins), with the extension's own title formatter (src/vendor/dearrow).",
+   "lines": 120,
+   "header": "DeArrow (https://dearrow.ajay.app): crowdsourced titles and thumbnails in place of clickbait ones, on the tiles of shelves and grids. Off by default; its own page in the options panel.\n\nA branding lookup takes a request per video, which the JSON.parse hook cannot wait for, so it works in two halves: 1. applyDeArrow() runs in the parse hook (adblock/parse-hook.js) and writes what is already decided into every tile of the response, so those render right the first time; videos not seen before are queued for a lookup (lookup.js). 2. When a lookup lands, the tiles already on screen are patched (sweep.js). Tiles are rebuilt as the user moves around, so the sweep also follows every parse and key press. What is shown follows the extension: the top title or thumbnail unless it is the original or voted below zero (a locked one always wins).",
    "imports": [
     {
      "from": "core/config.js",
@@ -2046,11 +2003,9 @@
     }
    ],
    "importedBy": [
-    "features/adblock/parse-hook.js",
-    "ui/panel/pages.js"
+    "features/adblock/parse-hook.js"
    ],
    "exports": [
-    "titleFormattingSupported",
     "applyDeArrow"
    ],
    "atLoad": {
@@ -2373,21 +2328,13 @@
   },
   {
    "path": "features/dearrow/titles.js",
-   "lines": 63,
-   "header": "DeArrow's titles: the crowdsourced one when it is trusted, else YouTube's own, either formatted as Title formatting says by the extension's own formatter (formatter.js; the legacy build has none, and keeps titles as written).",
+   "lines": 46,
+   "header": "DeArrow's titles: the crowdsourced one when it is trusted, else YouTube's own, either of them with the submitter's \">\" markers taken out.\n\nThis build has no title formatter: the extension's formatter needs `Intl` features Chromium 38 does not have (it was only ever enabled on webOS 5 and 6), so titles keep the case they were written in and the settings carry no formatting rows.",
    "imports": [
     {
      "from": "core/config.js",
      "names": [
       "configRead"
-     ]
-    },
-    {
-     "from": "features/dearrow/formatter.js",
-     "names": [
-      "formatTitleInternal",
-      "TitleFormatting",
-      "formattingSupported"
      ]
     }
    ],
@@ -2395,15 +2342,15 @@
     "features/dearrow/lookup.js"
    ],
    "exports": [
-    "titleFormattingSupported",
+    "formatTitleInternal",
     "isTrusted",
     "crowdsourcedTitle",
     "resolveTitle"
    ],
    "atLoad": {},
    "functions": [
+    "features/dearrow/titles.js#formatTitleInternal",
     "features/dearrow/titles.js#isTrusted",
-    "features/dearrow/titles.js#formatTitle",
     "features/dearrow/titles.js#crowdsourcedTitle",
     "features/dearrow/titles.js#resolveTitle"
    ]
@@ -6268,7 +6215,7 @@
   },
   {
    "path": "ui/panel/pages.js",
-   "lines": 233,
+   "lines": 223,
    "header": "The five pages of the options panel. Each builder returns its page element; the panel appends it and decides when it is built (Main up front, the rest one per frame once the panel is on screen).",
    "imports": [
     {
@@ -6276,15 +6223,8 @@
      "names": [
       "configRead",
       "configAddChangeListener",
-      "dearrowTitleFormats",
       "dearrowThumbnailFallbacks",
       "clockModes"
-     ]
-    },
-    {
-     "from": "features/dearrow/index.js",
-     "names": [
-      "titleFormattingSupported"
      ]
     },
     {
@@ -7281,148 +7221,6 @@
     ]
    },
    "functions": []
-  },
-  {
-   "path": "vendor/dearrow/shim.js",
-   "lines": 45,
-   "header": "[ytaf] Stand-ins for the DeArrow extension modules that titleFormatter.js imports. Only formatTitleInternal() is called from here, and it takes every setting as an argument, so these just need to exist.",
-   "imports": [],
-   "importedBy": [
-    "features/dearrow/formatter.js",
-    "vendor/dearrow/titleFormatter.js"
-   ],
-   "exports": [
-    "TitleFormatting",
-    "default",
-    "getTitleFormatting",
-    "shouldCleanEmojis",
-    "chromeP",
-    "unicodeRegExpSupported",
-    "uRegExp"
-   ],
-   "atLoad": {},
-   "functions": [
-    "vendor/dearrow/shim.js#getTitleFormatting",
-    "vendor/dearrow/shim.js#shouldCleanEmojis",
-    "vendor/dearrow/shim.js#uRegExp"
-   ]
-  },
-  {
-   "path": "vendor/dearrow/titleFormatter.js",
-   "lines": 688,
-   "header": "Vendored from DeArrow (GPL-3.0) - https://github.com/ajayyy/DeArrow src/titles/titleFormatter.ts @ 482cf997c91efcf226e1c7852db186cc29a75474\n\nTypeScript types stripped with @babel/plugin-transform-typescript. Other changes are marked [ytaf]: imports point at ./shim, language detection is disabled, the extension-page localisation helpers are dropped, and every \\p{...} regex literal is built at runtime via uRegExp() (see shim.js). / // [ytaf] File extensions on the imports: an ES module package resolves them as written.",
-   "imports": [
-    {
-     "from": "vendor/dearrow/shim.js",
-     "names": [
-      "default as Config",
-      "TitleFormatting",
-      "getTitleFormatting",
-      "shouldCleanEmojis",
-      "chromeP",
-      "uRegExp"
-     ]
-    },
-    {
-     "from": "vendor/dearrow/titleFormatterData.js",
-     "names": [
-      "acronymBlocklist",
-      "allowlistedStartOfWords",
-      "allowlistedWords",
-      "fancyTextConversions",
-      "notStartOfSentence",
-      "titleCaseNotCapitalized"
-     ]
-    }
-   ],
-   "importedBy": [],
-   "exports": [
-    "formatTitle",
-    "formatTitleDefaultSettings",
-    "formatTitleInternal",
-    "toLowerCaseTitle",
-    "toFirstLetterUppercase",
-    "toSentenceCase",
-    "toTitleCase",
-    "toCapitalizeCase",
-    "isInTitleCase",
-    "isMostlyAllCaps",
-    "capitalizeFirstLetter",
-    "isWordCustomCapitalization",
-    "isAcronym",
-    "isAcronymStrict",
-    "cleanResultingTitle",
-    "cleanPunctuation",
-    "cleanEmojis",
-    "cleanFancyText"
-   ],
-   "atLoad": {},
-   "functions": [
-    "vendor/dearrow/titleFormatter.js#formatTitle",
-    "vendor/dearrow/titleFormatter.js#formatTitleDefaultSettings",
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal",
-    "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#toTitleCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#isInTitleCase",
-    "vendor/dearrow/titleFormatter.js#shouldTrustCaps",
-    "vendor/dearrow/titleFormatter.js#isMostlyAllCaps",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#isWordCapitalCase",
-    "vendor/dearrow/titleFormatter.js#startsWithEmojiLetter",
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#isCompoundWord",
-    "vendor/dearrow/titleFormatter.js#isNumberThenLetter",
-    "vendor/dearrow/titleFormatter.js#doesStartWithNonLetter",
-    "vendor/dearrow/titleFormatter.js#isYear",
-    "vendor/dearrow/titleFormatter.js#isFirstLetterCapital",
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-    "vendor/dearrow/titleFormatter.js#toLowerCase",
-    "vendor/dearrow/titleFormatter.js#toUpperCase",
-    "vendor/dearrow/titleFormatter.js#getLangInfo",
-    "vendor/dearrow/titleFormatter.js#checkAnyLanguage",
-    "vendor/dearrow/titleFormatter.js#checkLanguages",
-    "vendor/dearrow/titleFormatter.js#checkLanguages.getLanguageFromBrowserApi",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#countLetters",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#startOfSentence",
-    "vendor/dearrow/titleFormatter.js#endOfSentence",
-    "vendor/dearrow/titleFormatter.js#isEntirelyDelimeter",
-    "vendor/dearrow/titleFormatter.js#isDelimeter",
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#cleanUnformattedTitle",
-    "vendor/dearrow/titleFormatter.js#cleanWordPunctuation",
-    "vendor/dearrow/titleFormatter.js#cleanPunctuation",
-    "vendor/dearrow/titleFormatter.js#cleanEmojis",
-    "vendor/dearrow/titleFormatter.js#cleanFancyText",
-    "vendor/dearrow/titleFormatter.js#listHasWord",
-    "vendor/dearrow/titleFormatter.js#listHasStartOfWord"
-   ]
-  },
-  {
-   "path": "vendor/dearrow/titleFormatterData.js",
-   "lines": 413,
-   "header": "Vendored from DeArrow (GPL-3.0) - https://github.com/ajayyy/DeArrow src/titles/titleFormatterData.ts @ 482cf997c91efcf226e1c7852db186cc29a75474",
-   "imports": [],
-   "importedBy": [
-    "vendor/dearrow/titleFormatter.js"
-   ],
-   "exports": [
-    "titleCaseNotCapitalized",
-    "allowlistedWords",
-    "allowlistedStartOfWords",
-    "acronymBlocklist",
-    "notStartOfSentence",
-    "fancyTextConversions"
-   ],
-   "atLoad": {},
-   "functions": []
   }
  ],
  "functions": [
@@ -7449,8 +7247,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    27,
-    35
+    26,
+    34
    ],
    "description": "The stored settings as an object, or null when there are none or they do not parse.",
    "browser": [
@@ -7467,8 +7265,8 @@
    "params": "stored",
    "exported": false,
    "lines": [
-    43,
-    59
+    42,
+    58
    ],
    "description": "Every option of this build: the stored value where there is one (through the option's `upgrade` when it has one: a value an older build stored), else the default. A key the store holds that this build does not have (a setting from an older one) is left out, so the next write drops it from storage.",
    "calledBy": [
@@ -7482,8 +7280,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    71,
-    78
+    70,
+    77
    ],
    "description": "Writes the whole config to localStorage now; a full or refused storage keeps it in memory only.",
    "browser": [
@@ -7501,8 +7299,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    83,
-    88
+    82,
+    87
    ],
    "description": "Writes a pending debounced change at once (on beforeunload and pagehide), so leaving the app does not lose it.",
    "calls": [
@@ -7519,8 +7317,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    90,
-    92
+    89,
+    91
    ],
    "description": "Starts the 200 ms debounced write unless one is already pending.",
    "calls": [
@@ -7540,8 +7338,8 @@
    "params": "key",
    "exported": false,
    "lines": [
-    97,
-    99
+    96,
+    98
    ],
    "description": "Whether this build has a setting called `key`.",
    "calledBy": [
@@ -7555,8 +7353,8 @@
    "params": "key, verb",
    "exported": false,
    "lines": [
-    102,
-    104
+    101,
+    103
    ],
    "description": "Throws for a key no option defines: a typo, or a key a build removed.",
    "calls": [
@@ -7577,8 +7375,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    107,
-    110
+    106,
+    109
    ],
    "description": "The label the options panel shows for `key`.",
    "calls": [
@@ -7600,8 +7398,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    113,
-    116
+    112,
+    115
    ],
    "description": "The current value of setting `key` (from memory: no storage read). Throws for an unknown key.",
    "calls": [
@@ -7620,7 +7418,6 @@
     "features/dearrow/thumbs.js#copyWidth",
     "features/dearrow/tiles.js#applyToTile",
     "features/dearrow/titles.js#crowdsourcedTitle",
-    "features/dearrow/titles.js#formatTitle",
     "features/emoji-font/observer.js#manageObserverState",
     "features/force-codec/index.js#applyMode",
     "features/logo-style.js#applyLogoStyle",
@@ -7655,8 +7452,8 @@
    "params": "key, value",
    "exported": true,
    "lines": [
-    121,
-    141
+    120,
+    140
    ],
    "description": "The per-write log is debug level: configWrite fires per event during colour-picker drags and opacity scrubs (the localStorage write itself is debounced).",
    "calls": [
@@ -7679,8 +7476,8 @@
    "params": "key, callback",
    "exported": true,
    "lines": [
-    147,
-    151
+    146,
+    150
    ],
    "description": "Calls `callback({ detail: { key, newValue, oldValue } })` whenever `key` changes through configWrite.",
    "calls": [
@@ -7716,8 +7513,8 @@
    "params": "key, callback",
    "exported": true,
    "lines": [
-    154,
-    156
+    153,
+    155
    ],
    "description": "Stops calling `callback` for changes of `key`.",
    "calledBy": [
@@ -7731,8 +7528,8 @@
    "params": "key",
    "exported": true,
    "lines": [
-    159,
-    162
+    158,
+    161
    ],
    "description": "The default value of setting `key`, as config-options.js declares it.",
    "calls": [
@@ -7749,8 +7546,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    165,
-    167
+    164,
+    166
    ],
    "description": "Export the live object reference directly for zero-overhead caching",
    "calledBy": [
@@ -13125,26 +12922,14 @@
    ]
   },
   {
-   "id": "features/dearrow/formatter-absent.js#formatTitleInternal",
-   "name": "formatTitleInternal",
-   "kind": "function",
-   "params": "title",
-   "exported": true,
-   "lines": [
-    17,
-    19
-   ],
-   "description": "The title with the \">\" markers taken out and the ends trimmed, as the formatter's own unformatted path leaves it (cleanUnformattedTitle)."
-  },
-  {
    "id": "features/dearrow/index.js#cancelSweep",
    "name": "cancelSweep",
    "kind": "function",
    "params": "",
    "exported": false,
    "lines": [
-    31,
-    34
+    28,
+    31
    ],
    "description": "Drops the sweep waiting for its moment.",
    "calledBy": [
@@ -13158,8 +12943,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    37,
-    43
+    34,
+    40
    ],
    "description": "Sweeps the rendered tiles SWEEP_DELAY from now, once however often it is asked.",
    "calls": [
@@ -13186,8 +12971,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    46,
-    49
+    43,
+    46
    ],
    "description": "Puts YouTube's own titles and thumbnails back on screen; a pending sweep would undo it.",
    "calls": [
@@ -13205,8 +12990,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    56,
-    64
+    53,
+    61
    ],
    "description": "Forgets everything (too many videos remembered, or DeArrow switched off): originals back on screen and in the stored responses while they are still known, then the videos, the queue and the thumbnails, whose blobs are freed.",
    "calls": [
@@ -13228,8 +13013,8 @@
    "params": "data, responseType",
    "exported": true,
    "lines": [
-    72,
-    80
+    69,
+    77
    ],
    "description": "The parse hook's step (adblock/parse-hook.js) for an InnerTube response: its video tiles get what is decided, new videos are queued for a lookup, and the rendered tiles are swept a moment later. Player responses carry no tiles and are skipped.",
    "calls": [
@@ -13250,8 +13035,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    89,
-    103
+    86,
+    100
    ],
    "description": "A DeArrow setting changed: everything is decided again (answers already fetched are reused), newest first, since those are the videos likely on screen. Turned off, YouTube's own come back everywhere and everything DeArrow kept goes with them: up to BLOB_BUDGET of thumbnail copies would otherwise stay in memory for the rest of the session.",
    "calls": [
@@ -14121,44 +13906,34 @@
    ]
   },
   {
+   "id": "features/dearrow/titles.js#formatTitleInternal",
+   "name": "formatTitleInternal",
+   "kind": "function",
+   "params": "title",
+   "exported": true,
+   "lines": [
+    15,
+    17
+   ],
+   "description": "The title as the formatter's unformatted path leaves it: markers out, ends trimmed.",
+   "calledBy": [
+    "features/dearrow/titles.js#resolveTitle"
+   ]
+  },
+  {
    "id": "features/dearrow/titles.js#isTrusted",
    "name": "isTrusted",
    "kind": "function",
    "params": "entry",
    "exported": true,
    "lines": [
-    24,
-    26
+    23,
+    25
    ],
    "description": "A submission DeArrow would show: not the original, and locked or voted zero or above.",
    "calledBy": [
     "features/dearrow/lookup.js#resolveThumb",
     "features/dearrow/titles.js#crowdsourcedTitle"
-   ]
-  },
-  {
-   "id": "features/dearrow/titles.js#formatTitle",
-   "name": "formatTitle",
-   "kind": "function",
-   "params": "title, isCustom",
-   "exported": false,
-   "lines": [
-    33,
-    42
-   ],
-   "description": "`title` formatted as Title formatting says, the same for a crowdsourced one (`isCustom`, whose \">\" markers keep a word as written) as for YouTube's; resolves with the text.",
-   "calls": [
-    "core/config.js#configRead",
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ],
-   "settings": {
-    "read": [
-     "dearrowTitleFormatting",
-     "dearrowCleanEmojis"
-    ]
-   },
-   "calledBy": [
-    "features/dearrow/titles.js#resolveTitle"
    ]
   },
   {
@@ -14168,8 +13943,8 @@
    "params": "video",
    "exported": true,
    "lines": [
-    45,
-    49
+    28,
+    32
    ],
    "description": "The crowdsourced title the settings let a video show: the top one when it is trusted, else null.",
    "calls": [
@@ -14189,17 +13964,17 @@
   {
    "id": "features/dearrow/titles.js#resolveTitle",
    "name": "resolveTitle",
-   "kind": "function, async",
+   "kind": "function",
    "params": "video",
    "exported": true,
    "lines": [
-    56,
-    63
+    39,
+    46
    ],
-   "description": "The title a video's tiles should show, or null for YouTube's own: the top crowdsourced one when it is trusted, else the original when formatting changes it.",
+   "description": "The title a video's tiles should show, or null for YouTube's own: the top crowdsourced one when it is trusted, else the original when taking the markers out changes it.",
    "calls": [
     "features/dearrow/titles.js#crowdsourcedTitle",
-    "features/dearrow/titles.js#formatTitle"
+    "features/dearrow/titles.js#formatTitleInternal"
    ],
    "calledBy": [
     "features/dearrow/lookup.js#resolve"
@@ -21961,8 +21736,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    32,
-    32
+    30,
+    30
    ],
    "description": "A line of small help text under a row.",
    "calls": [
@@ -21980,8 +21755,8 @@
    "params": "text",
    "exported": false,
    "lines": [
-    35,
-    35
+    33,
+    33
    ],
    "description": "The centred small print at the foot of a page: what the feature is and where it comes from.",
    "calls": [
@@ -21999,8 +21774,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    42,
-    98
+    40,
+    96
    ],
    "description": "The Main page: Cosmetic Filtering (Ad Blocking and the filters that depend on it, greyed out while it is off), then the other features.",
    "calls": [
@@ -22044,8 +21819,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    68,
-    73
+    66,
+    71
    ],
    "description": "Greys out the rows that depend on Ad Blocking while it is off.",
    "calls": [
@@ -22068,8 +21843,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    102,
-    133
+    100,
+    131
    ],
    "description": "The SponsorBlock page: the switch, one row per category, and the SponsorBlock options.",
    "calls": [
@@ -22105,10 +21880,10 @@
    "params": "",
    "exported": true,
    "lines": [
-    141,
-    184
+    138,
+    174
    ],
-   "description": "The DeArrow page: the switch and the logo, then the title and thumbnail options, greyed out while it is off (and the thumbnail fallback while crowdsourced thumbnails are). Title formatting is in the webOS 22+ build only (features/dearrow/titles.js): the legacy one gets no formatting rows.",
+   "description": "The DeArrow page: the switch and the logo, then the title and thumbnail options, greyed out while it is off (and the thumbnail fallback while crowdsourced thumbnails are).",
    "calls": [
     "core/config.js#configAddChangeListener",
     "ui/dom.js#createElement",
@@ -22127,8 +21902,6 @@
     "other": [
      "dearrowShowBadge",
      "dearrowCrowdTitles",
-     "dearrowTitleFormatting",
-     "dearrowCleanEmojis",
      "dearrowThumbnailFallback"
     ]
    }
@@ -22140,8 +21913,8 @@
    "params": "",
    "exported": false,
    "lines": [
-    172,
-    179
+    162,
+    169
    ],
    "description": "Greys out the rows while DeArrow is off, and the fallback while crowdsourced thumbnails are.",
    "calls": [
@@ -22165,8 +21938,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    188,
-    198
+    178,
+    188
    ],
    "description": "The Shortcuts page: one row per configurable key.",
    "calls": [
@@ -22181,8 +21954,8 @@
    "params": "",
    "exported": true,
    "lines": [
-    204,
-    233
+    194,
+    223
    ],
    "description": "The UI Tweaks page: shelf opacity, previews, titles, rows ahead, Liquid Glass and the theme.",
    "calls": [
@@ -23579,993 +23352,6 @@
     "ui/shortcuts/seek.js#doSkipChapter",
     "ui/shortcuts/seek.js#performBurstSeek"
    ]
-  },
-  {
-   "id": "vendor/dearrow/shim.js#getTitleFormatting",
-   "name": "getTitleFormatting",
-   "kind": "arrow, async",
-   "params": "",
-   "exported": true,
-   "lines": [
-    18,
-    18
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitle"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/shim.js#shouldCleanEmojis",
-   "name": "shouldCleanEmojis",
-   "kind": "arrow, async",
-   "params": "",
-   "exported": true,
-   "lines": [
-    19,
-    19
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitle"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/shim.js#uRegExp",
-   "name": "uRegExp",
-   "kind": "function",
-   "params": "source, flags",
-   "exported": true,
-   "lines": [
-    38,
-    45
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#cleanEmojis",
-    "vendor/dearrow/titleFormatter.js#countLetters",
-    "vendor/dearrow/titleFormatter.js#doesStartWithNonLetter",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#isFirstLetterCapital",
-    "vendor/dearrow/titleFormatter.js#isNumberThenLetter",
-    "vendor/dearrow/titleFormatter.js#isWordCapitalCase",
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#startsWithEmojiLetter",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#formatTitle",
-   "name": "formatTitle",
-   "kind": "function, async",
-   "params": "title, isCustom, videoID",
-   "exported": true,
-   "lines": [
-    31,
-    33
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#getTitleFormatting",
-    "vendor/dearrow/shim.js#shouldCleanEmojis",
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#formatTitleDefaultSettings",
-   "name": "formatTitleDefaultSettings",
-   "kind": "function, async",
-   "params": "title, isCustom",
-   "exported": true,
-   "lines": [
-    35,
-    37
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#formatTitleInternal",
-   "name": "formatTitleInternal",
-   "kind": "function, async",
-   "params": "title, isCustom, titleFormatting, shouldCleanEmojis, formatCustomTitles, formatOriginalTitles",
-   "exported": true,
-   "lines": [
-    39,
-    63
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#cleanEmojis",
-    "vendor/dearrow/titleFormatter.js#cleanFancyText",
-    "vendor/dearrow/titleFormatter.js#cleanUnformattedTitle",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#toTitleCase"
-   ],
-   "calledBy": [
-    "features/dearrow/titles.js#formatTitle",
-    "vendor/dearrow/titleFormatter.js#formatTitle",
-    "vendor/dearrow/titleFormatter.js#formatTitleDefaultSettings"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-   "name": "toLowerCaseTitle",
-   "kind": "function, async",
-   "params": "str",
-   "exported": true,
-   "lines": [
-    65,
-    79
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#getLangInfo",
-    "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-    "vendor/dearrow/titleFormatter.js#toLowerCase"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-   "name": "toFirstLetterUppercase",
-   "kind": "function, async",
-   "params": "str",
-   "exported": true,
-   "lines": [
-    81,
-    100
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#getLangInfo",
-    "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-    "vendor/dearrow/titleFormatter.js#isNumberThenLetter",
-    "vendor/dearrow/titleFormatter.js#startOfSentence",
-    "vendor/dearrow/titleFormatter.js#toLowerCase"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toSentenceCase",
-   "name": "toSentenceCase",
-   "kind": "function, async",
-   "params": "str, isCustom",
-   "exported": true,
-   "lines": [
-    102,
-    143
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp",
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#getLangInfo",
-    "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#isInTitleCase",
-    "vendor/dearrow/titleFormatter.js#isMostlyAllCaps",
-    "vendor/dearrow/titleFormatter.js#isNumberThenLetter",
-    "vendor/dearrow/titleFormatter.js#isWordCapitalCase",
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#shouldTrustCaps",
-    "vendor/dearrow/titleFormatter.js#startOfSentence",
-    "vendor/dearrow/titleFormatter.js#toLowerCase"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toTitleCase",
-   "name": "toTitleCase",
-   "kind": "function, async",
-   "params": "str, isCustom",
-   "exported": true,
-   "lines": [
-    145,
-    169
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#getLangInfo",
-    "vendor/dearrow/titleFormatter.js#isMostlyAllCaps",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#wordToTitleCase",
-   "name": "wordToTitleCase",
-   "kind": "function, async",
-   "params": "word, index, words, params",
-   "exported": false,
-   "lines": [
-    179,
-    228
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#endOfSentence",
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#isCompoundWord",
-    "vendor/dearrow/titleFormatter.js#isFirstLetterCapital",
-    "vendor/dearrow/titleFormatter.js#isNumberThenLetter",
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#isYear",
-    "vendor/dearrow/titleFormatter.js#listHasWord",
-    "vendor/dearrow/titleFormatter.js#shouldTrustCaps",
-    "vendor/dearrow/titleFormatter.js#startOfSentence",
-    "vendor/dearrow/titleFormatter.js#toLowerCase"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-   "name": "toCapitalizeCase",
-   "kind": "function, async",
-   "params": "str, isCustom",
-   "exported": true,
-   "lines": [
-    230,
-    275
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#getLangInfo",
-    "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#isCompoundWord",
-    "vendor/dearrow/titleFormatter.js#isFirstLetterCapital",
-    "vendor/dearrow/titleFormatter.js#isMostlyAllCaps",
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#isYear",
-    "vendor/dearrow/titleFormatter.js#shouldTrustCaps"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isInTitleCase",
-   "name": "isInTitleCase",
-   "kind": "function",
-   "params": "words",
-   "exported": true,
-   "lines": [
-    277,
-    301
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#doesStartWithNonLetter",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#isFirstLetterCapital",
-    "vendor/dearrow/titleFormatter.js#listHasWord"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toSentenceCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#shouldTrustCaps",
-   "name": "shouldTrustCaps",
-   "kind": "function",
-   "params": "mostlyAllCaps, words, index",
-   "exported": false,
-   "lines": [
-    303,
-    307
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#isAllCaps"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isMostlyAllCaps",
-   "name": "isMostlyAllCaps",
-   "kind": "function",
-   "params": "words",
-   "exported": true,
-   "lines": [
-    309,
-    319
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#isAllCaps"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#toTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isAllCaps",
-   "name": "isAllCaps",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    324,
-    329
-   ],
-   "description": "Has at least one char and is upper case",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#isInTitleCase",
-    "vendor/dearrow/titleFormatter.js#isMostlyAllCaps",
-    "vendor/dearrow/titleFormatter.js#shouldTrustCaps",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-   "name": "capitalizeFirstLetter",
-   "kind": "function, async",
-   "params": "word, isTurkiq",
-   "exported": true,
-   "lines": [
-    331,
-    351
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp",
-    "vendor/dearrow/titleFormatter.js#startsWithEmojiLetter",
-    "vendor/dearrow/titleFormatter.js#toLowerCase",
-    "vendor/dearrow/titleFormatter.js#toUpperCase"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isWordCapitalCase",
-   "name": "isWordCapitalCase",
-   "kind": "function",
-   "params": "word, allowSingleWords",
-   "exported": false,
-   "lines": [
-    353,
-    357
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toSentenceCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#startsWithEmojiLetter",
-   "name": "startsWithEmojiLetter",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    359,
-    361
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-   "name": "isWordCustomCapitalization",
-   "kind": "function",
-   "params": "word",
-   "exported": true,
-   "lines": [
-    366,
-    376
-   ],
-   "description": "Not just capital at start",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp",
-    "vendor/dearrow/titleFormatter.js#isCompoundWord",
-    "vendor/dearrow/titleFormatter.js#isFirstLetterCapital"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isCompoundWord",
-   "name": "isCompoundWord",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    378,
-    380
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isNumberThenLetter",
-   "name": "isNumberThenLetter",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    385,
-    387
-   ],
-   "description": "3rd, 45th",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#doesStartWithNonLetter",
-   "name": "doesStartWithNonLetter",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    389,
-    391
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#isInTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isYear",
-   "name": "isYear",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    393,
-    395
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isFirstLetterCapital",
-   "name": "isFirstLetterCapital",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    397,
-    399
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#isInTitleCase",
-    "vendor/dearrow/titleFormatter.js#isWordCustomCapitalization",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-   "name": "forceKeepFormatting",
-   "kind": "function",
-   "params": "word, ignorePunctuation",
-   "exported": false,
-   "lines": [
-    401,
-    425
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#listHasStartOfWord",
-    "vendor/dearrow/titleFormatter.js#listHasWord"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#cleanPunctuation",
-    "vendor/dearrow/titleFormatter.js#cleanWordPunctuation",
-    "vendor/dearrow/titleFormatter.js#shouldTrustCaps",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#greekLetterAllowed",
-   "name": "greekLetterAllowed",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    430,
-    432
-   ],
-   "description": "Allow mathematical greek symbols",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toLowerCase",
-   "name": "toLowerCase",
-   "kind": "function, async",
-   "params": "word, isTurkiq",
-   "exported": false,
-   "lines": [
-    434,
-    440
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#checkAnyLanguage"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#toUpperCase",
-   "name": "toUpperCase",
-   "kind": "function, async",
-   "params": "word, isTurkiq",
-   "exported": false,
-   "lines": [
-    442,
-    448
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#checkAnyLanguage"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#capitalizeFirstLetter"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#getLangInfo",
-   "name": "getLangInfo",
-   "kind": "function, async",
-   "params": "str",
-   "exported": false,
-   "lines": [
-    450,
-    474
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#checkLanguages"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#toTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#checkAnyLanguage",
-   "name": "checkAnyLanguage",
-   "kind": "function, async",
-   "params": "title, languages, percentage",
-   "exported": false,
-   "lines": [
-    476,
-    478
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#checkLanguages"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toLowerCase",
-    "vendor/dearrow/titleFormatter.js#toUpperCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#checkLanguages",
-   "name": "checkLanguages",
-   "kind": "function, async",
-   "params": "title, languages, percentage",
-   "exported": false,
-   "lines": [
-    480,
-    522
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#checkLanguages.getLanguageFromBrowserApi"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#checkAnyLanguage",
-    "vendor/dearrow/titleFormatter.js#getLangInfo"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#checkLanguages.getLanguageFromBrowserApi",
-   "name": "checkLanguages.getLanguageFromBrowserApi",
-   "kind": "arrow, async",
-   "params": "title",
-   "exported": false,
-   "lines": [
-    495,
-    498
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#checkLanguages"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isAcronym",
-   "name": "isAcronym",
-   "kind": "function",
-   "params": "word",
-   "exported": true,
-   "lines": [
-    524,
-    531
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#countLetters",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#listHasWord"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#countLetters",
-   "name": "countLetters",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    533,
-    535
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#isAcronym"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-   "name": "isAcronymStrict",
-   "kind": "function",
-   "params": "word",
-   "exported": true,
-   "lines": [
-    537,
-    540
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#cleanWordPunctuation",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#isAllCaps",
-    "vendor/dearrow/titleFormatter.js#isDelimeter",
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#startOfSentence",
-   "name": "startOfSentence",
-   "kind": "function",
-   "params": "index, words",
-   "exported": false,
-   "lines": [
-    542,
-    544
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#isDelimeter"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#endOfSentence",
-   "name": "endOfSentence",
-   "kind": "function",
-   "params": "index, words",
-   "exported": false,
-   "lines": [
-    546,
-    550
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#isDelimeter",
-    "vendor/dearrow/titleFormatter.js#isEntirelyDelimeter"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isEntirelyDelimeter",
-   "name": "isEntirelyDelimeter",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    552,
-    554
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#endOfSentence",
-    "vendor/dearrow/titleFormatter.js#isDelimeter"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#isDelimeter",
-   "name": "isDelimeter",
-   "kind": "function",
-   "params": "word",
-   "exported": false,
-   "lines": [
-    556,
-    562
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict",
-    "vendor/dearrow/titleFormatter.js#isEntirelyDelimeter",
-    "vendor/dearrow/titleFormatter.js#listHasWord"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#cleanPunctuation",
-    "vendor/dearrow/titleFormatter.js#endOfSentence",
-    "vendor/dearrow/titleFormatter.js#startOfSentence"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-   "name": "cleanResultingTitle",
-   "kind": "function",
-   "params": "title",
-   "exported": true,
-   "lines": [
-    564,
-    566
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#cleanPunctuation",
-    "vendor/dearrow/titleFormatter.js#cleanUnformattedTitle"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#toCapitalizeCase",
-    "vendor/dearrow/titleFormatter.js#toFirstLetterUppercase",
-    "vendor/dearrow/titleFormatter.js#toLowerCaseTitle",
-    "vendor/dearrow/titleFormatter.js#toSentenceCase",
-    "vendor/dearrow/titleFormatter.js#toTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#cleanUnformattedTitle",
-   "name": "cleanUnformattedTitle",
-   "kind": "function",
-   "params": "title",
-   "exported": false,
-   "lines": [
-    568,
-    570
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle",
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#cleanWordPunctuation",
-   "name": "cleanWordPunctuation",
-   "kind": "function",
-   "params": "title",
-   "exported": false,
-   "lines": [
-    572,
-    598
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#isAcronymStrict"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#cleanPunctuation"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#cleanPunctuation",
-   "name": "cleanPunctuation",
-   "kind": "function",
-   "params": "title",
-   "exported": true,
-   "lines": [
-    600,
-    630
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/titleFormatter.js#cleanWordPunctuation",
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#isDelimeter"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#cleanResultingTitle"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#cleanEmojis",
-   "name": "cleanEmojis",
-   "kind": "function",
-   "params": "title",
-   "exported": true,
-   "lines": [
-    632,
-    650
-   ],
-   "description": "",
-   "calls": [
-    "vendor/dearrow/shim.js#uRegExp"
-   ],
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#cleanFancyText",
-   "name": "cleanFancyText",
-   "kind": "function",
-   "params": "title",
-   "exported": true,
-   "lines": [
-    652,
-    669
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#formatTitleInternal"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#listHasWord",
-   "name": "listHasWord",
-   "kind": "function",
-   "params": "list, word",
-   "exported": false,
-   "lines": [
-    671,
-    673
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting",
-    "vendor/dearrow/titleFormatter.js#isAcronym",
-    "vendor/dearrow/titleFormatter.js#isDelimeter",
-    "vendor/dearrow/titleFormatter.js#isInTitleCase",
-    "vendor/dearrow/titleFormatter.js#wordToTitleCase"
-   ]
-  },
-  {
-   "id": "vendor/dearrow/titleFormatter.js#listHasStartOfWord",
-   "name": "listHasStartOfWord",
-   "kind": "function",
-   "params": "list, word",
-   "exported": false,
-   "lines": [
-    675,
-    685
-   ],
-   "description": "",
-   "calledBy": [
-    "vendor/dearrow/titleFormatter.js#forceKeepFormatting"
-   ]
   }
  ],
  "settings": {
@@ -24633,28 +23419,6 @@
    ],
    "read": [
     "features/dearrow/titles.js#crowdsourcedTitle"
-   ]
-  },
-  "dearrowTitleFormatting": {
-   "label": "Title formatting",
-   "default": "disable",
-   "other": [
-    "features/dearrow/constants.js#(top level)",
-    "ui/panel/pages.js#buildDeArrowPage"
-   ],
-   "read": [
-    "features/dearrow/titles.js#formatTitle"
-   ]
-  },
-  "dearrowCleanEmojis": {
-   "label": "Remove emojis and fancy text",
-   "default": true,
-   "other": [
-    "features/dearrow/constants.js#(top level)",
-    "ui/panel/pages.js#buildDeArrowPage"
-   ],
-   "read": [
-    "features/dearrow/titles.js#formatTitle"
    ]
   },
   "dearrowCrowdThumbnails": {

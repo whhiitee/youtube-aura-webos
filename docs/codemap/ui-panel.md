@@ -464,10 +464,10 @@ Stops handling keys (the panel closed).
 
 > The five pages of the options panel. Each builder returns its page element; the panel appends it and decides when it is built (Main up front, the rest one per frame once the panel is on screen).
 
-233 lines · imports [core/config.js](core.md#mod-config-js), [features/dearrow/index.js](features-dearrow.md#mod-index-js), [core/guest-mode.js](core.md#mod-guest-mode-js), [core/webos.js](core.md#mod-webos-js), [ui/dom.js](ui.md#mod-dom-js), [core/config-options.js](core.md#mod-config-options-js), [ui/panel/controls/index.js](#mod-controls-index-js) · imported by [ui/panel/panel.js](#mod-panel-js)
+223 lines · imports [core/config.js](core.md#mod-config-js), [core/guest-mode.js](core.md#mod-guest-mode-js), [core/webos.js](core.md#mod-webos-js), [ui/dom.js](ui.md#mod-dom-js), [core/config-options.js](core.md#mod-config-options-js), [ui/panel/controls/index.js](#mod-controls-index-js) · imported by [ui/panel/panel.js](#mod-panel-js)
 
 <a id="fn-pages-js-helpline"></a>
-**`helpLine(text)`** · arrow · L32–32
+**`helpLine(text)`** · arrow · L30–30
 
 A line of small help text under a row.
 
@@ -475,7 +475,7 @@ A line of small help text under a row.
 - **Called by:** [buildDeArrowPage](#fn-pages-js-builddearrowpage), [buildUITweaksPage](#fn-pages-js-builduitweakspage)
 
 <a id="fn-pages-js-footnote"></a>
-**`footNote(text)`** · arrow · L35–35
+**`footNote(text)`** · arrow · L33–33
 
 The centred small print at the foot of a page: what the feature is and where it comes from.
 
@@ -483,7 +483,7 @@ The centred small print at the foot of a page: what the feature is and where it 
 - **Called by:** [buildDeArrowPage](#fn-pages-js-builddearrowpage), [buildSponsorPage](#fn-pages-js-buildsponsorpage)
 
 <a id="fn-pages-js-buildmainpage"></a>
-**`buildMainPage()`** · function, exported · L42–98
+**`buildMainPage()`** · function, exported · L40–96
 
 The Main page: Cosmetic Filtering (Ad Blocking and the filters that depend on it, greyed out while it is off), then the other features.
 
@@ -491,7 +491,7 @@ The Main page: Cosmetic Filtering (Ad Blocking and the filters that depend on it
 - **Settings:** listens to `enableAdBlock`; uses `enableTrackingBlock`, `removeGlobalShorts`, `removeLiveVideos`, `removeTopLiveGames`, `removeMostRelevant`, `hideGuestSignInPrompts`, `forceHighResVideo`, `hideEndcards`, `enableReturnYouTubeDislike`, `enableAutoLogin`, `upgradeThumbnails`, `showWatch`, `enableOledCareMode`, `disableNotifications`
 
 <a id="fn-pages-js-buildmainpage-updatedependencystate"></a>
-**`buildMainPage.updateDependencyState()`** · arrow · L68–73
+**`buildMainPage.updateDependencyState()`** · arrow · L66–71
 
 Greys out the rows that depend on Ad Blocking while it is off.
 
@@ -500,7 +500,7 @@ Greys out the rows that depend on Ad Blocking while it is off.
 - **Settings:** reads `enableAdBlock`
 
 <a id="fn-pages-js-buildsponsorpage"></a>
-**`buildSponsorPage()`** · function, exported · L102–133
+**`buildSponsorPage()`** · function, exported · L100–131
 
 The SponsorBlock page: the switch, one row per category, and the SponsorBlock options.
 
@@ -508,15 +508,15 @@ The SponsorBlock page: the switch, one row per category, and the SponsorBlock op
 - **Settings:** uses `enableSponsorBlock`, `sbMode_sponsor`, `sbMode_intro`, `sbMode_outro`, `sbMode_interaction`, `sbMode_selfpromo`, `sbMode_musicofftopic`, `sbMode_filler`, `sbMode_hook`, `sbMode_preview`, `sbMode_highlight`, `enableMutedSegments`, `skipSegmentsOnce`, `sbFullVideoLabel`, `sbShowTimeWithSkips`
 
 <a id="fn-pages-js-builddearrowpage"></a>
-**`buildDeArrowPage()`** · function, exported · L141–184
+**`buildDeArrowPage()`** · function, exported · L138–174
 
-The DeArrow page: the switch and the logo, then the title and thumbnail options, greyed out while it is off (and the thumbnail fallback while crowdsourced thumbnails are). Title formatting is in the webOS 22+ build only (features/dearrow/titles.js): the legacy one gets no formatting rows.
+The DeArrow page: the switch and the logo, then the title and thumbnail options, greyed out while it is off (and the thumbnail fallback while crowdsourced thumbnails are).
 
 - **Calls:** [core/config.js › configAddChangeListener](core.md#fn-config-js-configaddchangelistener), [ui/dom.js › createElement](ui.md#fn-dom-js-createelement), [ui/panel/controls/checkbox.js › createConfigCheckbox](#fn-controls-checkbox-js-createconfigcheckbox), [ui/panel/controls/cycle-row.js › createChoiceControl](#fn-controls-cycle-row-js-createchoicecontrol), [ui/panel/controls/section.js › createSection](#fn-controls-section-js-createsection), [buildDeArrowPage.sync](#fn-pages-js-builddearrowpage-sync), [footNote](#fn-pages-js-footnote), [helpLine](#fn-pages-js-helpline)
-- **Settings:** listens to `enableDeArrow`, `dearrowCrowdThumbnails`; uses `dearrowShowBadge`, `dearrowCrowdTitles`, `dearrowTitleFormatting`, `dearrowCleanEmojis`, `dearrowThumbnailFallback`
+- **Settings:** listens to `enableDeArrow`, `dearrowCrowdThumbnails`; uses `dearrowShowBadge`, `dearrowCrowdTitles`, `dearrowThumbnailFallback`
 
 <a id="fn-pages-js-builddearrowpage-sync"></a>
-**`buildDeArrowPage.sync()`** · arrow · L172–179
+**`buildDeArrowPage.sync()`** · arrow · L162–169
 
 Greys out the rows while DeArrow is off, and the fallback while crowdsourced thumbnails are.
 
@@ -525,14 +525,14 @@ Greys out the rows while DeArrow is off, and the fallback while crowdsourced thu
 - **Settings:** reads `enableDeArrow`, `dearrowCrowdThumbnails`
 
 <a id="fn-pages-js-buildshortcutspage"></a>
-**`buildShortcutsPage()`** · function, exported · L188–198
+**`buildShortcutsPage()`** · function, exported · L178–188
 
 The Shortcuts page: one row per configurable key.
 
 - **Calls:** [ui/dom.js › createElement](ui.md#fn-dom-js-createelement), [ui/panel/controls/cycle-row.js › createShortcutControl](#fn-controls-cycle-row-js-createshortcutcontrol)
 
 <a id="fn-pages-js-builduitweakspage"></a>
-**`buildUITweaksPage()`** · function, exported · L204–233
+**`buildUITweaksPage()`** · function, exported · L194–223
 
 The UI Tweaks page: shelf opacity, previews, titles, rows ahead, Liquid Glass and the theme.
 

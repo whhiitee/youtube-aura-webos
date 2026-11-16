@@ -61,19 +61,8 @@ const makeConfig = (env) => {
       },
       resolve: {
         // The perf monitor is a development tool: a release build carries an
-        // empty module in its place. DeArrow's title formatter needs Intl
-        // features Chromium 38 has none of (it was only ever usable on webOS 5
-        // and 6), so it is aliased to a stub that says formatting is
-        // unsupported: 48 KiB of formatter and data that could never run here.
-        alias: Object.assign(
-          withPerfMon ? {} : { [path.resolve(__dirname, 'src/dev/perf-mon.js')]: false },
-          {
-            [path.resolve(__dirname, 'src/features/dearrow/formatter.js')]: path.resolve(
-              __dirname,
-              'src/features/dearrow/formatter-absent.js'
-            )
-          }
-        )
+        // empty module in its place.
+        alias: withPerfMon ? {} : { [path.resolve(__dirname, 'src/dev/perf-mon.js')]: false }
       },
       module: {
         rules: [

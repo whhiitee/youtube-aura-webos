@@ -53,7 +53,8 @@ Everything the upstream fork did, minus what this TV cannot run:
   ratio bar.
 - **DeArrow** — crowdsourced titles and thumbnails in place of clickbait
   (thumbnails on, title formatting off: the formatter needs `Intl` features this
-  engine lacks, and it was removed).
+  engine lacks, and it was removed, so titles keep the case they were written
+  in).
 - **Max Thumbnail Quality** — three strategies: original, fast, and a smooth SD
   mode tuned for row-to-row scrolling on this SoC.
 - **Load Rows Ahead** — asks YouTube for the next rows before the last one, so
@@ -129,7 +130,7 @@ was rejected, and the honest caveats, is in
 
 | | upstream 0.8.5 (legacy) | Aura | |
 | --- | --- | --- |
-| Bundle | 238.1 KiB | **221.6 KiB** | −6.9 % |
+| Bundle | 238.1 KiB | **221.1 KiB** | −7.1 % |
 | Install package (.ipk) | 231.3 KiB | **88.8 KiB** | flat artwork and one theme compress to almost nothing |
 | CSS in the bundle | 19.4 KiB, 193 selectors | **17.6 KiB, 166 selectors** | −9 % |
 | Opening the settings (first press) | 65.2 ms, 82 elements built in the handler | **11 ms, 0 elements in the handler** | the build runs while the TV is idle |
@@ -201,8 +202,10 @@ crashing (each feature checks before it acts), but a feature can silently stop
 working.
 
 **DeArrow title formatting is gone.** The formatter needs `Intl.Segmenter` and
-modern `Intl` casing that Chromium 38 lacks. Titles keep YouTube's own wording;
-only crowdsourced *thumbnails* and the raw crowdsourced title are used.
+modern `Intl` casing that Chromium 38 lacks. Titles keep YouTube's own wording
+(and the crowdsourced title when DeArrow has one, with the submitter's `>`
+markers taken out); only crowdsourced *thumbnails* and titles are used, and the
+settings panel has no formatting rows.
 
 **No playback speed.** The speed engine needs WebCodecs (Chrome 94+). Removed
 with its settings and shortcuts.

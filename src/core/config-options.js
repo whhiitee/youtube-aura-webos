@@ -65,16 +65,6 @@ export const thumbnailQualityModes = {
   sd: 'Smooth (SD)'
 };
 
-/** DeArrow title formatting, in the extension's order (features/dearrow). */
-export const dearrowTitleFormats = {
-  disable: 'Disabled',
-  title_case: 'Title Case',
-  sentence_case: 'Sentence case',
-  lower_case: 'lower case',
-  first_letter_uppercase: 'First letter uppercase',
-  capitalize_words: 'Capitalize Words'
-};
-
 /**
  * What DeArrow shows for a video nobody submitted a thumbnail for. 'random', the
  * extension's default, is a frame the DeArrow thumbnail server renders on demand
@@ -96,9 +86,6 @@ export const clockModes = {
   time: 'Time',
   datetime: 'Date + Time'
 };
-
-// The extension title-cases by default only when the browser is in English.
-const isEnglishUI = typeof navigator !== 'undefined' && /^en\b/i.test(navigator.language || '');
 
 export const shortcutActions = {
   none: 'None',
@@ -161,12 +148,6 @@ export const configOptions = new Map([
   ['enableReturnYouTubeDislike', { default: true, desc: 'Return YouTube Dislike' }],
   ['enableDeArrow', { default: false, desc: 'DeArrow' }],
   ['dearrowCrowdTitles', { default: true, desc: 'Crowdsourced titles' }],
-  // Every title shown, crowdsourced or YouTube's own.
-  [
-    'dearrowTitleFormatting',
-    { default: isEnglishUI ? 'title_case' : 'disable', desc: 'Title formatting' }
-  ],
-  ['dearrowCleanEmojis', { default: true, desc: 'Remove emojis and fancy text' }],
   ['dearrowCrowdThumbnails', { default: true, desc: 'Crowdsourced thumbnails' }],
   [
     'dearrowThumbnailFallback',

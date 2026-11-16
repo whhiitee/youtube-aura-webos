@@ -59,8 +59,6 @@ export const VIDEO_ID_RE = /(?:\/vi(?:_webp)?\/|[?&#]videoID=)([\w-]{11})/;
 export const DEARROW_CONFIG_KEYS = [
   'enableDeArrow',
   'dearrowCrowdTitles',
-  'dearrowTitleFormatting',
-  'dearrowCleanEmojis',
   'dearrowCrowdThumbnails',
   'dearrowThumbnailFallback',
   'dearrowShowBadge',
