@@ -30,20 +30,24 @@ jobs:
         run: npm test
 
       - name: Package
-        run: npm run package
+        run: |
+          # A package committed to dist/ is the previous release: package the
+          # source under test, not that file.
+          rm -f dist/*.ipk
+          npm run package
 
       - name: Name the artifact for the OLED55B7V
         run: |
           for f in dist/*.ipk; do
             base="$(basename "${f%.ipk}")"
-            mv "$f" "dist/${base}_oled55b7v.ipk"
+            cp "$f" "dist/${base}_oled55b7v.ipk"
           done
           ls -l dist/*.ipk
 
       - name: Checksum
         run: |
           cd dist
-          sha256sum *.ipk > SHA256SUMS.txt
+          sha256sum *_oled55b7v.ipk > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Publish the release
@@ -53,15 +57,56 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            dist/*.ipk
+            dist/*_oled55b7v.ipk
             dist/SHA256SUMS.txt
           body: |
-            YouTube Aura — the LG OLED55B7V build (webOS 3.x, Chromium 38).
+            A YouTube client for one television: the **LG OLED55B7V-Z** (2017,
+            webOS 3.x, Chromium 38). Ad-free, SponsorBlock, Return YouTube
+            Dislike, DeArrow, and an interface built around true black and a
+            remote.
 
-            Install with the webOS Homebrew Channel, or with the webOS CLI:
-            `ares-install youtube.leanback.v4_*_oled55b7v.ipk`
+            **Not verified on hardware.** Everything is measured and tested in a
+            simulated Chromium 38 environment; it has not been run on an actual
+            OLED55B7V. Read the limitations in the README before installing.
 
-            The official YouTube app has to be removed first: this app takes
-            its place (`youtube.leanback.v4`).
+            ## Install
 
-            The SHA-256 of the package is in SHA256SUMS.txt.
+            The official YouTube app has to be removed first: this app takes its
+            place (`youtube.leanback.v4`).
+
+            ```sh
+            ares-install youtube.leanback.v4_*_all_oled55b7v.ipk
+            ```
+
+            Or add this repository's `repo.json` to the webOS Homebrew Channel.
+            Check the package against `SHA256SUMS.txt` first.
+
+            ## In the box
+
+            - **Aura interface** — one premium OLED theme: true-black surfaces,
+              one ice-blue accent, hairline separators, focus that reads from a
+              sofa, Pure Black UI on by default. The settings panel is built while
+              the TV is idle, so the green key only shows it.
+            - **The features that work here** — Ad Blocking, SponsorBlock (all
+              categories, segment list, progress bar, blue-key skip), Return
+              YouTube Dislike, DeArrow, Max Thumbnail Quality, Load Rows Ahead,
+              auto login, Shorts/Live filtering, the emoji fix, codec and quality
+              forcing, the clock, OLED Screen Off, programmable shortcuts.
+            - **Removed, because this TV cannot run it** — playback speed
+              (WebCodecs), the webOS 25 cast block and kickstart, DeArrow's title
+              formatter (`Intl`), the second UI theme, the webOS 22+ build.
+
+            Against upstream 0.8.5: bundle 238.1 → 221.2 KiB, package 231.3 →
+            88.7 KiB, first press of the settings key 58–65 ms → 11 ms with zero
+            elements built in the handler, 2 047 test checks passing.
+
+            Documentation: `docs/ARCHITECTURE.md`, `docs/THEME.md`,
+            `docs/PERFORMANCE.md`, `docs/COMPATIBILITY.md`, `CHANGELOG.md`.
+
+            ## Licence
+
+            GPL-3.0-only, as the upstream projects are. Built on
+            [webosbrew/youtube-webos](https://github.com/webosbrew/youtube-webos)
+            and
+            [NicholasBly/youtube-webos](https://github.com/NicholasBly/youtube-webos);
+            the git history and the headers keep their authorship.

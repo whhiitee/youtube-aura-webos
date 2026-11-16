@@ -33,13 +33,17 @@ jobs:
       - run: npm test
 
       - name: Package the .ipk
-        run: npm run package
+        run: |
+          # A package committed to dist/ (the release asset) must not be
+          # packaged again: start from an empty shelf.
+          rm -f dist/*.ipk
+          npm run package
 
-      - name: Name the artifact
+      - name: Name the artifact for the OLED55B7V
         run: |
           for f in dist/*.ipk; do
             base="$(basename "${f%.ipk}")"
-            mv "$f" "dist/${base}_oled55b7v.ipk"
+            cp "$f" "dist/${base}_oled55b7v.ipk"
           done
           ls -l dist/*.ipk
 
