@@ -78,16 +78,24 @@
   text-transform: none;
 }
 
-/* A page scrolls rather than clips if a future row ever overflows 90vh. The
-   0.4vh at the top (taken from the tab menu's margin, so nothing moves) keeps
-   the focus ring of a first row that is not in a section inside the scrolling
-   box: SponsorBlock's and DeArrow's switches. */
+/* A page scrolls rather than clips if a future row ever overflows. The 0.4vh
+   at the top (taken from the tab menu's margin, so nothing moves) keeps the
+   focus ring of a first row that is not in a section inside the scrolling box:
+   SponsorBlock's and DeArrow's switches.
+
+   max-height as well as flex: Chromium 38 sizes the children of a flex column
+   whose height is a max-height against the *content* height and then clips the
+   overflow, so `flex: 1; min-height: 0` alone left the last rows outside the
+   panel. 76vh is the panel's 90vh less its chrome (heading, tab bar and their
+   margins, all in vh), which makes the page scroll inside the panel on every
+   engine. */
 .ytaf-ui-container > div.ytaf-settings-page {
-  padding: 0.4vh 2.6vh 2.2vh;
+  padding: 0.4vh 2.6vh 1.6vh;
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
   min-height: 0;
+  max-height: 76vh;
 }
 
 .ytaf-ui-container > div::-webkit-scrollbar {
@@ -163,11 +171,15 @@
   margin-bottom: 0.6vh;
 }
 
-/* Five tabs on one line: each as wide as its name plus equal room, never
-   wrapped (with 2vh sides "UI Tweaks" broke onto two lines). */
+/* Five tabs on one line, all the same width: content-sized tabs left "Main"
+   half the width of "SponsorBlock", which reads as a broken row. A percentage
+   width with `flex: none` rather than a percentage flex-basis, which old Chrome
+   miscomputes against a border-box child. */
 .ytaf-tab-btn {
-  flex: 1 1 auto;
-  margin: 0 0.4vh;
+  flex: none;
+  box-sizing: border-box;
+  width: 20%;
+  margin: 0;
   background: transparent;
   border: none;
   border-radius: 0.6vh;
@@ -176,7 +188,9 @@
   font-weight: 500;
   letter-spacing: 0.06vh;
   white-space: nowrap;
-  padding: 1vh 1.2vh;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1vh 0.4vh;
   cursor: pointer;
   outline: none;
   /* No transition: each tab move would repaint both buttons for a dozen

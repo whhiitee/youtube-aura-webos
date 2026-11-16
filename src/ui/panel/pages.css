@@ -74,22 +74,24 @@
 
 /* --- Page 1 density -------------------------------------------------------
    The Main page is the tallest of the five and the only one at risk of
-   overflowing 88vh on a 1080p panel, so its rows and sections are trimmed;
-   the other tabs keep the roomier spacing. */
+   overflowing its 76vh box on a 1080p panel, so its rows and sections are
+   trimmed; the other tabs keep the roomier spacing. Measured with
+   tools/preview-panel.mjs: with the padding below the page fits without
+   scrolling at 1080p. */
 #ytaf-page-main label,
 #ytaf-page-main .ytaf-cycle-row {
-  padding-top: 0.8vh;
-  padding-bottom: 0.8vh;
-  margin-bottom: 0.15vh;
+  padding-top: 0.5vh;
+  padding-bottom: 0.5vh;
+  margin-bottom: 0.1vh;
 }
 
 #ytaf-page-main .ytaf-settings-section {
-  margin-bottom: 0.7vh;
+  margin-bottom: 0.4vh;
 }
 
 #ytaf-page-main .ytaf-settings-section > .ytaf-section-title {
-  margin-top: 0.9vh;
-  margin-bottom: 0.4vh;
+  margin-top: 0.7vh;
+  margin-bottom: 0.3vh;
 }
 
 /* ---------------------------------------------------------------------------

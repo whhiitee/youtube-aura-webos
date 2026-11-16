@@ -130,14 +130,14 @@ was rejected, and the honest caveats, is in
 
 | | upstream 0.8.5 (legacy) | Aura | |
 | --- | --- | --- |
-| Bundle | 238.1 KiB | **221.1 KiB** | −7.1 % |
-| Install package (.ipk) | 231.3 KiB | **88.8 KiB** | flat artwork and one theme compress to almost nothing |
-| CSS in the bundle | 19.4 KiB, 193 selectors | **17.6 KiB, 166 selectors** | −9 % |
-| Opening the settings (first press) | 65.2 ms, 82 elements built in the handler | **11 ms, 0 elements in the handler** | the build runs while the TV is idle |
+| Bundle | 238.1 KiB | **221.2 KiB** | −7.1 % |
+| Install package (.ipk) | 231.3 KiB | **88.7 KiB** | flat artwork and one theme compress to almost nothing |
+| CSS in the bundle | 19.4 KiB, 193 selectors | **17.3 KiB, 166 selectors** | −9 % |
+| Opening the settings (first press) | 58–65 ms, 81–82 elements built in the handler | **11 ms, 0 elements in the handler** | the build runs while the TV is idle |
 | `JSON.parse` of a 150 KiB home response, default settings | 1.01× native | **1.02× native** | unchanged: the hook was already cheap |
 | `JSON.parse`, every filter on | 1.28× native | 1.35× native | unchanged within noise |
 | Start-up (module evaluation) | 3.66 ms | 3.32–3.79 ms | unchanged within noise |
-| Test suite | 1 383 checks, 3 upstream checks failing | **2 045 checks, 64 steps, all passing** | +662 checks |
+| Test suite | 1 383 checks, 3 upstream checks failing | **2 047 checks, 64 steps, all passing** | +664 checks |
 
 The one number worth quoting is the settings press. Removing the playback-speed
 step from the parse path was measured too, and it **did not move the parse

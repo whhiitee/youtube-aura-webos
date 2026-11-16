@@ -66,7 +66,7 @@ have downloaded anyway.
 | `src/ui/` | The options panel (`panel/`), the remote shortcuts (`shortcuts/`), the toasts (`toast/`), the Aura theme (`styles/`). |
 | `src/polyfills/` | What Chromium 38 lacks and the code uses. |
 | `src/dev/` | The perf monitor, a development tool (`npm run build:perf`). |
-| `tools/` | Build helpers (the CSS collector, the bare-require check), the code map generator, the bundle snapshot, the icon generator. |
+| `tools/` | Build helpers (the CSS collector, the bare-require check), the code map generator, the bundle snapshot, the icon generator, a panel preview renderer. |
 | `tests/` | `run-all.mjs` runs everything: unit tests, behaviour tests on simulated webOS pages (jsdom, with a Chromium 38 profile), smoke tests on the built bundle, benchmarks. |
 
 ## Start-up order

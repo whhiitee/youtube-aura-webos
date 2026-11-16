@@ -119,10 +119,10 @@ Proven unnecessary for this TV, not hidden behind a setting:
 
 | | 0.8.5 | 1.0.0 | |
 | --- | --- | --- | --- |
-| `userScript.js` | 238.1 KiB | 221.1 KiB | −7.1 % |
-| CSS in the bundle | 19.4 KiB | 17.6 KiB | −9 % |
+| `userScript.js` | 238.1 KiB | 221.2 KiB | −7.1 % |
+| CSS in the bundle | 19.4 KiB | 17.3 KiB | −9 % |
 | CSS selectors | 193 | 166 | −27 |
-| First settings press: handler | 65.2 ms | 11.0 ms | −83 % |
+| First settings press: handler | 58–65 ms | 10.7 ms | −83 % |
 | Elements created by that press | 82 | 0 | — |
 | Parse hook, default settings | +0.004 ms | +0.006 ms | unchanged (noise) |
 

@@ -607,6 +607,26 @@ function boot() {
       JSON.stringify(storedConfig(win).enableAdBlock)
     );
     t('a settings page can scroll rather than clip', /overflow-y:\s*auto/.test(css));
+    // Chromium 38 sizes the children of a flex column whose height is a
+    // max-height against the content height and then clips them, so `flex: 1`
+    // alone left the last rows outside the panel. The page carries a max-height
+    // in vh as well: the panel's 90vh less its chrome.
+    t(
+      'a settings page is capped in height (76vh), so the panel cannot clip it',
+      /\.ytaf-ui-container>div\.ytaf-settings-page\{[^}]*max-height:76vh/.test(
+        css.replace(/\s+/g, '')
+      ),
+      'no max-height on .ytaf-settings-page'
+    );
+    // Five tabs of equal width: content-sized tabs left "Main" half the width
+    // of "SponsorBlock".
+    const tabRule = /\.ytaf-tab-btn\{([^}]*)\}/.exec(css.replace(/\s+/g, ''));
+    const tabDecls = tabRule ? tabRule[1].split(';') : [];
+    t(
+      'the tab bar gives every tab the same width (flex: none, width: 20 %)',
+      tabDecls.indexOf('flex:none') !== -1 && tabDecls.indexOf('width:20%') !== -1,
+      tabRule ? tabRule[1] : 'no .ytaf-tab-btn rule'
+    );
     // A width of its own: shrink-to-fit made the panel change width, and
     // recentre, with every tab.
     const container = /\.ytaf-ui-container\{([^}]*)\}/.exec(css.replace(/\s+/g, ''));

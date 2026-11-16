@@ -122,8 +122,8 @@ CPU there.
 
 | | upstream 0.8.5 | Aura | Change |
 | --- | --- | --- | --- |
-| `userScript.js` | 243 801 B (238.1 KiB) | **226 420 B (221.1 KiB)** | **−17 381 B (−7.1 %)** |
-| CSS in the bundle | 19 407 B | 17 644 B | −1 763 B |
+| `userScript.js` | 243 801 B (238.1 KiB) | **226 496 B (221.2 KiB)** | **−17 305 B (−7.1 %)** |
+| CSS in the bundle | 19 407 B | 17 720 B | −1 687 B |
 | CSS selectors | 193 | 166 | −27 |
 | Attribute-testing selectors | 22 | 16 | −6 |
 | `index.js` (launcher) | 8 267 B | 8 267 B | — |

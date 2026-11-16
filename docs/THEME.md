@@ -114,3 +114,26 @@ shadows, no `filter: blur()`, and no gradient that a focus move re-evaluates.
 
 The split is by *who builds the element*, so a change to a row's look is in one
 file and a change to YouTube's page is in another.
+
+## Looking at it without a TV
+
+`tools/preview-panel.mjs` builds the panel with the bundle itself (in jsdom, as
+the behaviour tests do) and writes the page's real `<style>` plus the panel's
+DOM into one standalone HTML file:
+
+```sh
+npm run build
+YTAF_PREVIEW_OUT=docs/panel-preview.html node tools/preview-panel.mjs
+```
+
+Open that file in a browser at a 1080p window. Two layout bugs were found this
+way and are now guarded by `tests/behaviour/panel-test.cjs`:
+
+- **Tab widths.** `flex: 1 1 auto` sized the tabs to their labels, so "Main" was
+  half the width of "SponsorBlock". They are `flex: none; width: 20%` now.
+- **A clipped page.** Chromium 38 sizes the children of a flex column whose
+  height is a *max-height* against the content height and then clips the
+  overflow, so `flex: 1; min-height: 0` alone left the Main page's last rows
+  outside the panel. The page carries `max-height: 76vh` (the panel's 90vh less
+  its chrome) as well, and the Main page's rows are dense enough that all five
+  pages fit without scrolling at 1080p.

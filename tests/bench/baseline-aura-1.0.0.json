@@ -9,12 +9,12 @@
   "measured": "2026-11-16",
   "machine": "Node 26.13.0, Windows, jsdom 30.1.2 with the Chromium 38 profile",
   "bundle": {
-    "userScriptBytes": 226420,
+    "userScriptBytes": 226496,
     "launcherBytes": 8267,
-    "cssBytes": 17644,
+    "cssBytes": 17720,
     "cssSelectors": 166,
     "cssAttributeSelectors": 16,
-    "ipkBytes": 90830
+    "ipkBytes": 90850
   },
   "boot": {
     "moduleEvaluationMsMedian": 3.87,
@@ -22,9 +22,9 @@
     "styleElements": 2
   },
   "panel": {
-    "prewarmedHandlerMs": 11.0,
+    "prewarmedHandlerMs": 10.7,
     "prewarmedElementsInHandler": 0,
-    "coldHandlerMs": 65.2,
+    "coldHandlerMs": 58.1,
     "coldElementsInHandler": 82,
     "elementsTotal": 327
   },
@@ -44,7 +44,7 @@
   },
   "tests": {
     "steps": 64,
-    "checks": 2045,
+    "checks": 2047,
     "failing": 0
   }
 }
